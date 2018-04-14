@@ -1,0 +1,12 @@
+/* TEAM */
+
+    Developer: Benjamin Bengfort
+    Twitter: @bbengfort
+    From: Washington, DC
+
+/* SITE */
+
+    Last update: 2018/04/14
+    Language: English
+    Doctype: HTML5
+    IDE: Github Atom.io Editor
