@@ -3,10 +3,12 @@ Django==2.0.4
 django-rest-framework==0.1.0
 djangorestframework==3.8.2
 dj-database-url==0.5.0
+gunicorn==19.7.1
 psycopg2==2.7.4
 python-dotenv==0.8.2
 social-auth-app-django==2.1.0
 social-auth-core==1.7.0
+whitenoise==3.3.1
 
 ## Utilities
 pytz==2018.4

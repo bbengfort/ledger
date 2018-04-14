@@ -30,3 +30,4 @@ ALLOWED_HOSTS    = [
 
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
