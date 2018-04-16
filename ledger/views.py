@@ -30,9 +30,14 @@ from rest_framework.permissions import AllowAny
 ## Views
 ##########################################################################
 
-class DashboardView(LoginRequiredMixin, TemplateView):
+class Overview(LoginRequiredMixin, TemplateView):
 
-    template_name = "site/dashboard.html"
+    template_name = "site/overview.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(Overview, self).get_context_data(**kwargs)
+        context['dashboard'] = 'overview'
+        return context
 
 
 ##########################################################################

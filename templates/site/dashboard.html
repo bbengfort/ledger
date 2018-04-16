@@ -2,5 +2,21 @@
 {% load staticfiles %}
 
 {% block content %}
-  <h1>Hi there</h1>
+
+  <div class="container-fluid">
+    <div class="row">
+      {% block sidebar %}
+        {% include 'components/sidebar.html' %}
+      {% endblock %}
+
+      <main class="col-sm-9 offset-sm-3 col-md-10 offset-md-2 pt-3">
+      {% block dashboard %}
+        <h1>{% block dashboard-title %}Dashboard{% endblock %}</h1>
+      {% endblock %}
+
+      {% block dashboard-content %}{% endblock %}
+      </main>
+    </div>
+  </div>
+
 {% endblock %}

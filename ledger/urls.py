@@ -31,6 +31,7 @@ from django.contrib import admin
 from django.urls import path, include
 
 from ledger.views import *
+from taxes.views import *
 
 
 ##########################################################################
@@ -42,7 +43,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Application URLs
-    path('', DashboardView.as_view(), name="dashboard"),
+    path('', Overview.as_view(), name="overview"),
+    path('taxes/', TaxesDashboard.as_view(), name="taxes"), 
 
     # Authentication URLs
     path('account/', include(('social_django.urls', 'social_django'), namespace='social')),

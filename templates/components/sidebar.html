@@ -1,0 +1,31 @@
+<nav class="col-sm-3 col-md-2 hidden-xs-down bg-faded sidebar">
+  <ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+      <a class="nav-link {% if dashboard == "overview" %}active{% endif %}"
+         href="{% url 'overview' %}">
+        Overview
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link {% if dashboard == "taxes" %}active{% endif %}"
+         href="{% url 'taxes' %}">
+        Taxes
+      </a>
+    </li>
+  </ul>
+
+{% comment %}
+  <!-- can create nav "sections" like these -->
+  <ul class="nav nav-pills flex-column">
+    <li class="nav-item">
+      <a class="nav-link" href="#">Nav item again</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">One more nav</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Another nav item</a>
+    </li>
+  </ul>
+{% endcomment %}
+</nav>
