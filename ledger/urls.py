@@ -28,10 +28,19 @@ Including another URLconf
 ##########################################################################
 
 from django.contrib import admin
+from rest_framework import routers
 from django.urls import path, include
 
 from ledger.views import *
 from taxes.views import *
+
+
+##########################################################################
+## Endpoint Discovery
+##########################################################################
+
+router = routers.DefaultRouter()
+router.register(r'status', HeartbeatViewSet, "status")
 
 
 ##########################################################################
@@ -44,10 +53,12 @@ urlpatterns = [
 
     # Application URLs
     path('', Overview.as_view(), name="overview"),
-    path('taxes/', TaxesDashboard.as_view(), name="taxes"), 
+    path('taxes/', TaxesDashboard.as_view(), name="taxes"),
 
     # Authentication URLs
     path('account/', include(('social_django.urls', 'social_django'), namespace='social')),
     path('account/', include('django.contrib.auth.urls')),
 
+    ## REST API Urls
+    path('api/', include((router.urls, 'rest_framework'), namespace="api")),
 ]
