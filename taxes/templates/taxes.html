@@ -1,5 +1,6 @@
 {% extends 'site/dashboard.html' %}
 {% load humanize %}
+{% load taxes %}
 
 {# TODO: add to dashboard.html #}
 {% block stylesheets %}
@@ -35,10 +36,18 @@
         {% for r in tax_returns %}
         <tr>
           <td class="text-center">{{ r.year }}</td>
-          <td class="text-right">${{ r.income|intcomma }}</td>
-          <td class="text-right">${{ r.agi|intcomma }}</td>
-          <td class="text-right">${{ r.federal_tax|intcomma }}</td>
-          <td class="text-right">${{ r.local_tax|intcomma }}</td>
+          <td class="text-right">
+              ${{ r.income|intcomma }} {% prev_year_change r "income" %}
+          </td>
+          <td class="text-right">
+            ${{ r.agi|intcomma }} {% prev_year_change r "agi" %}
+          </td>
+          <td class="text-right">
+            ${{ r.federal_tax|intcomma }} {% prev_year_change r "federal_tax" %}
+          </td>
+          <td class="text-right">
+            ${{ r.local_tax|intcomma }} {% prev_year_change r "local_tax" %}
+          </td>
         </tr>
         {% empty %}
         <tr class="text-center table-info">
@@ -47,6 +56,11 @@
         {% endfor %}
         </tbody>
       </table>
+
+      <small><p class="text-muted text-center">
+        <i class="fa fa-caret-up text-success"></i> indicates increase from previous year
+        <i class="fa fa-caret-down text-danger"></i> indicates decrease.
+      </p></small>
     </div>
   </div>
 {% endblock %}

@@ -33,7 +33,7 @@ from bokeh.models import ColumnDataSource, NumeralTickFormatter
 ## HTML Views
 ##########################################################################
 
-class TaxesDashboard(ListView, LoginRequiredMixin):
+class TaxesDashboard(LoginRequiredMixin, ListView):
 
     model = TaxReturn
     ordering = "-year"

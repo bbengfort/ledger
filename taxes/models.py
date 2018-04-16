@@ -15,6 +15,7 @@ Tax models
 ##########################################################################
 
 from django.db import models
+from django.utils.functional import cached_property
 
 
 class TaxReturn(models.Model):
@@ -74,6 +75,28 @@ class TaxReturn(models.Model):
         max_digits=10, decimal_places=2,
         help_text="Total amount owed or paid in state and local taxes",
     )
+
+    @cached_property
+    def prev_year_return(self):
+        """
+        Returns the previous year return or None if no return exists.
+        """
+        query = TaxReturn.objects.filter(year=self.year-1)
+        if query.exists():
+            return query[0]
+        return None
+
+    def prev_year_change(self, field):
+        """
+        Returns the difference from last year to this year of the given field.
+
+        Returns 0 if there is no previous year to compare against.
+        """
+        if self.prev_year_return is None:
+            return 0
+
+        # TODO: make more django-y 
+        return getattr(self, field) - getattr(self.prev_year_return, field)
 
 
     def __str__(self):
