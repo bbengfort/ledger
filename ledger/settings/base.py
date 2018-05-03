@@ -109,6 +109,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'rest_framework',
     'social_django',
+    # 'account', 
     'taxes',
 ]
 
@@ -168,7 +169,7 @@ TEMPLATES = [
 ## Authentication
 ##########################################################################
 
-LOGIN_URL = '/account/login/'
+LOGIN_URL = '/user/login/'
 LOGIN_ERROR_URL = LOGIN_URL
 LOGIN_REDIRECT_URL = '/'
 

@@ -95,8 +95,12 @@ class TaxReturn(models.Model):
         if self.prev_year_return is None:
             return 0
 
-        # TODO: make more django-y 
+        # TODO: make more django-y
         return getattr(self, field) - getattr(self.prev_year_return, field)
+
+
+    class Meta:
+        db_table = "tax_returns"
 
 
     def __str__(self):

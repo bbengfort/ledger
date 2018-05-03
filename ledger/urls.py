@@ -56,8 +56,8 @@ urlpatterns = [
     path('taxes/', TaxesDashboard.as_view(), name="taxes"),
 
     # Authentication URLs
-    path('account/', include(('social_django.urls', 'social_django'), namespace='social')),
-    path('account/', include('django.contrib.auth.urls')),
+    path('user/', include(('social_django.urls', 'social_django'), namespace='social')),
+    path('user/', include('django.contrib.auth.urls')),
 
     ## REST API Urls
     path('api/', include((router.urls, 'rest_framework'), namespace="api")),
