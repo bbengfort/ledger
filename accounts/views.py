@@ -22,13 +22,14 @@ from django.http import Http404
 from django.views.generic import DetailView
 from django.utils.translation import gettext as _
 from django.views.generic.dates import ArchiveIndexView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 ##########################################################################
 ## Accounting HTML Views
 ##########################################################################
 
-class BalanceSheetArchives(ArchiveIndexView):
+class BalanceSheetArchives(LoginRequiredMixin, ArchiveIndexView):
 
     model = BalanceSheet
     date_field = "date"
@@ -43,7 +44,7 @@ class BalanceSheetArchives(ArchiveIndexView):
         return context
 
 
-class BalanceSheetView(DetailView):
+class BalanceSheetView(LoginRequiredMixin, DetailView):
 
     model = BalanceSheet
     template_name = "balance_sheet.html"
