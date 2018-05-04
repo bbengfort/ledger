@@ -33,6 +33,7 @@ from django.urls import path, include
 
 from ledger.views import *
 from taxes.views import *
+from accounts.views import *
 
 
 ##########################################################################
@@ -54,6 +55,8 @@ urlpatterns = [
     # Application URLs
     path('', Overview.as_view(), name="overview"),
     path('taxes/', TaxesDashboard.as_view(), name="taxes"),
+    path('sheets/', BalanceSheetArchives.as_view(), name="sheets-archive"),
+    path('sheets/<int:year>-<int:month>-<int:day>/', BalanceSheetView.as_view(), name="sheets-detail"),
 
     # Authentication URLs
     path('user/', include(('social_django.urls', 'social_django'), namespace='social')),

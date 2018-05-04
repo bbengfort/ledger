@@ -1,0 +1,18 @@
+{% extends 'site/dashboard.html' %}
+
+{% block dashboard-title %}Balance Sheets{% endblock %}
+
+{% block dashboard-content %}
+
+  <div class="row">
+    <div class="col-sm">
+      <ul class="list-unstyled">
+      {% for sheet in sheets %}
+        <li>
+          <a href="{{ sheet.get_absolute_url }}">{{ sheet.date }}</a>
+        </li>
+      {% endfor %}
+      </ul>
+    </div>
+  </div>
+{% endblock %}

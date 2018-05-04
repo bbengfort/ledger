@@ -7,6 +7,12 @@
       </a>
     </li>
     <li class="nav-item">
+      <a class="nav-link {% if dashboard == "sheets" %}active{% endif %}"
+         href="{% url 'sheets-archive'  %}">
+        Balance Sheets
+      </a>
+    </li>
+    <li class="nav-item">
       <a class="nav-link {% if dashboard == "taxes" %}active{% endif %}"
          href="{% url 'taxes' %}">
         Taxes

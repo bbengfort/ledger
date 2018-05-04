@@ -1,0 +1,226 @@
+{% extends 'site/dashboard.html' %}
+{% load humanize %}
+
+{% block dashboard-title %}{{ sheet.title }}{% endblock %}
+
+{% block dashboard-content %}
+
+  <div class="row">
+    <div class="col-sm">
+    </div>
+  </div>
+
+  <!-- Cash Accounts -->
+  <div class="row">
+    <div class="col-sm mb-2">
+
+      <div class="card border-success">
+
+        <div class="card-header bg-success text-light">
+          <h5 class="mb-0">Cash Accounts</h5>
+        </div>
+
+        <table class="table mb-0 table-hover table-striped table-sm">
+          <caption class="d-none">Cash account balances for {{ sheet.date }}</caption>
+          <thead>
+            <tr>
+              <th class="pl-3" scope="col">Bank</th>
+              <th scope="col">Account Name</th>
+              <th scope="col">Beginning Balance</th>
+              <th scope="col">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for balance in sheet.balances.cash_accounts %}
+            <tr>
+              <td class="pl-3">{{ balance.account.bank }}</td>
+              <td>{{ balance.account.name }}</td>
+              <td>{{ balance.beginning|intcomma }}</td>
+              <td>{{ balance.ending|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No Cash Account Balances</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Investment Accounts -->
+  <div class="row">
+    <div class="col-sm mb-2">
+
+      <div class="card border-info">
+
+        <div class="card-header bg-info text-light">
+          <h5 class="mb-0">Investment Accounts</h5>
+        </div>
+
+        <table class="table mb-0 table-hover table-striped table-sm">
+          <caption class="d-none">Investment account balances for {{ sheet.date }}</caption>
+          <thead>
+            <tr>
+              <th class="pl-3" scope="col">Bank</th>
+              <th scope="col">Account Name</th>
+              <th scope="col">Beginning Balance</th>
+              <th scope="col">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for balance in sheet.balances.investment_accounts %}
+            <tr>
+              <td class="pl-3">{{ balance.account.bank }}</td>
+              <td>{{ balance.account.name }}</td>
+              <td>{{ balance.beginning|intcomma }}</td>
+              <td>{{ balance.ending|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No Investment Account Balances</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Credit Card Accounts -->
+  <div class="row">
+    <div class="col-sm mb-2">
+
+      <div class="card border-danger">
+
+        <div class="card-header bg-danger text-light">
+          <h5 class="mb-0">Credit Cards</h5>
+        </div>
+
+        <table class="table mb-0 table-hover table-striped table-sm">
+          <caption class="d-none">Investment account balances for {{ sheet.date }}</caption>
+          <thead>
+            <tr>
+              <th class="pl-3" scope="col">Bank</th>
+              <th scope="col">Account Name</th>
+              <th scope="col">Beginning Balance</th>
+              <th scope="col">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for balance in sheet.balances.credit_accounts %}
+            <tr>
+              <td class="pl-3">{{ balance.account.bank }}</td>
+              <td>{{ balance.account.name }}</td>
+              <td>{{ balance.beginning|intcomma }}</td>
+              <td>{{ balance.ending|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No Credit Card Balances</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Loan Accounts -->
+  <div class="row">
+    <div class="col-sm mb-2">
+
+      <div class="card border-primary">
+
+        <div class="card-header bg-primary text-light">
+          <h5 class="mb-0">Loans</h5>
+        </div>
+
+        <table class="table mb-0 table-hover table-striped table-sm">
+          <caption class="d-none">Loan account balances for {{ sheet.date }}</caption>
+          <thead>
+            <tr>
+              <th class="pl-3" scope="col">Bank</th>
+              <th scope="col">Account Name</th>
+              <th scope="col">Beginning Balance</th>
+              <th scope="col">Ending Balance</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for balance in sheet.balances.loan_accounts %}
+            <tr>
+              <td class="pl-3">{{ balance.account.bank }}</td>
+              <td>{{ balance.account.name }}</td>
+              <td>{{ balance.beginning|intcomma }}</td>
+              <td>{{ balance.ending|intcomma }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No Credit Card Balances</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Transactions -->
+  <div class="row">
+    <div class="col-sm mb-2">
+
+      <div class="card border-warning">
+
+        <div class="card-header bg-warning text-light">
+          <h5 class="mb-0">Transactions</h5>
+        </div>
+
+        <table class="table mb-0 table-hover table-striped table-sm">
+          <caption class="d-none">List of transactions for {{ sheet.date }}</caption>
+          <thead>
+            <tr>
+              <th class="pl-3" scope="col">Date</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Credit Account</th>
+              <th scope="col">Debit Account</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for transaction in sheet.transactions.all %}
+            <tr>
+              <td class="pl-3">{{ transaction.date }}</td>
+              <td>{{ transaction.amount|intcomma }}</td>
+              <td>{{ transaction.credit }}</td>
+              <td>{{ transaction.debit }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="4">No Transactions Added</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div class="card-footer bg-warning text-light">
+          {% if sheet.transactions.count > 0  %}
+          <small>{{ sheet.transactions.count }} transactions from {{ sheet.transactions.earliest.date }} to {{ sheet.transactions.latest.date }}</small>
+          {% else %}
+          <small>&mdash;</small>
+          {% endif %}
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+{% endblock %}

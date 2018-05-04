@@ -15,9 +15,12 @@ Accounts models and base models.
 ##########################################################################
 
 from datetime import date
+
 from django.db import models
+from django.urls import reverse
 
 from .utils import Currency
+from .managers import AccountTypeManager, AccountBalanceTypeManager
 
 
 ##########################################################################
@@ -94,7 +97,17 @@ class Account(models.Model):
 
     class Meta:
         db_table = "accounts"
+        ordering = ("bank__short_name", "name",)
         unique_together = ('name', 'bank')
+
+    # Account type managers
+    objects = models.Manager()
+    cash_accounts = AccountTypeManager(CASH)
+    credit_accounts = AccountTypeManager(CREDIT)
+    loan_accounts = AccountTypeManager(LOAN)
+    investment_accounts = AccountTypeManager(INVESTMENT)
+    insurance_accounts = AccountTypeManager(INSURANCE)
+    billing_accounts = AccountTypeManager(BILLING)
 
     @property
     def is_liability(self):
@@ -156,6 +169,7 @@ class Company(models.Model):
 
     class Meta:
         db_table = "companies"
+        ordering = ("short_name",)
         verbose_name_plural = "companies"
 
     def __str__(self):
@@ -193,6 +207,14 @@ class BalanceSheet(models.Model):
 
     class Meta:
         db_table = "balance_sheets"
+        ordering = ("-date",)
+        get_latest_by = "date"
+
+    def get_absolute_url(self):
+        date = self.date.strftime("%Y %m %d").split()
+        kwargs = dict(zip(('year', 'month', 'day'), date))
+
+        return reverse('sheets-detail', kwargs=kwargs)
 
     def __str__(self):
         return self.title
@@ -226,6 +248,14 @@ class Balance(models.Model):
         help_text="Ending balance after transactions"
     )
 
+    class Meta:
+        db_table = "balances"
+        ordering = ("-sheet__date", "account__order")
+        unique_together = ('sheet', 'account')
+
+    # Account type managers
+    objects = AccountBalanceTypeManager()
+
     @property
     def date(self):
         return self.sheet.date
@@ -243,12 +273,6 @@ class Balance(models.Model):
         sheet (returns an empty list if there are no debits).
         """
         return self.sheet.transactions.filter(debit=self.account)
-
-
-    class Meta:
-        db_table = "balances"
-        unique_together = ('sheet', 'account')
-
 
     def __str__(self):
         if self.ending == 0:
@@ -309,6 +333,8 @@ class Transaction(models.Model):
 
     class Meta:
         db_table = "transactions"
+        ordering = ("-date",)
+        get_latest_by = "date"
 
 
     def __str__(self):
