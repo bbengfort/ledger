@@ -17,6 +17,8 @@ Accounts models and base models.
 from datetime import date
 from django.db import models
 
+from .utils import Currency
+
 
 ##########################################################################
 ## Financial Account
@@ -84,6 +86,11 @@ class Account(models.Model):
         null=True, blank=True,
         help_text="Date the account was closed on"
     )
+    currency = models.CharField(
+        max_length=3, null=False, blank=False, default=Currency.USD.value,
+        choices=Currency.choices(),
+        help_text="Specify the currency associated with the account",
+    )
 
     class Meta:
         db_table = "accounts"
@@ -110,7 +117,7 @@ class Account(models.Model):
         }
 
     def __str__(self):
-        return self.name
+        return "{} {}".format(self.bank.short_name, self.name)
 
 
 ##########################################################################
