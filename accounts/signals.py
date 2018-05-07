@@ -48,3 +48,22 @@ def update_balance_after_transaction(sender, instance, *args, **kwargs):
             balance.save()
         except Balance.DoesNotExist:
             continue
+
+
+@receiver(pre_save, sender=Balance, dispatch_uid="update_ending_balance_on_save")
+def update_ending_balance(sender, instance, *args, **kwargs):
+    """
+    Updates the ending balance when the Balance is saved.
+    """
+    instance.update_ending_balance()
+
+
+@receiver(post_save, sender=BalanceSheet, dispatch_uid="update_all_ending_balances_on_sheet")
+def update_all_ending_balances(sender, instance, *args, **kwargs):
+    """
+    Updates all ending balances when the sheet is saved.
+    """
+    #TODO: Remove this signal in favor of a manual method
+    for balance in instance.balances.all():
+        balance.update_ending_balance()
+        balance.save()

@@ -34,7 +34,7 @@ class BalanceSheetArchives(LoginRequiredMixin, ArchiveIndexView):
     model = BalanceSheet
     date_field = "date"
     make_object_list = True
-    allow_future = False
+    allow_future = True
     template_name = "balance_sheet_archive.html"
     context_object_name = "sheets"
 

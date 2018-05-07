@@ -277,7 +277,7 @@ class Balance(models.Model):
     def update_ending_balance(self):
         """
         (Re)computes the ending balance based on all associated transactions.
-        Note, that this method does not save the ending balance, just sets it.  
+        Note, that this method does not save the ending balance, just sets it.
         """
         total = self.beginning
 

@@ -18,9 +18,38 @@ from django.contrib import admin
 from .models import Account, Company
 from .models import BalanceSheet, Balance, Transaction
 
-# Register your models here.
+
+##########################################################################
+## Admin Configuration
+##########################################################################
+
+class BalanceInline(admin.TabularInline):
+
+    extra = 0
+    model = Balance
+    fields = ('account', 'beginning')
+
+
+class TransactionInline(admin.TabularInline):
+
+    extra = 0
+    model = Transaction
+    fields = ('date', 'credit', 'debit', 'amount', 'complete')
+
+
+class BalanceSheetAdmin(admin.ModelAdmin):
+
+    inlines = [
+        BalanceInline, TransactionInline
+    ]
+
+
+##########################################################################
+## Register your models here
+##########################################################################
+
 admin.site.register(Account)
 admin.site.register(Company)
-admin.site.register(BalanceSheet)
+admin.site.register(BalanceSheet, BalanceSheetAdmin)
 admin.site.register(Balance)
 admin.site.register(Transaction)
