@@ -274,6 +274,25 @@ class Balance(models.Model):
         """
         return self.sheet.transactions.filter(debit=self.account)
 
+    def update_ending_balance(self):
+        """
+        (Re)computes the ending balance based on all associated transactions.
+        Note, that this method does not save the ending balance, just sets it.  
+        """
+        total = self.beginning
+
+        for transaction in self.credits():
+            # Deduct amount from transactions where this account is credited
+            if not transaction.complete:
+                total -= transaction.amount
+
+        for transaction in self.debits():
+            # Add amount from transactions where this account is debited
+            if not transaction.complete:
+                total += transaction.amount
+
+        self.ending = total
+
     def __str__(self):
         if self.ending == 0:
             return "{} beginning with ${:,} on {}".format(
@@ -325,6 +344,10 @@ class Transaction(models.Model):
     amount = models.DecimalField(
         max_digits=10, decimal_places=2, blank=False, null=False, default=0.0,
         help_text="The amount of the transaction"
+    )
+    complete = models.BooleanField(
+        default=False,
+        help_text="If the transaction is included in the beginning balance"
     )
     memo = models.CharField(
         max_length=500, blank=True, null=True,
