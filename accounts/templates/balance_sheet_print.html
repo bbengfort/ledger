@@ -1,12 +1,15 @@
-{% extends 'site/dashboard.html' %}
+{% extends 'base.html' %}
 {% load accounting %}
 
-{% block dashboard-title %}
-  {{ sheet.title }}
-  <span class="pull-right">{% print_button %}</span>
-{% endblock %}
-
-{% block dashboard-content %}
+{% block body %}
+<div class="container">
+  <div class="row">
+    <div class="col-12">
+      <div class="page-header">
+        <h1>{{ sheet.title }}</h1>
+      </div>
+    </div>
+  </div>
 
   <!-- Cash Accounts -->
   <div class="row">
@@ -173,7 +176,7 @@
   </div>
 
   <!-- Transactions -->
-  <div class="row">
+  <div class="row" style="page-break-before: always;">
     <div class="col-sm mb-2">
 
       <div class="card border-warning">
@@ -222,5 +225,5 @@
 
     </div>
   </div>
-
+</div>
 {% endblock %}

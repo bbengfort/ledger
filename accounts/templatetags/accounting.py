@@ -52,3 +52,8 @@ def account_balance(balance, beginning=False, ending=False):
 @register.inclusion_tag("snippets/account_balance.html")
 def transaction_amount(transaction):
     return accounting_amount(transaction.amount, transaction.credit.currency)
+
+
+@register.inclusion_tag("components/print.html")
+def print_button():
+    return {}

@@ -48,6 +48,7 @@ class BalanceSheetView(LoginRequiredMixin, DetailView):
 
     model = BalanceSheet
     template_name = "balance_sheet.html"
+    print_template_name = "balance_sheet_print.html"
     context_object_name = "sheet"
 
     def get_object(self, queryset=None):
@@ -77,8 +78,18 @@ class BalanceSheetView(LoginRequiredMixin, DetailView):
                           {'verbose_name': queryset.model._meta.verbose_name})
         return obj
 
+    def get_template_names(self):
+        """
+        Returns the print template name if print query, otherwise returns super.
+        """
+        if self.request.GET.get('print', False):
+            return [self.print_template_name]
+        return super(BalanceSheetView, self).get_template_names()
 
     def get_context_data(self, **kwargs):
+        """
+        Create the context data for the view
+        """
         context = super(BalanceSheetView, self).get_context_data(**kwargs)
         context['dashboard'] = 'sheets'
         return context

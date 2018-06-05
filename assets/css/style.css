@@ -90,3 +90,10 @@ h1 {
 .footer p {
     margin: 0;
 }
+
+/* Print Styles */
+@media print{
+    nav, footer, .sidebar {
+        display: none;
+    }
+}
