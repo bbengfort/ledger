@@ -1,0 +1,38 @@
+{% load accounting %}
+<div class="table-responsive">
+  <table class="table mb-0 table-hover table-striped table-sm">
+    <caption class="d-none">{{ account_type|title }} account balances for {{ sheet.date }}</caption>
+    <thead>
+      <tr class="row">
+        <th class="pl-4 col-3" scope="col">Bank</th>
+        <th class="col-5" scope="col">Account Name</th>
+        <th class="col-2" scope="col">Beginning Balance</th>
+        <th class="col-2" scope="col">Ending Balance</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for balance in balances %}
+      <tr class="row">
+        <td class="pl-4 col-3">{{ balance.account.bank }}</td>
+        <td class="col-5">{{ balance.account.name }}</td>
+        <td class="col-2">{% account_balance balance beginning=True %}</td>
+        <td class="pr-4 col-2">{% account_balance balance ending=True %}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No {{ account_type|lower }} account balances.</td>
+      </tr>
+      {% endfor %}
+      {% if balances.count > 0 %}
+
+      <tr class="row table-{{ account_class }}">
+        <td class="col-8" colspan="2"></td>
+        {% with total=balances.totals %}
+        <td class="col-2">{% accounting total.beginning__sum %}</td>
+        <td class="pr-4 col-2">{% accounting total.ending__sum %}</td>
+        {% endwith %}
+      </tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,28 @@
+{% load accounting %}
+<div class="table-responsive">
+  <table class="table mb-0 table-hover table-striped table-sm">
+    <caption class="d-none">List of transactions for {{ sheet.date }}</caption>
+    <thead>
+      <tr class="row">
+        <th class="pl-4 col-2" scope="col">Date</th>
+        <th class="col-2" scope="col">Amount</th>
+        <th class="col-4" scope="col">Credit Account</th>
+        <th class="col-4" scope="col">Debit Account</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for transaction in sheet.transactions.all %}
+      <tr class="row">
+        <td class="pl-4 col-2">{{ transaction.date }}</td>
+        <td class="col-2 pr-3">{% transaction_amount transaction %}</td>
+        <td class="col-4">{{ transaction.credit }}</td>
+        <td class="col-4">{{ transaction.debit }}</td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4">No Transactions Added</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

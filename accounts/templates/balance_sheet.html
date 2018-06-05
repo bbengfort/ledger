@@ -17,33 +17,7 @@
           <h5 class="mb-0">Cash Accounts</h5>
         </div>
 
-        <div class="table-responsive">
-          <table class="table mb-0 table-hover table-striped table-sm">
-            <caption class="d-none">Cash account balances for {{ sheet.date }}</caption>
-            <thead>
-              <tr class="row">
-                <th class="pl-4 col-3" scope="col">Bank</th>
-                <th class="col-5" scope="col">Account Name</th>
-                <th class="col-2" scope="col">Beginning Balance</th>
-                <th class="col-2" scope="col">Ending Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for balance in sheet.balances.cash_accounts %}
-              <tr class="row">
-                <td class="pl-4 col-3">{{ balance.account.bank }}</td>
-                <td class="col-5">{{ balance.account.name }}</td>
-                <td class="col-2">{% account_balance balance beginning=True %}</td>
-                <td class="pr-4 col-2">{% account_balance balance ending=True %}</td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="4">No Cash Account Balances</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+        {% include "snippets/accounts_table.html" with account_type="cash" account_class="success" balances=sheet.balances.cash_accounts %}
 
       </div>
     </div>
@@ -58,33 +32,7 @@
           <h5 class="mb-0">Investment Accounts</h5>
         </div>
 
-        <div class="table-responsive">
-          <table class="table mb-0 table-hover table-striped table-sm">
-            <caption class="d-none">Investment account balances for {{ sheet.date }}</caption>
-            <thead>
-              <tr class="row">
-                <th class="pl-4 col-3" scope="col">Bank</th>
-                <th class="col-5" scope="col">Account Name</th>
-                <th class="col-2" scope="col">Beginning Balance</th>
-                <th class="col-2" scope="col">Ending Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for balance in sheet.balances.investment_accounts %}
-              <tr class="row">
-                <td class="pl-4 col-3">{{ balance.account.bank }}</td>
-                <td class="col-5">{{ balance.account.name }}</td>
-                <td class="col-2">{% account_balance balance beginning=True %}</td>
-                <td class="pr-4 col-2">{% account_balance balance ending=True %}</td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="4">No Investment Account Balances</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+        {% include "snippets/accounts_table.html" with account_type="investment" account_class="info" balances=sheet.balances.investment_accounts %}
 
       </div>
     </div>
@@ -99,33 +47,7 @@
           <h5 class="mb-0">Credit Cards</h5>
         </div>
 
-        <div class="table-responsive">
-          <table class="table mb-0 table-hover table-striped table-sm">
-            <caption class="d-none">Investment account balances for {{ sheet.date }}</caption>
-            <thead>
-              <tr class="row">
-                <th class="pl-4 col-3" scope="col">Bank</th>
-                <th class="col-5" scope="col">Account Name</th>
-                <th class="col-2" scope="col">Beginning Balance</th>
-                <th class="col-2" scope="col">Ending Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for balance in sheet.balances.credit_accounts %}
-              <tr class="row">
-                <td class="pl-4 col-3">{{ balance.account.bank }}</td>
-                <td class="col-5">{{ balance.account.name }}</td>
-                <td class="col-2">{% account_balance balance beginning=True %}</td>
-                <td class="pr-4 col-2">{% account_balance balance ending=True %}</td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="4">No Credit Card Balances</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+        {% include "snippets/accounts_table.html" with account_type="credit card" account_class="danger" balances=sheet.balances.credit_accounts %}
 
       </div>
     </div>
@@ -140,33 +62,7 @@
           <h5 class="mb-0">Loans</h5>
         </div>
 
-        <div class="table-responsive">
-          <table class="table mb-0 table-hover table-striped table-sm">
-            <caption class="d-none">Loan account balances for {{ sheet.date }}</caption>
-            <thead>
-              <tr class="row">
-                <th class="pl-4 col-3" scope="col">Bank</th>
-                <th class="col-5" scope="col">Account Name</th>
-                <th class="col-2" scope="col">Beginning Balance</th>
-                <th class="col-2" scope="col">Ending Balance</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for balance in sheet.balances.loan_accounts %}
-              <tr class="row">
-                <td class="pl-4 col-3">{{ balance.account.bank }}</td>
-                <td class="col-5">{{ balance.account.name }}</td>
-                <td class="col-2">{% account_balance balance beginning=True %}</td>
-                <td class="pr-4 col-2">{% account_balance balance ending=True %}</td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="4">No Credit Card Balances</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
+        {% include "snippets/accounts_table.html" with account_type="loan" account_class="primary" balances=sheet.balances.loan_accounts %}
 
       </div>
     </div>
@@ -182,33 +78,7 @@
           <h5 class="mb-0">Transactions</h5>
         </div>
 
-        <div class="table-responsive">
-          <table class="table mb-0 table-hover table-striped table-sm">
-            <caption class="d-none">List of transactions for {{ sheet.date }}</caption>
-            <thead>
-              <tr class="row">
-                <th class="pl-4 col-2" scope="col">Date</th>
-                <th class="col-2" scope="col">Amount</th>
-                <th class="col-4" scope="col">Credit Account</th>
-                <th class="col-4" scope="col">Debit Account</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for transaction in sheet.transactions.all %}
-              <tr class="row">
-                <td class="pl-4 col-2">{{ transaction.date }}</td>
-                <td class="col-2 pr-3">{% transaction_amount transaction %}</td>
-                <td class="col-4">{{ transaction.credit }}</td>
-                <td class="col-4">{{ transaction.debit }}</td>
-              </tr>
-              {% empty %}
-              <tr>
-                <td colspan="4">No Transactions Added</td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        <div class="table-responsive">
+        {% include "snippets/transactions_table.html" %}
 
         <div class="card-footer bg-warning text-light">
           {% if sheet.transactions.count > 0  %}

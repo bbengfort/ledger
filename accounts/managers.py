@@ -15,6 +15,50 @@ Query managers for the accounts models.
 ##########################################################################
 
 from django.db import models
+from django.db.models import Sum
+
+
+##########################################################################
+## Querysets
+##########################################################################
+
+class BalanceQuerySet(models.QuerySet):
+
+    # Copied here to prevent recursive imports
+    CASH = "Ca"
+    CREDIT = "Cc"
+    LOAN = "Ln"
+    INVESTMENT = "Iv"
+    INSURANCE = "Is"
+    BILLING = "Bl"
+
+    def active(self):
+        return self.filter(account__active=True)
+
+    def cash_accounts(self):
+        return self.filter(account__type=self.CASH)
+
+    def credit_accounts(self):
+        return self.filter(account__type=self.CREDIT)
+
+    def loan_accounts(self):
+        return self.filter(account__type=self.LOAN)
+
+    def investment_accounts(self):
+        return self.filter(account__type=self.INVESTMENT)
+
+    def insurance_accounts(self):
+        return self.filter(account__type=self.INSURANCE)
+
+    def billing_accounts(self):
+        return self.filter(account__type=self.BILLING)
+
+    def totals(self):
+        return self.filter(
+            account__active=True, account__exclude=False
+        ).aggregate(
+            Sum("beginning"), Sum("ending")
+        )
 
 
 ##########################################################################
@@ -33,28 +77,23 @@ class AccountTypeManager(models.Manager):
 
 class AccountBalanceTypeManager(models.Manager):
 
-    # Copied here to prevent recursive imports
-    CASH = "Ca"
-    CREDIT = "Cc"
-    LOAN = "Ln"
-    INVESTMENT = "Iv"
-    INSURANCE = "Is"
-    BILLING = "Bl"
+    def get_queryset(self):
+        return BalanceQuerySet(self.model, using=self._db)
 
     def cash_accounts(self):
-        return self.filter(account__type=self.CASH)
+        return self.get_queryset().cash_accounts()
 
     def credit_accounts(self):
-        return self.filter(account__type=self.CREDIT)
+        return self.get_queryset().credit_accounts()
 
     def loan_accounts(self):
-        return self.filter(account__type=self.LOAN)
-        
+        return self.get_queryset().loan_accounts()
+
     def investment_accounts(self):
-        return self.filter(account__type=self.INVESTMENT)
+        return self.get_queryset().investment_accounts()
 
     def insurance_accounts(self):
-        return self.filter(account__type=self.INSURANCE)
+        return self.get_queryset().insurance_accounts()
 
     def billing_accounts(self):
-        return self.filter(account__type=self.BILLING)
+        return self.get_queryset().billing_accounts()

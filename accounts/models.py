@@ -77,6 +77,10 @@ class Account(models.Model):
         default=True,
         help_text="Display account in primary accounts list"
     )
+    exclude = models.BooleanField(
+        default=False,
+        help_text="Exclude account from overview and aggregations"
+    )
     order = models.PositiveSmallIntegerField(
         default=None, null=True, blank=True,
         help_text="User defined order for display"
