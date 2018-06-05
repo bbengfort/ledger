@@ -28,6 +28,9 @@ ALLOWED_HOSTS    = [
     'ledger.bengfort.com',
 ]
 
+## Use SSL
+SECURE_SSL_REDIRECT = True 
+
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'staticfiles')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
