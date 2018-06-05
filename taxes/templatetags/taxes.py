@@ -19,6 +19,7 @@ from django.utils.html import mark_safe
 
 register = template.Library()
 
+
 @register.simple_tag()
 def prev_year_change(txr, field):
     if txr.prev_year_change(field) >= 0:
