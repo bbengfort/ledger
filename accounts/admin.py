@@ -38,6 +38,12 @@ class TransactionInline(admin.TabularInline):
 
 
 class BalanceSheetAdmin(admin.ModelAdmin):
+    # NOTE: this is no longer used as it was way too heavy-weight for editing
+    # balance sheets. The balance sheet admin form took a long time to load and
+    # when saving multiple changes to transactions and balances it would mess
+    # them up and not save things correctly.
+    #
+    # See #19 for more details
 
     inlines = [
         BalanceInline, TransactionInline
@@ -50,6 +56,6 @@ class BalanceSheetAdmin(admin.ModelAdmin):
 
 admin.site.register(Account)
 admin.site.register(Company)
-admin.site.register(BalanceSheet, BalanceSheetAdmin)
+admin.site.register(BalanceSheet)
 admin.site.register(Balance)
 admin.site.register(Transaction)
