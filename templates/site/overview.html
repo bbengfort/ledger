@@ -1,7 +1,8 @@
 {% extends 'site/dashboard.html' %}
+{% load accounting %}
 
 {% block dashboard-title %}Overview{% endblock %}
 
 {% block dashboard-content %}
-  <p class="lead">This ledger is still a work in progress!</p>
+    {% next_sheet %}
 {% endblock %}

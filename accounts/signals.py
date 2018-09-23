@@ -31,7 +31,7 @@ def update_balance_sheet_title(sender, instance, *args, **kwargs):
     """
     if not instance.title:
         instance.title = "Bills and Banking for {}".format(
-            instance.date.strftime("%b %d, %Y")
+            instance.date.strftime("%b %-d, %Y")
         )
 
 

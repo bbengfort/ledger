@@ -14,9 +14,13 @@ Accounting display related template tags and filters.
 ## Imports
 ##########################################################################
 
+from datetime import date
+from dateutil.relativedelta import relativedelta
+
 from django import template
 from django.utils.html import mark_safe
 from accounts.utils import Currency
+from accounts.models import BalanceSheet
 
 
 # Register template tags
@@ -62,3 +66,19 @@ def accounting(amount, currency="USD"):
 @register.inclusion_tag("components/print.html")
 def print_button():
     return {}
+
+
+@register.inclusion_tag("snippets/next_sheet.html")
+def next_sheet():
+    # If today is after the 15th of the month, then next month is the first
+    # of the next month, if it is before, it is today's date.
+    today = date.today()
+    if today.day < 15:
+        next_month = today
+    else:
+        next_month = (today + relativedelta(months=1)).replace(day=1)
+
+    return {
+        "latest": BalanceSheet.objects.latest(),
+        "next_month": next_month,
+    }

@@ -97,3 +97,86 @@ h1 {
         display: none;
     }
 }
+
+/* Calendar Icon */
+
+/* Stop underline when in a link */
+.no-hover a:hover, a.no-hover:hover {
+  text-decoration: none;
+}
+
+
+
+/* Displays a datetime as a calendar icon */
+time.icon
+{
+  font-size: 0.85em; /* change icon size */
+  display: block;
+  position: relative;
+  width: 7em;
+  height: 7em;
+  background-color: #fff;
+  border-radius: 0.6em;
+  box-shadow: 0 1px 0 #bdbdbd, 0 2px 0 #fff, 0 3px 0 #bdbdbd, 0 4px 0 #fff, 0 5px 0 #bdbdbd, 0 0 0 1px #bdbdbd;
+  overflow: hidden;
+  margin-bottom: 1em;
+}
+
+time.icon:hover {
+  background-color: #46b8da22;
+}
+
+time.active:hover {
+  background-color: #43ac6a22;
+}
+
+/* All calendar icon text elements */
+time.icon *
+{
+  display: block;
+  width: 100%;
+  font-size: 1em;
+  font-weight: bold;
+  font-style: normal;
+  text-align: center;
+}
+
+/* Top of the calendar icon */
+time.icon strong
+{
+  position: absolute;
+  top: 0;
+  padding: 0.4em 0;
+  color: #fff;
+  background-color: #46b8da;
+  border-bottom: 1px dashed #fff;
+  box-shadow: 0 2px 0 #46b8da;
+}
+
+/* Active icon */
+time.active strong {
+  background-color: #43ac6a;
+  border-bottom: 1px dashed #fff;
+  box-shadow: 0 2px 0 #43ac6a;
+}
+
+/* Bottom annotation of the calendar icon */
+time.icon em
+{
+  position: absolute;
+  bottom: 0.3em;
+  color: #46b8da;
+}
+
+time.active em {
+  color: #43ac6a
+}
+
+/* Middle of the calendar icon */
+time.icon span
+{
+  font-size: 2.5em;
+  letter-spacing: -0.05em;
+  padding-top: 0.8em;
+  color: #2f2f2f;
+}

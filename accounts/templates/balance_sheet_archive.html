@@ -6,13 +6,26 @@
 
   <div class="row">
     <div class="col-sm">
-      <ul class="list-unstyled">
-      {% for sheet in sheets %}
-        <li>
-          <a href="{{ sheet.get_absolute_url }}">{{ sheet.date }}</a>
+      {% for year, sheets in years.items %}
+      <ul class="list-unstyled list-inline no-hover">
+        <li class="list-inline-item">
+          <time datetime="{{ year }}" class="icon">
+            <span>{{ year }}</span>
+          </time>
         </li>
-      {% endfor %}
+        {% for sheet in sheets %}
+        <li class="list-inline-item">
+          <a href="{{ sheet.get_absolute_url }}">
+            <time datetime="{{ sheet.date|date:"Y-m-d" }}" class="icon{% if sheet.is_active %} active{% endif %}">
+              <em>{{sheet.date|date:"jS"}}</em>
+              <strong>{{ sheet.date|date:"Y"}}</strong>
+              <span>{{ sheet.date|date:"M" }}</span>
+            </time>
+          </a>
+        </li>
+        {% endfor %}
       </ul>
+      {% endfor %}
     </div>
   </div>
 {% endblock %}

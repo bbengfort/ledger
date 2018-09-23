@@ -56,6 +56,7 @@ urlpatterns = [
     path('', Overview.as_view(), name="overview"),
     path('taxes/', TaxesDashboard.as_view(), name="taxes"),
     path('sheets/', BalanceSheetArchives.as_view(), name="sheets-archive"),
+    path('sheets/new', CreateBlanceSheet.as_view(), name="sheets-create"),
     path('sheets/<int:year>-<int:month>-<int:day>/', BalanceSheetView.as_view(), name="sheets-detail"),
 
     # Authentication URLs

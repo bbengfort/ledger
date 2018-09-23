@@ -220,6 +220,19 @@ class BalanceSheet(models.Model):
 
         return reverse('sheets-detail', kwargs=kwargs)
 
+    def is_active(self):
+        """
+        Returns True if the date of the balance sheet is within 15 days of
+        the current date (either before or after). The idea here is that the
+        balance sheet date is probably on the 1st-4th of the month, so this
+        balance sheet is active if we're in the last two weeks of the previous
+        month, or the first two weeks of the next month.
+
+        The possibility exists for two balance sheets to be active.
+        """
+        days = abs((date.today() - self.date).days)
+        return days < 15
+
     def __str__(self):
         return self.title
 
