@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Mon Apr 16 13:14:33 2018 -0400
 #
-# ID: taxes.py [] benjamin@bengfort.com $
+# ID: taxes.py [0338d7a] benjamin@bengfort.com $
 
 """
 Template helpers for the taxes app.

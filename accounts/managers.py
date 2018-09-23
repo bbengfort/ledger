@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Fri May 04 11:04:45 2018 -0400
 #
-# ID: managers.py [] benjamin@bengfort.com $
+# ID: managers.py [164f0d2] benjamin@bengfort.com $
 
 """
 Query managers for the accounts models.

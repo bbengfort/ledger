@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Wed May 02 15:41:02 2018 -0400
 #
-# ID: apps.py [] benjamin@bengfort.com $
+# ID: apps.py [0395481] benjamin@bengfort.com $
 
 """
 Account app congfiguration

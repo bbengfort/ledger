@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Wed May 02 15:40:33 2018 -0400
 #
-# ID: admin.py [] benjamin@bengfort.com $
+# ID: admin.py [0395481] benjamin@bengfort.com $
 
 """
 Account admin configuration

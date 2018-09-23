@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Mon Apr 16 10:12:51 2018 -0400
 #
-# ID: colors.py [] benjamin@bengfort.com $
+# ID: colors.py [084a02f] benjamin@bengfort.com $
 
 """
 Definitions of HTML colors for Bootstrap theme (used with Bokeh).

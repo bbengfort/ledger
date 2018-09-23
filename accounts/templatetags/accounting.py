@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Tue Jun 05 11:45:29 2018 -0400
 #
-# ID: accounting.py [] benjamin@bengfort.com $
+# ID: accounting.py [61ff136] benjamin@bengfort.com $
 
 """
 Accounting display related template tags and filters.

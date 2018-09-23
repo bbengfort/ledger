@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Sat Apr 14 10:20:15 2018 -0400
 #
-# ID: urls.py [] benjamin@bengfort.com $
+# ID: urls.py [36d8a34] benjamin@bengfort.com $
 
 """
 Ledger URL configuration

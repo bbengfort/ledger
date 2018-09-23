@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Sat Apr 14 10:24:26 2018 -0400
 #
-# ID: ledger.settings.base.py [] benjamin@bengfort.com $
+# ID: base.py [36d8a34] benjamin@bengfort.com $
 
 """
 Django settings for ledger project that are common to all environments.

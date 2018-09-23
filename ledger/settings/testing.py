@@ -4,7 +4,7 @@
 # Author:   Benjamin Bengfort <benjamin@bengfort.com>
 # Created:  Sat Apr 14 11:02:40 2018 -0400
 #
-# ID: testing.py [] benjamin@bengfort.com $
+# ID: testing.py [36d8a34] benjamin@bengfort.com $
 
 """
 Testing settings to enable testing on Travis with Django tests.

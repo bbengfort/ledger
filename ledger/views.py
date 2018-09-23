@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Sat Apr 14 12:02:36 2018 -0400
 #
-# ID: views.py [] benjamin@bengfort.com $
+# ID: views.py [36d8a34] benjamin@bengfort.com $
 
 """
 Default application views for the application

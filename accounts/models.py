@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Wed May 02 15:41:23 2018 -0400
 #
-# ID: models.py [] benjamin@bengfort.com $
+# ID: models.py [0395481] benjamin@bengfort.com $
 
 """
 Accounts models and base models.

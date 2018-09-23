@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Thu May 03 11:13:30 2018 -0400
 #
-# ID: signals.py [] benjamin@bengfort.com $
+# ID: signals.py [0395481] benjamin@bengfort.com $
 
 """
 Signals used by accounts models - imported by the apps.py configuration.

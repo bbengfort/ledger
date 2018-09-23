@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Thu May 03 20:17:30 2018 -0400
 #
-# ID: utils.py [] benjamin@bengfort.com $
+# ID: utils.py [d510add] benjamin@bengfort.com $
 
 """
 Helpers and utilities for the accounts app

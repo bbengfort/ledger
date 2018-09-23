@@ -5,7 +5,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Sat Apr 14 10:34:10 2018 -0400
 #
-# ID: manage.py [] benjamin@bengfort.com $
+# ID: manage.py [36d8a34] benjamin@bengfort.com $
 
 """
 Django management script

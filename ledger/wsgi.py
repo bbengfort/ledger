@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Sat Apr 14 10:20:58 2018 -0400
 #
-# ID: wsgi.py [] benjamin@bengfort.com $
+# ID: wsgi.py [36d8a34] benjamin@bengfort.com $
 
 """
 WSGI config for ledger project.

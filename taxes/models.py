@@ -4,7 +4,7 @@
 # Author:  Benjamin Bengfort <benjamin@bengfort.com>
 # Created: Sat Apr 14 16:36:54 2018 -0400
 #
-# ID: models.py [] benjamin@bengfort.com $
+# ID: models.py [20315d2] benjamin@bengfort.com $
 
 """
 Tax models
