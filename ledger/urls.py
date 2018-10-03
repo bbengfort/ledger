@@ -28,8 +28,8 @@ Including another URLconf
 ##########################################################################
 
 from django.contrib import admin
-from rest_framework import routers
 from django.urls import path, include
+from rest_framework_nested import routers
 
 from ledger.views import *
 from taxes.views import *
@@ -40,8 +40,17 @@ from accounts.views import *
 ## Endpoint Discovery
 ##########################################################################
 
+# Top level router
 router = routers.DefaultRouter()
 router.register(r'status', HeartbeatViewSet, "status")
+router.register(r'sheets', BalanceSheetViewSet, "sheets")
+router.register(r'accounts', AccountViewSet, "accounts")
+router.register(r'returns', TaxReturnViewSet, "returns")
+
+# Routes nested below sheets
+sheets_router = routers.NestedDefaultRouter(router, r'sheets', lookup='sheets')
+sheets_router.register(r'balances', BalanceViewSet, 'sheets-balances')
+sheets_router.register(r'transactions', TransactionViewSet, 'sheets-transactions')
 
 
 ##########################################################################
@@ -65,4 +74,5 @@ urlpatterns = [
 
     ## REST API Urls
     path('api/', include((router.urls, 'rest_framework'), namespace="api")),
+    path('api/', include((sheets_router.urls, 'rest_framework'), namespace="api:sheets")),
 ]

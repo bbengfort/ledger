@@ -16,11 +16,15 @@ Tax views and controllers
 
 from ledger import colors
 from .models import TaxReturn
+from .serializers import TaxReturnSerializer 
 
 from collections import defaultdict
 
 from django.views.generic.list import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from rest_framework import viewsets
+from rest_framework import permissions
 
 from bokeh.resources import CDN
 from bokeh.plotting import figure
@@ -93,3 +97,9 @@ class TaxesDashboard(LoginRequiredMixin, ListView):
 ##########################################################################
 ## API Views
 ##########################################################################
+
+class TaxReturnViewSet(viewsets.ReadOnlyModelViewSet):
+
+    queryset = TaxReturn.objects.all()
+    serializer_class = TaxReturnSerializer
+    permission_classes = [permissions.IsAdminUser]
