@@ -74,5 +74,5 @@ urlpatterns = [
 
     ## REST API Urls
     path('api/', include((router.urls, 'rest_framework'), namespace="api")),
-    path('api/', include((sheets_router.urls, 'rest_framework'), namespace="api:sheets")),
+    path('api/', include((sheets_router.urls, 'rest_framework'), namespace="sheets-api")),
 ]

@@ -1,6 +1,6 @@
 {% load accounting %}
 <div class="table-responsive">
-  <table class="table mb-0 table-hover table-striped table-sm">
+  <table class="table mb-0 table-hover table-striped table-sm table-pointer">
     <caption class="d-none">{{ account_type|title }} account balances for {{ sheet.date }}</caption>
     <thead>
       <tr class="row">
@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       {% for balance in balances %}
-      <tr class="row" data-toggle="modal" data-target="#balance{{ balance.id }}Modal">
+      <tr class="row" data-toggle="balance" data-target="#balanceModal" data-url="{{ balance.get_api_url }}">
         <td class="pl-4 col-3">{{ balance.account.bank }}</td>
         <td class="col-5">{{ balance.account.name }}</td>
         <td class="col-2">{% account_balance balance beginning=True %}</td>

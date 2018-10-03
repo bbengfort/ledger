@@ -1,60 +1,14 @@
-{% load accounting %}
-<div id="balance{{ balance.id }}Modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="balance{{ balance.id }}ModalLabel" aria-hidden="true">
+<div id="balanceModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="balanceModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="balance{{ balance.id }}ModalLabel">{{ balance.account }}</h5>
+        <h5 class="modal-title" id="balanceModalLabel"></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-
-        <table class="table">
-          <tr class="row table-info">
-            <td colspan="2" class="col-9">Beginning Balance</td>
-            <td class="col-3">{% account_balance balance beginning=True %}</td>
-          </tr>
-          <tr class="row">
-            <td class="col-6">Credits</td>
-            <td class="col-3 text-muted"><s>{% accounting balance.credit_amount_complete balance.account.currency %}</s></td>
-            <td class="col-3">{% accounting balance.credit_amount balance.account.currency %}</td>
-          </tr>
-          <tr class="row">
-            <td class="col-6">Debits</td>
-            <td class="col-3 text-muted"><s>{% accounting balance.debit_amount_complete balance.account.currency %}</s></td>
-            <td class="col-3">{% accounting balance.debit_amount balance.account.currency %}</td>
-          </tr>
-          <tr class="row table-info">
-            <td colspan="2" class="col-9">Ending Balance</td>
-            <td class="col-3">{% account_balance balance ending=True %}</td>
-          </tr>
-        </table>
-
-        {% if balance.credits.count %}
-        <h6>Credits</h6>
-        <table class="table table-sm">
-        {% for tr in balance.credits %}
-        <tr class="row{% if tr.complete %} table-active{% endif %}">
-          <td class="pl-3 col-9">{{ tr.debit }}</td>
-          <td class="pr-3 col-3">{% transaction_credit tr %}</td>
-        </tr>
-        {% endfor %}
-        </table>
-        {% endif %}
-
-        {% if balance.debits.count %}
-        <h6>Debits</h6>
-        <table class="table table-sm">
-        {% for tr in balance.debits %}
-        <tr class="row{% if tr.complete %} table-active{% endif %}">
-          <td class="pl-3 col-9">{{ tr.credit }}</td>
-          <td class="pr-3 col-3">{% transaction_amount tr %}</td>
-        </tr>
-        {% endfor %}
-        </table>
-        {% endif %}
-
+        
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

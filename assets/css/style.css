@@ -180,3 +180,7 @@ time.icon span
   padding-top: 0.8em;
   color: #2f2f2f;
 }
+
+.table-pointer tr {
+    cursor: pointer;
+}

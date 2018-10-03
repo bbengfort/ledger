@@ -1,0 +1,56 @@
+{% verbatim %}
+<script type="text/template" id="balanceModalBody">
+  <table class="table">
+    <tr class="row table-info">
+      <td colspan="2" class="col-9">Beginning Balance</td>
+      <td class="col-3" id="balance-beginning"><%= rc.amountfmt(rc.beginning) %></td>
+    </tr>
+    <tr class="row">
+      <td class="col-6">Credits</td>
+      <td class="col-3 text-muted" id="balance-credit-completed-amount">
+        <%= rc.amountfmt(rc.credit_completed_amount) %>
+      </td>
+      <td class="col-3" id="balance-credit-amount">
+        <%= rc.amountfmt(rc.credit_amount) %>
+      </td>
+    </tr>
+    <tr class="row">
+      <td class="col-6">Debits</td>
+      <td class="col-3 text-muted" id="balance-debit-completed-amount">
+        <%= rc.amountfmt(rc.debit_completed_amount) %>
+      </td>
+      <td class="col-3" id="balance-debit-amount">
+        <%= rc.amountfmt(rc.debit_amount) %>
+      </td>
+    </tr>
+    <tr class="row table-info">
+      <td colspan="2" class="col-9">Ending Balance</td>
+      <td class="col-3" id="balance-ending"><%= rc.amountfmt(rc.ending) %></td>
+    </tr>
+  </table>
+
+  <% if (rc.credits.length > 0) { %>
+  <h6>Credits</h6>
+  <table class="table table-sm" id="balance-credit-transactions">
+    <% _.each(rc.credits, function( item ) { %>
+      <tr class="row<% if (item.complete) { %> table-active<% } %>">
+        <td class="pl-3 col-9"><%= item.account %></td>
+        <td class="pr-3 col-3"><%= rc.amountfmt(item.amount) %></td>
+      </tr>
+    <% }); %>
+  </table>
+  <% } %>
+
+  <% if (rc.debits.length > 0) { %>
+  <h6>Debits</h6>
+  <table class="table table-sm" id="balance-debit-transactions">
+    <% _.each(rc.debits, function( item ) { %>
+      <tr class="row<% if (item.complete) { %> table-active<% } %>">
+        <td class="pl-3 col-9"><%= item.account %></td>
+        <td class="pr-3 col-3"><%= rc.amountfmt(item.amount) %></td>
+      </tr>
+    <% }); %>
+  </table>
+  <% } %>
+</script>
+{% endverbatim %}

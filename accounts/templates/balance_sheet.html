@@ -1,5 +1,6 @@
 {% extends 'site/dashboard.html' %}
 {% load accounting %}
+{% load staticfiles %}
 
 {% block dashboard-title %}
   {{ sheet.title }}
@@ -97,7 +98,12 @@
 
 
 {% block modals %}
-  {% for balance in sheet.balances.all %}
-    {% include "snippets/balance_modal.html" with balance=balance %}
-  {% endfor %}
+  {{ block.super }}
+  {% include "snippets/balance_modal.html" %}
+{% endblock %}
+
+{% block javascripts %}
+  {{ block.super }}
+  {% include "snippets/balance_modal_js_body.html" %}
+  <script src="{% static 'js/balance.js' %}" type="text/javascript"></script>
 {% endblock %}

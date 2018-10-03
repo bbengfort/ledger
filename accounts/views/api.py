@@ -18,7 +18,8 @@ from ..models import Account, BalanceSheet, Balance, Transaction
 from ..serializers import AccountSerializer
 from ..serializers import BalanceSheetShortSerializer
 from ..serializers import BalanceSheetDetailSerializer
-from ..serializers import BalanceSerializer, TransactionSerializer
+from ..serializers import TransactionSerializer
+from ..serializers import BalanceDetailSerializer, BalanceSummarySerializer
 
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -59,7 +60,7 @@ class BalanceSheetViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         """
-        Returns list for detail balance sheet serializers
+        Returns list or detail balance sheet serializers
         """
         if self.action == 'list':
             return BalanceSheetShortSerializer
@@ -75,11 +76,18 @@ class BalanceViewSet(viewsets.ReadOnlyModelViewSet):
     Account balances associated with a balance sheet
     """
 
-    serializer_class = BalanceSerializer
     permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
         return Balance.objects.filter(sheet__date=self.kwargs['sheets_date'])
+
+    def get_serializer_class(self):
+        """
+        Returns list or detail balance serializers
+        """
+        if self.action == "list":
+            return BalanceSummarySerializer
+        return BalanceDetailSerializer
 
 
 class TransactionViewSet(viewsets.ReadOnlyModelViewSet):

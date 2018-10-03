@@ -224,6 +224,10 @@ class BalanceSheet(models.Model):
 
         return reverse('sheets-detail', kwargs=kwargs)
 
+    def get_api_url(self):
+        date = self.date.strftime("%Y-%m-%d")
+        return reverse('api:sheets-detail', kwargs={'date': date})
+
     def is_active(self):
         """
         Returns True if the date of the balance sheet is within 15 days of
@@ -281,6 +285,13 @@ class Balance(models.Model):
     def date(self):
         return self.sheet.date
 
+    def get_api_url(self):
+        kwargs = {
+            "pk": self.pk,
+            "sheets_date": self.date.strftime("%Y-%m-%d"),
+        }
+        return reverse("sheets-api:sheets-balances-detail", kwargs=kwargs)
+
     def credits(self):
         """
         Returns all associated credits to this account for the given balance
@@ -301,39 +312,22 @@ class Balance(models.Model):
         Note, that this method does not save the ending balance, just sets it.
         """
         total = self.beginning
-
-        for transaction in self.credits():
-            # Deduct amount from transactions where this account is credited
-            if not transaction.complete:
-                total -= transaction.amount
-
-        for transaction in self.debits():
-            # Add amount from transactions where this account is debited
-            if not transaction.complete:
-                total += transaction.amount
-
+        total += self.credit_amount(completed=False) # will be negative
+        total += self.debit_amount(completed=False)  # will be positive
         self.ending = total
 
-    def credit_amount(self):
-        query = self.credits().filter(complete=False).values("amount")
-        query = query.aggregate(total=models.Sum("amount"))
-        amount = query["total"] or 0.0
-        return -1*amount
+    def credit_amount(self, completed=False):
+        # NOTE: must return negative value
+        query = self.credits().filter(complete=completed)
+        return -1 * self._total_amount(query)
 
-    def credit_amount_complete(self):
-        query = self.credits().filter(complete=True).values("amount")
-        query = query.aggregate(total=models.Sum("amount"))
-        amount = query["total"] or 0.0 
-        return -1*amount
+    def debit_amount(self, completed=False):
+        # NOTE: must return positive value
+        query = self.debits().filter(complete=completed)
+        return self._total_amount(query)
 
-    def debit_amount(self):
-        query = self.debits().filter(complete=False).values("amount")
-        query = query.aggregate(total=models.Sum("amount"))
-        return query["total"] or 0.0
-
-    def debit_amount_complete(self):
-        query = self.debits().filter(complete=True).values("amount")
-        query = query.aggregate(total=models.Sum("amount"))
+    def _total_amount(self, query):
+        query = query.values("amount").aggregate(total=models.Sum("amount"))
         return query["total"] or 0.0
 
     def __str__(self):
