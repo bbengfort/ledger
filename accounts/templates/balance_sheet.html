@@ -94,3 +94,10 @@
   </div>
 
 {% endblock %}
+
+
+{% block modals %}
+  {% for balance in sheet.balances.all %}
+    {% include "snippets/balance_modal.html" with balance=balance %}
+  {% endfor %}
+{% endblock %}

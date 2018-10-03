@@ -314,6 +314,28 @@ class Balance(models.Model):
 
         self.ending = total
 
+    def credit_amount(self):
+        query = self.credits().filter(complete=False).values("amount")
+        query = query.aggregate(total=models.Sum("amount"))
+        amount = query["total"] or 0.0
+        return -1*amount
+
+    def credit_amount_complete(self):
+        query = self.credits().filter(complete=True).values("amount")
+        query = query.aggregate(total=models.Sum("amount"))
+        amount = query["total"] or 0.0 
+        return -1*amount
+
+    def debit_amount(self):
+        query = self.debits().filter(complete=False).values("amount")
+        query = query.aggregate(total=models.Sum("amount"))
+        return query["total"] or 0.0
+
+    def debit_amount_complete(self):
+        query = self.debits().filter(complete=True).values("amount")
+        query = query.aggregate(total=models.Sum("amount"))
+        return query["total"] or 0.0
+
     def __str__(self):
         if self.ending == 0:
             return "{} beginning with ${:,} on {}".format(

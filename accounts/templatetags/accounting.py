@@ -40,6 +40,10 @@ def accounting_amount(amount, currency="USD"):
         "balance": amount,
     }
 
+@register.inclusion_tag("snippets/account_balance.html")
+def accounting(value, currency="USD"):
+    return accounting_amount(value, currency)
+
 
 @register.inclusion_tag("snippets/account_balance.html")
 def account_balance(balance, beginning=False, ending=False):
@@ -56,6 +60,11 @@ def account_balance(balance, beginning=False, ending=False):
 @register.inclusion_tag("snippets/account_balance.html")
 def transaction_amount(transaction):
     return accounting_amount(transaction.amount, transaction.credit.currency)
+
+
+@register.inclusion_tag("snippets/account_balance.html")
+def transaction_credit(transaction):
+    return accounting_amount(-1*transaction.amount, transaction.credit.currency)
 
 
 @register.inclusion_tag("snippets/account_balance.html")
