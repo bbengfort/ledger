@@ -39,7 +39,7 @@ class BalanceSheetShortSerializer(serializers.HyperlinkedModelSerializer):
             "url", "date", "title", "memo", 'num_accounts', 'num_transactions',
         )
         extra_kwargs = {
-            "url": {"view_name": "api:sheets-detail"}
+            "url": {"view_name": "api:sheets-detail", "lookup_field": "date"}
         }
 
     def get_num_accounts(self, obj):
@@ -89,7 +89,7 @@ class BalanceSheetDetailSerializer(serializers.HyperlinkedModelSerializer):
         model = BalanceSheet
         fields = ("url", "date", "title", "memo", "balances", "transactions",)
         extra_kwargs = {
-            "url": {"view_name": "api:sheets-detail"},
+            "url": {"view_name": "api:sheets-detail", "lookup_field": "date"},
         }
 
 

@@ -66,7 +66,7 @@ urlpatterns = [
     path('taxes/', TaxesDashboard.as_view(), name="taxes"),
     path('sheets/', BalanceSheetArchives.as_view(), name="sheets-archive"),
     path('sheets/new', CreateBlanceSheet.as_view(), name="sheets-create"),
-    path('sheets/<int:year>-<int:month>-<int:day>/', BalanceSheetView.as_view(), name="sheets-detail"),
+    path('sheets/<int:year>-<int:month>/', BalanceSheetView.as_view(), name="sheets-detail"),
 
     # Authentication URLs
     path('user/', include(('social_django.urls', 'social_django'), namespace='social')),

@@ -73,19 +73,16 @@ class BalanceSheetView(LoginRequiredMixin, DetailView):
 
         year = self.kwargs.get('year')
         month = self.kwargs.get('month')
-        day = self.kwargs.get('day')
 
-        if not year or not month or not day:
+        if not year or not month:
             raise AttributeError(
-                "Generic detail view %s must be called with the year, month "
-                "and day in the URLconf." % self.__class__.__name__
+                "Generic detail view %s must be called with "
+                "the year and month in the URLconf" % self.__class__.__name__
             )
-
-        queryset = queryset.filter(date=date(year, month, day))
 
         try:
             # Get the single item from the filtered queryset
-            obj = queryset.get()
+            obj = queryset.get_month(year, month)
         except queryset.model.DoesNotExist:
             raise Http404(_("No %(verbose_name)s found matching the query") %
                           {'verbose_name': queryset.model._meta.verbose_name})

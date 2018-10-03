@@ -17,6 +17,8 @@ Query managers for the accounts models.
 from django.db import models
 from django.db.models import Sum
 
+from datetime import datetime
+
 
 ##########################################################################
 ## Querysets
@@ -97,3 +99,33 @@ class AccountBalanceTypeManager(models.Manager):
 
     def billing_accounts(self):
         return self.get_queryset().billing_accounts()
+
+
+##########################################################################
+## Balance Sheet Manager
+##########################################################################
+
+class BalanceSheetQuerySet(models.QuerySet):
+
+    def get_month(self, year, month):
+        """
+        Returns the balance sheet for the specified year and month (ints). This
+        method raises a DoesNotExist error if no balance sheet for the year and
+        month combo exists and raises a MultipleObjectsReturned error if there
+        are multiple balance sheet objects for the specified year and month.
+        """
+        queryset = self.filter(date__year=year).filter(date__month=month)
+        return queryset.get()
+
+    def get_date(self, date):
+        """
+        Returns the balance sheet from the specified date string as YYYY-MM
+        """
+        date = datetime.strptime(date, "%Y-%m")
+        return self.get_month(date.year, date.month)
+
+
+class BalanceSheetManager(models.Manager):
+
+    def get_queryset(self):
+        return BalanceSheetQuerySet(self.model, using=self._db)

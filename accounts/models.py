@@ -20,6 +20,7 @@ from django.db import models
 from django.urls import reverse
 
 from .utils import Currency
+from .managers import BalanceSheetManager
 from .managers import AccountTypeManager, AccountBalanceTypeManager
 
 
@@ -214,9 +215,12 @@ class BalanceSheet(models.Model):
         ordering = ("-date",)
         get_latest_by = "date"
 
+    # Balance sheet manager
+    objects = BalanceSheetManager()
+
     def get_absolute_url(self):
-        date = self.date.strftime("%Y %m %d").split()
-        kwargs = dict(zip(('year', 'month', 'day'), date))
+        date = self.date.strftime("%Y %m").split()
+        kwargs = dict(zip(('year', 'month'), date))
 
         return reverse('sheets-detail', kwargs=kwargs)
 

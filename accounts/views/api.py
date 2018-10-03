@@ -54,6 +54,7 @@ class BalanceSheetViewSet(viewsets.ReadOnlyModelViewSet):
     """
 
     queryset = BalanceSheet.objects.all()
+    lookup_field = 'date'
     permission_classes = [permissions.IsAdminUser]
 
     def get_serializer_class(self):
@@ -78,7 +79,7 @@ class BalanceViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        return Balance.objects.filter(sheet=self.kwargs['sheets_pk'])
+        return Balance.objects.filter(sheet__date=self.kwargs['sheets_date'])
 
 
 class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -90,4 +91,4 @@ class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        return Transaction.objects.filter(sheet=self.kwargs['sheets_pk'])
+        return Transaction.objects.filter(sheet__date=self.kwargs['sheets_date'])
