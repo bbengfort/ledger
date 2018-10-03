@@ -10,6 +10,16 @@
 Helper module for managing versioning information
 """
 
+import os
+import subprocess
+
+
+## Commit environment variables
+SLUG_COMMIT_ENV = [
+    "HEROKU_SLUG_COMMIT", "SLUG_COMMIT",
+]
+
+
 ##########################################################################
 ## Versioning
 ##########################################################################
@@ -44,3 +54,25 @@ def get_version(short=False):
                                   __version_info__['serial']))
 
     return ''.join(vers)
+
+
+def get_revision(short=False, env=True):
+    """
+    Returns the latest git revision (sha1 hash).
+    """
+
+    # First look up the revision from the environment
+    if env:
+        for envvar in SLUG_COMMIT_ENV:
+            if envvar in os.environ:
+                slug = os.environ[envvar]
+                if short:
+                    return slug[:7]
+                return slug
+
+    # Otherwise return the subprocess lookup of the revision
+    cmd = ['git', 'rev-parse', 'HEAD']
+    if short:
+        cmd.insert(2, '--short')
+
+    return subprocess.check_output(cmd).decode('utf-8').strip()

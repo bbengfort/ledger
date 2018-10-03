@@ -55,5 +55,6 @@ class HeartbeatViewSet(viewsets.ViewSet):
         return Response({
             "status": "ok",
             "version": ledger.get_version(),
+            "revision": ledger.get_revision(short=True), 
             "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         })
