@@ -16,8 +16,10 @@ Query managers for the accounts models.
 
 from django.db import models
 from django.db.models import Sum
+from django.conf import settings
 
-from datetime import datetime
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
 
 
 ##########################################################################
@@ -117,15 +119,47 @@ class BalanceSheetQuerySet(models.QuerySet):
         queryset = self.filter(date__year=year).filter(date__month=month)
         return queryset.get()
 
-    def get_date(self, date):
+    def get_date(self, day):
         """
         Returns the balance sheet from the specified date string as YYYY-MM
         """
-        date = datetime.strptime(date, "%Y-%m")
-        return self.get_month(date.year, date.month)
+        day = datetime.strptime(day, "%Y-%m")
+        return self.get_month(day.year, day.month)
 
 
 class BalanceSheetManager(models.Manager):
 
     def get_queryset(self):
         return BalanceSheetQuerySet(self.model, using=self._db)
+
+    def get_month(self, year, month):
+        # Pass-through to the queryset method
+        return self.get_queryset().get_month(year, month)
+
+    def get_date(self, day):
+        # Pass-through to the queryset method
+        return self.get_queryset().get_date(day)
+
+    def get_current(self, raise_on_error=True):
+        """
+        Returns the current balance sheet for the current month if today is
+        before the 10th of the month, otherwise it returns the balance sheet
+        for next month (e.g. the balance sheet currently being worked on).
+
+        If the balance sheet doesn't exist or there are multiple balance sheets
+        for the specified month, an exception is raised.
+        """
+        today = date.today()
+
+        # TODO: change the day of month to be a setting
+        if today.day <= settings.BILLING_DAY_OF_MONTH:
+            month = today
+        else:
+            month = (today + relativedelta(months=1)).replace(day=1)
+
+        try:
+            return self.get_month(month.year, month.month)
+        except Exception as e:
+            if raise_on_error:
+                raise
+            return None

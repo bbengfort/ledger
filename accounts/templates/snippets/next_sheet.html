@@ -1,13 +1,13 @@
 {# Link to next active balance sheet or form to create it. #}
 
-{% if latest.is_active %}
-<a class="btn btn-success" href="{{ latest.get_absolute_url }}" role="button">
+{% if latest %}
+<a class="btn btn-info btn-block" href="{{ latest.get_absolute_url }}" role="button">
   Go to {{ latest.date }}
 </a>
 {% else %}
 <form action="{% url 'sheets-create' %}" method="post">
   <input type="hidden" id="date" name="date" value="{{ next_month|date:'Y-m-d' }}" />
-  <button type="submit" class="btn btn-success">Create Sheet for {{ next_month }}</button>
+  <button type="submit" class="btn btn-success btn-block">Create Sheet for {{ next_month }}</button>
   {% csrf_token %}
 </form>
 {% endif %}

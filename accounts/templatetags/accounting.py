@@ -18,6 +18,7 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 
 from django import template
+from django.conf import settings
 from django.utils.html import mark_safe
 from accounts.utils import Currency
 from accounts.models import BalanceSheet
@@ -82,12 +83,23 @@ def next_sheet():
     # If today is after the 15th of the month, then next month is the first
     # of the next month, if it is before, it is today's date.
     today = date.today()
-    if today.day < 15:
+    if today.day <= settings.BILLING_DAY_OF_MONTH:
         next_month = today
     else:
         next_month = (today + relativedelta(months=1)).replace(day=1)
 
     return {
-        "latest": BalanceSheet.objects.latest(),
+        "latest": BalanceSheet.objects.get_current(raise_on_error=False),
         "next_month": next_month,
     }
+
+
+@register.simple_tag()
+def direction(before, after):
+    delta = after - before
+    if delta > 0:
+        icon = '<big><i class="fa fa-caret-up text-success"></i></big>'
+    else:
+        icon = '<big><i class="fa fa-caret-down text-danger"></i></big>'
+
+    return mark_safe(icon)

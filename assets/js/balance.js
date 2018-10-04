@@ -25,13 +25,16 @@ $(document).ready(function() {
   });
 
   function showBalanceModal(modalId, data) {
-    // Set values in the modal
+    // Add the title to the modal
     $("#balanceModalLabel").html(data.account)
+
+    // Create the template from the script body
     var template = _.template(
         $( "script#balanceModalBody" ).html()
     );
 
-    data.amountfmt = accounting_amount(data.currency); 
+    // Ensure the amount format closure is created and execute template
+    data.amountfmt = accounting_amount(data.currency);
     $("#balanceModal .modal-body").html(template(data));
 
     // Show the modal when complete

@@ -25,6 +25,8 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
+from accounts.models import BalanceSheet
+
 
 ##########################################################################
 ## Views
@@ -37,6 +39,7 @@ class Overview(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
         context['dashboard'] = 'overview'
+        context['latest_sheet'] = BalanceSheet.objects.latest()
         return context
 
 
@@ -55,6 +58,6 @@ class HeartbeatViewSet(viewsets.ViewSet):
         return Response({
             "status": "ok",
             "version": ledger.get_version(),
-            "revision": ledger.get_revision(short=True), 
+            "revision": ledger.get_revision(short=True),
             "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         })

@@ -4,5 +4,145 @@
 {% block dashboard-title %}Overview{% endblock %}
 
 {% block dashboard-content %}
-    {% next_sheet %}
+
+  <div class="card-deck">
+
+    <!-- Current balance sheet card -->
+    <div class="card">
+      <div class="card-header">
+        Balance Sheet for {{ latest_sheet.date|date:"F Y" }}
+      </div>
+      <div class="card-body">
+        {% next_sheet %}
+      </div>
+      <table class="table mb-0">
+        <thead>
+          <th></th>
+          <th class="text-right">Beginning Balance</th>
+          <th class="text-right">Ending Balance</th>
+        </thead>
+        {% with accounts=latest_sheet.balances.cash_accounts %}
+        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+        <tr>
+          <td>
+            <span class="badge badge-light">{{ accounts.count }}</span>
+            Cash Accounts {% direction beginning ending %}
+          </td>
+          <td>{% accounting beginning %}</td>
+          <td>{% accounting ending %}</td>
+          {% endwith %}
+        </tr>
+        {% endwith %}
+
+        {% with accounts=latest_sheet.balances.investment_accounts %}
+        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+        <tr>
+          <td>
+            <span class="badge badge-light">{{ accounts.count }}</span>
+            Investment Accounts {% direction beginning ending %}
+          </td>
+          <td>{% accounting accounts.totals.beginning__sum %}</td>
+          <td>{% accounting accounts.totals.ending__sum %}</td>
+          {% endwith %}
+        </tr>
+        {% endwith %}
+
+        {% with accounts=latest_sheet.balances.credit_accounts %}
+        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+        <tr>
+          <td>
+            <span class="badge badge-light">{{ accounts.count }}</span>
+            Credit Cards {% direction beginning ending %}
+          </td>
+          <td>{% accounting accounts.totals.beginning__sum %}</td>
+          <td>{% accounting accounts.totals.ending__sum %}</td>
+          {% endwith %}
+        </tr>
+        {% endwith %}
+
+        {% with accounts=latest_sheet.balances.loan_accounts %}
+        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+        <tr>
+          <td>
+            <span class="badge badge-light">{{ accounts.count }}</span>
+            Loan Accounts {% direction beginning ending %}
+          </td>
+          <td>{% accounting accounts.totals.beginning__sum %}</td>
+          <td>{% accounting accounts.totals.ending__sum %}</td>
+          {% endwith %}
+        </tr>
+        {% endwith %}
+      </table>
+      <div class="card-footer text-muted">
+        <small>
+          {{ latest_sheet.transactions.count }} transactions from {{ latest_sheet.transactions.earliest.date }} to {{ latest_sheet.transactions.latest.date }}
+        </small>
+      </div>
+    </div><!-- end current balance sheet card -->
+
+    <!-- Cash vs. credit card debt -->
+    <div class="card">
+      <div class="card-header">
+        Trends
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">Cash vs. Credit Card Debt</h5>
+        <canvas id="cashvdebt"></canvas>
+      </div>
+    </div>
+
+    <!-- Trends in income vs. spending -->
+
+    <!-- Investements and investment trends -->
+
+  </div><!-- end card group -->
+
+{% endblock %}
+
+
+{% block javascripts %}
+  {{ block.super }}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" integrity="sha256-CfcERD4Ov4+lKbWbYqXD6aFM9M51gN4GUEtDhkWABMo=" crossorigin="anonymous"></script>
+  <script type="text/javascript">
+  {% with cash=latest_sheet.balances.cash_accounts debt=latest_sheet.balances.credit_accounts %}
+  {% with cash_total=cash.totals.ending__sum debt_total=debt.totals.ending__sum %}
+    var cash_total = {{ cash_total }};
+    var debt_total = {{ debt_total }};
+  {% endwith %}
+  {% endwith %}
+
+  $(document).ready(function() {
+    var RED = "#F04124";
+    var GRN = "#43ac6a";
+
+    var colors = [GRN, RED]
+    if (cash_total >= debt_total) {
+      colors.push(GRN);
+    } else {
+      colors.push(RED);
+    }
+
+    var ctx = document.getElementById('cashvdebt').getContext('2d');
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'horizontalBar',
+
+        // The data for our dataset
+        data: {
+            labels: ["Cash", "Debt", "Net",],
+            datasets: [{
+                backgroundColor: colors,
+                data: [Math.abs(cash_total), Math.abs(debt_total), Math.abs(cash_total+debt_total)],
+            }]
+        },
+
+        // Configuration options go here
+        options: {
+          legend: {
+            display: false,
+          },
+        },
+    });
+  });
+  </script>
 {% endblock %}
