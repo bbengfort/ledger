@@ -95,8 +95,46 @@
 
     <!-- Investements and investment trends -->
 
-  </div><!-- end card group -->
+  </div><!-- end card deck -->
 
+  <!-- second row card deck -->
+  <div class="row mt-3">
+
+    <div class="col-sm-6">
+      <div class="card">
+        <div class="card-header">
+          Credit Score
+        </div>
+
+        <div class="card-body">
+
+          <div class="media mx-auto" style="width: 325px">
+            <div class="align-self-start mt-0 mr-3">
+              <span class="big-number">{{ credit_score.score }}</span>
+            </div>
+            <div class="media-body pt-2">
+              <h5 class="mt-0">{{ credit_score.description }}</h5>
+              <p class="mb-0">As of {{ credit_score.date }}</p>
+              <p>Source: {{ credit_score.source }}</p>
+            </div>
+          </div>
+
+          <i class="fa fa-caret-down pull-left" style="font-size: 1.8em; line-height: .4em;  margin-left: {{ credit_score.percent|floatformat:"1" }}%"></i>
+          <div class="credit-score-bar mt-2">
+            <span class="pull-left ml-2 text-light">300</span>
+            <span class="pull-right mr-2 text-light">850</span>
+            <div class="rdylgn-gradient mx-auto"></div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end card deck -->
+
+  <!-- bottom spacer -->
+  <div class="mb-3"></div>
 {% endblock %}
 
 

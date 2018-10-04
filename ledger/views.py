@@ -25,7 +25,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
-from accounts.models import BalanceSheet
+from accounts.models import BalanceSheet, CreditScore
 
 
 ##########################################################################
@@ -40,6 +40,7 @@ class Overview(LoginRequiredMixin, TemplateView):
         context = super(Overview, self).get_context_data(**kwargs)
         context['dashboard'] = 'overview'
         context['latest_sheet'] = BalanceSheet.objects.latest()
+        context['credit_score'] = CreditScore.objects.filter(preferred=True).latest()
         return context
 
 
