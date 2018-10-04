@@ -1,12 +1,12 @@
 ## Web Application
 bokeh==0.12.15
-Django==2.0.5
+Django==2.1.2
 django-rest-framework==0.1.0
 djangorestframework==3.8.2
 dj-database-url==0.5.0
 drf-nested-routers==0.90.2
-gunicorn==19.7.1
-psycopg2==2.7.4
+gunicorn==19.9.0
+psycopg2>=2.7,<2.8 --no-binary psycopg2
 python-dotenv==0.8.2
 social-auth-app-django==2.1.0
 social-auth-core==1.7.0
@@ -15,7 +15,7 @@ whitenoise==3.3.1
 ## Utilities
 pytz==2018.4
 python-dateutil==2.7.2
-requests==2.18.4
+requests==2.19.1
 six==1.11.0
 
 ## Subdependencies
