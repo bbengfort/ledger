@@ -14,8 +14,8 @@ Testing settings to enable testing on Travis with Django tests.
 ## Imports
 ##########################################################################
 
-import os
 from .base import *
+
 
 ##########################################################################
 ## Test Settings
@@ -28,7 +28,7 @@ ALLOWED_HOSTS    = ['localhost', '127.0.0.1']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': environ_setting('DB_NAME', 'ledger'),
+        'NAME': environ_setting('DB_NAME', 'ledger_test'),
         'USER': environ_setting('DB_USER', 'postgres'),
         'PASSWORD': environ_setting('DB_PASS', ''),
         'HOST': environ_setting('DB_HOST', 'localhost'),

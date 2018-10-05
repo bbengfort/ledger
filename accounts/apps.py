@@ -27,4 +27,4 @@ class AccountsConfig(AppConfig):
     verbose_name = 'accounting'
 
     def ready(self):
-        import accounts.signals #noqa
+        import accounts.signals # noqa

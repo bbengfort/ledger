@@ -117,7 +117,7 @@ class Account(models.Model):
         to pay another entity. This includes credit cards, loans, and bills.
         """
         return self.type in {
-            self.CREDIT, self.LOAN, self.BILLING
+            self.CREDIT, self.LOAN, self.BILLING,
         }
 
     @property
@@ -127,7 +127,7 @@ class Account(models.Model):
         a cash account (checking or saving) or an investment.
         """
         return self.type in {
-            self.CASH, self.INVESTMENT
+            self.CASH, self.INVESTMENT, self.INSURANCE,
         }
 
     def __str__(self):

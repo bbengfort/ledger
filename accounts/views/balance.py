@@ -14,8 +14,6 @@ Balance sheet related views (HTML)
 ## Imports
 ##########################################################################
 
-from datetime import date
-
 from ..models import BalanceSheet
 
 from django.http import Http404

@@ -159,7 +159,7 @@ class BalanceSheetManager(models.Manager):
 
         try:
             return self.get_month(month.year, month.month)
-        except Exception as e:
+        except Exception:
             if raise_on_error:
                 raise
             return None

@@ -68,11 +68,6 @@ def transaction_credit(transaction):
     return accounting_amount(-1*transaction.amount, transaction.credit.currency)
 
 
-@register.inclusion_tag("snippets/account_balance.html")
-def accounting(amount, currency="USD"):
-    return accounting_amount(amount, currency)
-
-
 @register.inclusion_tag("components/print.html")
 def print_button():
     return {}
