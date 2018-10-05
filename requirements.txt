@@ -40,12 +40,12 @@ six==1.11.0
 
 ## Test Dependencies
 ## Uncomment these for development
-#factory-boy==2.11.1
-#pytest==3.8.2
-#pytest-cov==2.6.0
-#pytest-django==3.4.3
-#pytest-env==0.6.2
-#pytest-flakes==4.0.0
+factory-boy==2.11.1
+pytest==3.8.2
+pytest-cov==2.6.0
+pytest-django==3.4.3
+pytest-env==0.6.2
+pytest-flakes==4.0.0
 
 ## Test Subdependencies
 #atomicwrites==1.2.1

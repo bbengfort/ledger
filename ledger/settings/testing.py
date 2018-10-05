@@ -14,6 +14,8 @@ Testing settings to enable testing on Travis with Django tests.
 ## Imports
 ##########################################################################
 
+import dj_database_url
+
 from .base import *
 
 
@@ -25,16 +27,14 @@ from .base import *
 ALLOWED_HOSTS    = ['localhost', '127.0.0.1']
 
 ## Database Settings
+## https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': environ_setting('DB_NAME', 'ledger_test'),
-        'USER': environ_setting('DB_USER', 'postgres'),
-        'PASSWORD': environ_setting('DB_PASS', ''),
-        'HOST': environ_setting('DB_HOST', 'localhost'),
-        'PORT': environ_setting('DB_PORT', '5432'),
-    },
+    'default': dj_database_url.config(conn_max_age=600),
 }
+
+DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+DATABASES['default']['TEST'] = {'NAME': 'ledger_test'}
+
 
 STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage'
 
