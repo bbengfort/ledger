@@ -22,7 +22,10 @@ from .base import *
 ## Development Environment
 ##########################################################################
 
-ALLOWED_HOSTS = ('127.0.0.1', 'localhost')
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 MEDIA_ROOT = os.path.join(PROJECT, 'media')
-STATIC_ROOT = 'staticfiles'
+
+## Static files served by WhiteNoise nostatic server
+STATIC_ROOT = os.path.join(PROJECT, 'tmp', 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

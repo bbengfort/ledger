@@ -1,0 +1,22 @@
+{% extends 'page.html' %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+
+    <main class="col-sm-6 offset-sm-3 pt-3 text-center">
+
+      <h1>{% block error_title %}{% endblock %}</h1>
+      <p class="lead">{% block error_description %}{% endblock %}</p>
+
+    </main>
+
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascripts %}
+  {# Empty out JavaScripts to prevent further errors #}
+{% endblock %}

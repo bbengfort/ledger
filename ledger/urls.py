@@ -33,7 +33,7 @@ from rest_framework_nested import routers
 
 from ledger.views import *
 from taxes.views import *
-from accounts.views import * 
+from accounts.views import *
 
 
 ##########################################################################
@@ -76,3 +76,15 @@ urlpatterns = [
     path('api/', include((router.urls, 'rest_framework'), namespace="api")),
     path('api/', include((sheets_router.urls, 'rest_framework'), namespace="sheets-api")),
 ]
+
+##########################################################################
+## Error handling
+##########################################################################
+
+# Do not import anything for the handler404,
+# or whatnot from the django.conf.urls
+
+handler400 = 'ledger.views.bad_request'
+handler403 = 'ledger.views.permission_denied'
+handler404 = 'ledger.views.not_found'
+handler500 = 'ledger.views.server_error'

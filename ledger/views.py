@@ -18,7 +18,9 @@ import ledger
 
 from datetime import datetime
 
+from django.template import RequestContext
 from django.views.generic import TemplateView
+from django.shortcuts import render_to_response, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from rest_framework import viewsets
@@ -62,3 +64,23 @@ class HeartbeatViewSet(viewsets.ViewSet):
             "revision": ledger.get_revision(short=True),
             "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         })
+
+
+##########################################################################
+## Error Views
+##########################################################################
+
+def server_error(request, **kwargs):
+    return render(request, template_name='errors/500.html', status=500)
+
+
+def not_found(request, exception, **kwargs):
+    return render(request, template_name='errors/404.html', status=404)
+
+
+def permission_denied(request, exception, **kwargs):
+    return render(request, template_name='errors/403.html', status=403)
+
+
+def bad_request(request, exception, **kwargs):
+    return render(request, template_name='errors/400.html', status=400)
