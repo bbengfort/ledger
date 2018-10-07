@@ -18,9 +18,8 @@ import ledger
 
 from datetime import datetime
 
-from django.template import RequestContext
+from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.shortcuts import render_to_response, render
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from rest_framework import viewsets
