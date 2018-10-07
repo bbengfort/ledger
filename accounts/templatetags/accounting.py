@@ -29,6 +29,10 @@ register = template.Library()
 
 
 def accounting_amount(amount, currency="USD"):
+    # Database may return None instead of 0, handle here
+    if amount is None:
+        amount = 0
+
     if amount < 0:
         amount = "({:,})".format(amount * -1)
     elif amount == 0:
@@ -91,9 +95,20 @@ def next_sheet():
 
 @register.simple_tag()
 def direction(before, after):
+    # Database may return None instead of 0, handle here
+    if before is None:
+        before = 0
+
+    if after is None:
+        after = 0
+
+    # Compute difference
     delta = after - before
+
     if delta > 0:
         icon = '<big><i class="fa fa-caret-up text-success"></i></big>'
+    elif delta == 0:
+        icon = '<big><i class="fa fa-caret-right text-muted"></i></big>'
     else:
         icon = '<big><i class="fa fa-caret-down text-danger"></i></big>'
 
