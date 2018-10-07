@@ -22,6 +22,9 @@ from .base import *
 ## Production Environment
 ##########################################################################
 
+## Ensure debug mode is not running production
+DEBUG = False
+
 ## Hosts
 ALLOWED_HOSTS    = [
     'bengfort-ledger.herokuapp.com',
@@ -29,7 +32,7 @@ ALLOWED_HOSTS    = [
 ]
 
 ## Use SSL
-SECURE_SSL_REDIRECT = True 
+SECURE_SSL_REDIRECT = True
 
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'staticfiles')
