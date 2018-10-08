@@ -46,6 +46,7 @@ router.register(r'status', HeartbeatViewSet, "status")
 router.register(r'sheets', BalanceSheetViewSet, "sheets")
 router.register(r'accounts', AccountViewSet, "accounts")
 router.register(r'returns', TaxReturnViewSet, "returns")
+router.register(r'cashflow', CashFlow, "cashflow")
 
 # Routes nested below sheets
 sheets_router = routers.NestedDefaultRouter(router, r'sheets', lookup='sheets')

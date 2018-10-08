@@ -142,45 +142,80 @@
   {{ block.super }}
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" integrity="sha256-CfcERD4Ov4+lKbWbYqXD6aFM9M51gN4GUEtDhkWABMo=" crossorigin="anonymous"></script>
   <script type="text/javascript">
-  {% with cash=latest_sheet.balances.cash_accounts debt=latest_sheet.balances.credit_accounts %}
-  {% with cash_total=cash.totals.ending__sum debt_total=debt.totals.ending__sum %}
-    var cash_total = {{ cash_total }};
-    var debt_total = {{ debt_total }};
-  {% endwith %}
-  {% endwith %}
 
   $(document).ready(function() {
     var RED = "#F04124";
     var GRN = "#43ac6a";
+    var URL = "{% url 'api:cashflow-list' %}";
 
-    var colors = [GRN, RED]
-    if (cash_total >= debt_total) {
-      colors.push(GRN);
-    } else {
-      colors.push(RED);
+    // Fetch the cash-flow data to draw the chart
+    $.get(URL)
+      .done(function (data) {
+        cashFlowChart(data.reverse());
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus, errorThrown);
+      });
+
+
+    function cashFlowChart(data) {
+      // var colors = [GRN, RED]
+      // if (cash_total >= debt_total) {
+      //   colors.push(GRN);
+      // } else {
+      //   colors.push(RED);
+      // }
+
+      var ctx = document.getElementById('cashvdebt').getContext('2d');
+      var labels = _.map(_.pluck(data, "date"), fmtDate);
+
+      var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: 'bar',
+
+          // The data for our dataset
+          data: {
+              labels: labels,
+              datasets: [{
+                label: "Net Cash",
+                data: _.pluck(data, "net_ending"),
+                type: "line",
+                borderColor: "#333333",
+                fill: false,
+              }, {
+                label: "Cash (ending)",
+                backgroundColor: GRN,
+                data: _.pluck(data, "cash_ending"),
+              }, {
+                label: "Debt (ending)",
+                backgroundColor: RED,
+                data: _.pluck(data, "debt_ending"),
+              }]
+          },
+
+          // Configuration options go here
+          options: {
+            legend: {
+              display: true,
+            },
+            scales: {
+              xAxes: [{
+                stacked: true
+              }],
+              yAxes: [{
+                stacked: true
+              }]
+            },
+          },
+      });
     }
 
-    var ctx = document.getElementById('cashvdebt').getContext('2d');
-    var chart = new Chart(ctx, {
-        // The type of chart we want to create
-        type: 'horizontalBar',
+    function fmtDate(s) {
+      // Don't forget to subtract 1 from the month?!
+      const [year, month, day] = s.split("-")
+      return new Date(year, month-1, day).toLocaleDateString("en-US", {"month": "short", "year": "numeric"});
+    }
 
-        // The data for our dataset
-        data: {
-            labels: ["Cash", "Debt", "Net",],
-            datasets: [{
-                backgroundColor: colors,
-                data: [Math.abs(cash_total), Math.abs(debt_total), Math.abs(cash_total+debt_total)],
-            }]
-        },
-
-        // Configuration options go here
-        options: {
-          legend: {
-            display: false,
-          },
-        },
-    });
   });
   </script>
 {% endblock %}
