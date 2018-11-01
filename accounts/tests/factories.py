@@ -17,11 +17,19 @@ Factory Boy model factories for account models.
 import factory
 import factory.fuzzy
 
-from datetime import date
+from datetime import date, timedelta
 
 from accounts.models import CreditScore
 from accounts.models import Account, Company
 from accounts.models import BalanceSheet, Balance, Transaction
+
+
+##########################################################################
+## Helper Functions
+##########################################################################
+
+def this_month(day=1):
+    return date.today().replace(day=day)
 
 
 ##########################################################################
@@ -44,6 +52,7 @@ class CompanyFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Company
+        django_get_or_create = ('name',)
 
     name = "ABC Federal Savings Bank"
     short_name = "ABC"
@@ -62,6 +71,7 @@ class AccountFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = Account
+        django_get_or_create = ('name',)
 
     type = Account.CASH
     name = "Everyday Checkings"
@@ -121,6 +131,10 @@ class BalanceSheetFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = BalanceSheet
+        django_get_or_create = ('date',)
+
+    date = factory.LazyFunction(this_month)
+    memo   = factory.Faker('sentence')
 
 
 class BalanceFactory(factory.DjangoModelFactory):
@@ -129,6 +143,14 @@ class BalanceFactory(factory.DjangoModelFactory):
         model = Balance
 
     sheet = factory.SubFactory(BalanceSheetFactory)
+    account = factory.SubFactory(AccountFactory)
+    beginning = factory.Faker('pydecimal', left_digits=5, right_digits=2, positive=True)
+
+
+class CreditCardBalanceFactory(BalanceFactory):
+
+    account = factory.SubFactory(CreditCardFactory)
+    beginning = factory.Faker('pydecimal', left_digits=5, right_digits=2, positive=False)
 
 
 class TransactionFactory(factory.DjangoModelFactory):
@@ -136,4 +158,10 @@ class TransactionFactory(factory.DjangoModelFactory):
     class Meta:
         model = Transaction
 
-    sheet = factory.SubFactory(BalanceSheetFactory)
+    sheet  = factory.SubFactory(BalanceSheetFactory)
+    date   = factory.Faker('date_between_dates', date_start=this_month()-timedelta(days=15), date_end=this_month()+timedelta(days=15))
+    credit = factory.SubFactory(AccountFactory)
+    debit  = factory.SubFactory(CreditCardFactory)
+    amount = factory.Faker('pydecimal', left_digits=4, right_digits=2, positive=True)
+    memo   = factory.Faker('sentence')
+    complete = factory.LazyAttribute(lambda o: o.date < o.sheet.date)

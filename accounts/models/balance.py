@@ -15,6 +15,7 @@ Balance sheet related models.
 ##########################################################################
 
 from datetime import date
+from decimal import Decimal
 
 from django.db import models
 from django.urls import reverse
@@ -49,7 +50,7 @@ class BalanceSheet(models.Model):
     )
     memo = models.CharField(
         max_length=255, blank=True, null=True,
-        help_text="A short memo or note describing the transaction",
+        help_text="A short memo or note describing the balance sheet",
     )
 
     class Meta:
@@ -173,8 +174,12 @@ class Balance(models.Model):
         return self._total_amount(query)
 
     def _total_amount(self, query):
+        """
+        Sums the amount for the given query and returns a Decimal value for
+        the total. CANNOT return either None or float types! 
+        """
         query = query.values("amount").aggregate(total=models.Sum("amount"))
-        return query["total"] or 0.0
+        return query["total"] or Decimal(0.0)
 
     def __str__(self):
         if self.ending == 0:
