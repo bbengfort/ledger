@@ -7,7 +7,7 @@
 # Copyright (C) 2019 Bengfort.com
 # For license information, see LICENSE.txt
 #
-# ID: tests.py [] benjamin@bengfort.com $
+# ID: __init__.py [] benjamin@bengfort.com $
 
 """
 Tests for the budget app
@@ -16,7 +16,3 @@ Tests for the budget app
 ##########################################################################
 ## Imports
 ##########################################################################
-
-from django.test import TestCase
-
-# Create your tests here.

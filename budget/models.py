@@ -45,7 +45,7 @@ class Budget(models.Model):
     class Meta:
         db_table = "budgets"
         ordering = ("-year",)
-        get_latest_by = "-year"
+        get_latest_by = "year"
 
     def get_absolute_url(self):
         kwargs = {'year': self.year}
