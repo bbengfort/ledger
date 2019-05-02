@@ -1,5 +1,7 @@
+dist: xenial
+sudo: required
 language: python
-python: "3.6.6"
+python: "3.6.8"
 
 addons:
   postgresql: "10"
