@@ -18,5 +18,29 @@ budget admin configuration
 ##########################################################################
 
 from django.contrib import admin
+from .models import Budget, LineItem
+
+
+class LineItemInline(admin.TabularInline):
+
+    extra = 3
+    model = LineItem
+
+    def get_extra(self, request, obj=None, **kwargs):
+        """
+        Don't add any extra forms if the related object already exists.
+        """
+        if obj is not None and obj.line_items.count() > 0:
+            return 0
+        return self.extra
+
+
+class BudgetAdmin(admin.ModelAdmin):
+
+    inlines = [
+        LineItemInline
+    ]
+
 
 # Register your models here.
+admin.site.register(Budget, BudgetAdmin)
