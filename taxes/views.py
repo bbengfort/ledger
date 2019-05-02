@@ -16,7 +16,7 @@ Tax views and controllers
 
 from ledger import colors
 from .models import TaxReturn
-from .serializers import TaxReturnSerializer 
+from .serializers import TaxReturnSerializer
 
 from collections import defaultdict
 

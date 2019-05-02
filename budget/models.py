@@ -18,7 +18,9 @@ Budget app database models
 ##########################################################################
 
 from datetime import date
+from decimal import Decimal
 from django.db import models
+from django.urls import reverse
 
 
 class Budget(models.Model):
@@ -29,7 +31,8 @@ class Budget(models.Model):
 
     # Budgets are indexed by year
     year = models.PositiveSmallIntegerField(
-        null=False, blank=False, unique=True, editable=True, default=date.today().year,
+        unique=True, default=date.today().year,
+        null=False, blank=False, editable=True,
         help_text="Household fiscal year"
     )
 
@@ -42,6 +45,37 @@ class Budget(models.Model):
     class Meta:
         db_table = "budgets"
         ordering = ("-year",)
+        get_latest_by = "-year"
+
+    def get_absolute_url(self):
+        kwargs = {'year': self.year}
+        return reverse('budget-detail', kwargs=kwargs)
+
+    def income_items(self):
+        return self.line_items.filter(is_income=True)
+
+    def total_income(self):
+        return sum(item.total for item in self.income_items())
+
+    def monthly_income(self):
+        amt = Decimal(self.total_income() / 12)
+        return round(amt, 2)
+
+    def expense_items(self):
+        return self.line_items.filter(is_income=False)
+
+    def total_expenses(self):
+        return sum(item.total for item in self.expense_items())
+
+    def monthly_expenses(self):
+        amt =  Decimal(self.total_expenses() / 12)
+        return round(amt, 2)
+
+    def monthly_savings(self):
+        return self.monthly_income() - self.monthly_expenses()
+
+    def total_savings(self):
+        return self.total_income() - self.total_expenses()
 
     def __str__(self):
         return "{} Budget".format(self.year)
