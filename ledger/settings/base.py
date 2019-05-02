@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_django',
     'accounts',
+    'budget',
     'taxes',
 ]
 

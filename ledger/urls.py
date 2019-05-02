@@ -32,8 +32,9 @@ from django.urls import path, include
 from rest_framework_nested import routers
 
 from ledger.views import *
-from taxes.views import *
 from accounts.views import *
+from budget.views import *
+from taxes.views import *
 
 
 ##########################################################################
@@ -65,6 +66,8 @@ urlpatterns = [
     # Application URLs
     path('', Overview.as_view(), name="overview"),
     path('taxes/', TaxesDashboard.as_view(), name="taxes"),
+    path('budget/', LatestBudget.as_view(), name="budget"),
+    path('budget/<int:year>/', BudgetDashboard.as_view(), name="budget-detail"),
     path('sheets/', BalanceSheetArchives.as_view(), name="sheets-archive"),
     path('sheets/new', CreateBlanceSheet.as_view(), name="sheets-create"),
     path('sheets/<int:year>-<int:month>/', BalanceSheetView.as_view(), name="sheets-detail"),
