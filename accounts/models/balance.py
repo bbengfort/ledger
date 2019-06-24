@@ -159,8 +159,8 @@ class Balance(models.Model):
         Note, that this method does not save the ending balance, just sets it.
         """
         total = self.beginning
-        total += self.credit_amount(completed=False) # will be negative
-        total += self.debit_amount(completed=False)  # will be positive
+        total += self.credit_amount(completed=False)  # will be negative
+        total += self.debit_amount(completed=False)   # will be positive
         self.ending = total
 
     def credit_amount(self, completed=False):

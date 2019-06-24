@@ -14,11 +14,13 @@ Factory Boy model factories for account models.
 ## Imports
 ##########################################################################
 
+import random
 import factory
 import factory.fuzzy
 
 from datetime import date, timedelta
 
+from accounts.models import Payment
 from accounts.models import CreditScore
 from accounts.models import Account, Company
 from accounts.models import BalanceSheet, Balance, Transaction
@@ -43,7 +45,7 @@ class CreditScoreFactory(factory.DjangoModelFactory):
 
     date = factory.Faker('date_this_decade')
     score = factory.fuzzy.FuzzyInteger(300, 850)
-    source = factory.fuzzy.FuzzyChoice([b[0] for b in CreditScore.BUREAUS])
+    source = factory.fuzzy.FuzzyChoice(CreditScore.BUREAUS, getter=lambda b: b[0])
     preferred = True
     memo = factory.Faker('sentence')
 
@@ -124,6 +126,45 @@ class BillingAccountFactory(AccountFactory):
 
 
 ##########################################################################
+## Payments Factories
+##########################################################################
+
+def frequency_day_choice(obj):
+    """
+    Returns a day appropriate to the frequency of the object
+    """
+    if obj.frequency == Payment.WEEKLY:
+        return random.choice(range(0, 7))
+    elif obj.frequency == Payment.MONTHLY:
+        return random.choice(range(0, 31))
+    elif obj.frequency == Payment.QUARTERLY:
+        return random.choice(range(0, 91))
+    elif obj.frequency == Payment.YEARLY:
+        return random.choice(range(0, 365))
+    else:
+        return None
+
+
+class PaymentFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = Payment
+
+    description = factory.Faker('sentence')
+    credit = factory.SubFactory(AccountFactory)
+    debit = factory.SubFactory(BillingAccountFactory)
+    frequency = factory.fuzzy.FuzzyChoice(Payment.FREQUENCY_TYPES, getter=lambda f: f[0])
+    day = factory.LazyAttribute(frequency_day_choice)
+    amount = factory.Faker('pydecimal', left_digits=5, right_digits=2, positive=True)
+    active = True
+
+
+class CreditCardPaymentFactory(PaymentFactory):
+
+    credit = factory.SubFactory(CreditCardFactory)
+
+
+##########################################################################
 ## Balance Sheet Factories
 ##########################################################################
 
@@ -134,7 +175,7 @@ class BalanceSheetFactory(factory.DjangoModelFactory):
         django_get_or_create = ('date',)
 
     date = factory.LazyFunction(this_month)
-    memo   = factory.Faker('sentence')
+    memo = factory.Faker('sentence')
 
 
 class BalanceFactory(factory.DjangoModelFactory):
