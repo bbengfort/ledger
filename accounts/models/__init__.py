@@ -16,4 +16,5 @@ Accounts models and base models.
 
 from .accounts import *
 from .balance import *
-from .credit import * 
+from .credit import *
+from .payments import *

@@ -176,7 +176,7 @@ class Balance(models.Model):
     def _total_amount(self, query):
         """
         Sums the amount for the given query and returns a Decimal value for
-        the total. CANNOT return either None or float types! 
+        the total. CANNOT return either None or float types!
         """
         query = query.values("amount").aggregate(total=models.Sum("amount"))
         return query["total"] or Decimal(0.0)
@@ -250,7 +250,6 @@ class Transaction(models.Model):
         db_table = "transactions"
         ordering = ("-date",)
         get_latest_by = "date"
-
 
     def __str__(self):
         return "Transfer ${:,} from {} to {} on {}".format(

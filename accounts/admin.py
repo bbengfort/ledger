@@ -16,7 +16,7 @@ Account admin configuration
 
 from django.contrib import admin
 from .models import Account, Company, CreditScore
-from .models import BalanceSheet, Balance, Transaction
+from .models import BalanceSheet, Balance, Transaction, Payment
 
 
 ##########################################################################
@@ -56,6 +56,7 @@ class BalanceSheetAdmin(admin.ModelAdmin):
 
 admin.site.register(Account)
 admin.site.register(Company)
+admin.site.register(Payment)
 admin.site.register(BalanceSheet)
 admin.site.register(Balance)
 admin.site.register(Transaction)
