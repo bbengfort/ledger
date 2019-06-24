@@ -22,15 +22,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 ## Routine Payments and Recurring Transactions
 ##########################################################################
 
-
 class Payment(models.Model):
     """
-    A Payment is a one-to-one model associated with a billing account and
-    stores details about routine or recurring payments, it is intended to
-    help facilitate the quick creation of transactions. For example, if
-    every month you pay a utility payment from a specific credit card, the
-    payment will allow you to easily generate the transaction without
-    having to remember which accounts the recurring payment is from.
+    A Payment is a associated with a billing account and stores details
+    about routine or recurring payments, it is intended to help facilitate
+    the quick creation of transactions. For example, if every month you pay
+    a utility payment from a specific credit card, the payment will allow
+    you to easily generate the transaction without having to remember which
+    accounts the recurring payment is from.
     """
 
     # Payment Frequency
@@ -106,6 +105,17 @@ class Payment(models.Model):
     class Meta:
         db_table = "payments"
         ordering = ("debit__name", "description")
+
+    def transactions(self):
+        """
+        Returns the transactions related to this payment; e.g. all of the
+        transactions between the credit and debit accounts. This model
+        currently assumes that there is a unique together relationship
+        between the credit and debit accounts (though this is not
+        specified via a constraint); in the future if this is not true
+        then some other database marker would be required.
+        """
+        return self.debit.debits.filter(credit=self.credit)
 
     def __str__(self):
         if self.description:

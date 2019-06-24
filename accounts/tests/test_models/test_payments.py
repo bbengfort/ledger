@@ -19,6 +19,7 @@ import pytest
 
 from accounts.models import Payment
 from ..factories import PaymentFactory
+from ..factories import BillingAccountFactory, TransactionFactory
 
 # All tests in this module use the database
 pytestmark = pytest.mark.django_db
@@ -32,6 +33,30 @@ class TestPayment(object):
     """
     Test the Payments model
     """
+
+    def test_transactions(self):
+        """
+        Test that payment transactions are returned correctly
+        """
+        # Create the payment
+        payment = PaymentFactory.create(
+            description="test payment",
+            frequency=Payment.MONTHLY
+        )
+
+        # Get the associated accounts and create an alternate
+        bank = payment.credit
+        electric = payment.debit
+        water = BillingAccountFactory.create(name="Water Bill")
+
+        # Make a bunch of transactions
+        t1 = TransactionFactory.create(credit=bank, debit=electric)
+        t2 = TransactionFactory.create(credit=bank, debit=water)
+
+        assert payment.transactions().count() == 1
+        assert t1 in payment.transactions()
+        assert t2 not in payment.transactions()
+
 
     def test_str_method(self):
         """
