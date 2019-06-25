@@ -150,7 +150,7 @@ class PaymentFactory(factory.DjangoModelFactory):
     class Meta:
         model = Payment
 
-    description = factory.Faker('sentence')
+    description = None
     credit = factory.SubFactory(AccountFactory)
     debit = factory.SubFactory(BillingAccountFactory)
     frequency = factory.fuzzy.FuzzyChoice(Payment.FREQUENCY_TYPES, getter=lambda f: f[0])

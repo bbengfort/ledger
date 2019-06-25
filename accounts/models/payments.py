@@ -14,6 +14,9 @@ Payments and billings related models.
 ## Imports
 ##########################################################################
 
+from datetime import date, datetime
+from dateutil.relativedelta import relativedelta
+
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
@@ -116,6 +119,99 @@ class Payment(models.Model):
         then some other database marker would be required.
         """
         return self.debit.debits.filter(credit=self.credit)
+
+    def next_payment_date(self, after=None):
+        """
+        Based on the frequency, returns the next payment date after the
+        specified date. If after is None, then the next payment after today is
+        computed. Note that after can be specified as a "%Y-%m-%d" string.
+
+        This is a fairly complex function that depends on relative deltas and
+        may have different behavior depending on the frequency. Roughly, the
+        next payment date is computed as follows (by default):
+
+        DAILY: return 1 day after today
+
+        WEEKLY: return the next weekday where Monday=0 and Sunday=6 after today
+
+        MONTHLY: if day in month is in future return it, otherwise return day
+            next month. Note this truncates 31 to 30, 29, 28, etc.
+
+        QUARTERLY: can only specify 1, 15, 31, 32, 46, 62, 63, 77, or 93 as
+            the day; returns the 1st, 15th, or last day of the month for the
+            specified quarter if it is in the future, or the next quarter.
+
+        YEARLY: if the day in year is in future return it, otherwise retun
+            day next year. This works poorly for leap years.
+        """
+        if after is None:
+            after = date.today()
+        elif isinstance(after, str):
+            after = datetime.strptime(after, "%Y-%m-%d").date()
+
+        # Always return tomorrow for daily frequency
+        if self.frequency == self.DAILY:
+            return after + relativedelta(days=1)
+
+        # Return the next
+        if self.frequency == self.WEEKLY:
+            if self.day is None or self.day > 6:
+                raise ValueError("weekly frequency requires day of week in range 0-6")
+
+            delta = ((self.day - after.weekday() - 1) % 7) + 1
+            return after + relativedelta(days=delta)
+
+        if self.frequency == self.MONTHLY:
+            if self.day is None or self.day > 31 or self.day < 1:
+                raise ValueError(
+                    "monthly frequency requires day of month in range 1-31"
+                )
+            months = 1 if after.day > self.day else 0
+            return after + relativedelta(day=self.day, months=months)
+
+        if self.frequency == self.QUARTERLY:
+            valid_quarter_days = (1, 15, 31, 32, 46, 62, 63, 77, 93)
+            if self.day is None or self.day not in valid_quarter_days:
+                raise ValueError(
+                    "specify day as 1, 15, or 31 times month "
+                    "1, 2, or 3 for quarterly frequency"
+                )
+
+            # Get the month of the quarter, e.g. 0, 1, 2 and current quarter
+            m = valid_quarter_days.index(self.day) // 3
+            q = (after.month - 1) // 3
+            d = self.day - (m * 31)
+
+            # See if the date is in the current quarter
+            npdate = after + relativedelta(month=((q * 3) + m + 1), day=d)
+            if npdate < after:
+                npdate = after + relativedelta(month=(((q + 1) * 3) + m + 1), day=d)
+            return npdate
+
+        if self.frequency == self.YEARLY:
+            if self.day is None or self.day > 366 or self.day < 1:
+                raise ValueError("yearly frequency requires day of year in range 1-366")
+
+            years = 1 if after.timetuple().tm_yday > self.day else 0
+            return after + relativedelta(yearday=self.day, years=years)
+
+        raise ValueError(
+            "cannot compute next date for {} frequency after {}".format(
+                self.get_frequency_display().lower(),
+                after,
+            ))
+
+    def has_next_payment_date(self, after=None):
+        """
+        Returns True if a next payment date can be computed, otherwise returns False
+        along with the exception that was raised. This method is used in validation and
+        is a bit LBYL, but is intended to prevent 500 exceptions.
+        """
+        try:
+            _ = self.next_payment_date(after=after)
+            return True, None
+        except ValueError as e:
+            return False, str(e)
 
     def __str__(self):
         if self.description:

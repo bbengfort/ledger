@@ -17,8 +17,14 @@ Tests for the Balance Sheet and related models.
 import re
 import pytest
 
-from ..factories import *
 from decimal import Decimal
+from accounts.models import BalanceSheet, Payment, Transaction
+
+from ..factories import this_month
+from ..factories import PaymentFactory
+from ..factories import AccountFactory, CreditCardFactory, BillingAccountFactory
+from ..factories import BalanceFactory, BalanceSheetFactory, TransactionFactory
+
 
 # All tests in this module use the database
 pytestmark = pytest.mark.django_db
@@ -29,6 +35,7 @@ pytestmark = pytest.mark.django_db
 ##########################################################################
 
 SHEET_TITLE = re.compile(r'Bills and Banking for (\w+) (\d+), (\d+)')
+
 
 def test_balance_sheet_title():
     """
@@ -75,7 +82,7 @@ def test_balance_sheet_scenario():
 
     # Create the various accounts
     checking = AccountFactory()
-    savings  = AccountFactory(name="Performance Savings", number="111222333455")
+    savings = AccountFactory(name="Performance Savings", number="111222333455")
     mastercard = CreditCardFactory()
     visa = CreditCardFactory(name="Mileage Visa")
 
@@ -147,3 +154,17 @@ def test_balance_sheet_scenario():
     assert sheet.balances.count() == 4
     assert sheet.balances.cash_accounts().count() == 2
     assert sheet.balances.credit_accounts().count() == 2
+
+
+def test_transaction_from_payment():
+    """
+    Test creating a transaction from a Payment
+    """
+    payment = PaymentFactory.build(frequency=Payment.MONTHLY, day=15)
+    tx = Transaction.from_payment(payment)
+
+    assert tx.credit == payment.credit
+    assert tx.debit == payment.debit
+    assert tx.memo == str(payment)
+    assert tx.amount == payment.amount
+    assert tx.date == payment.next_payment_date()

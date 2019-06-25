@@ -251,6 +251,25 @@ class Transaction(models.Model):
         ordering = ("-date",)
         get_latest_by = "date"
 
+    @classmethod
+    def from_payment(klass, payment):
+        """
+        Creates a transaction instance from a payment instance
+        """
+        # Create the base transaction
+        tx = klass(credit=payment.credit, debit=payment.debit, memo=str(payment))
+
+        # Add amount information
+        if payment.amount is not None:
+            tx.amount = payment.amount
+
+        # Modify the date if needed
+        has_tx_date, _ = payment.has_next_payment_date()
+        if has_tx_date:
+            tx.date = payment.next_payment_date()
+
+        return tx
+
     def __str__(self):
         return "Transfer ${:,} from {} to {} on {}".format(
             self.amount, self.credit, self.debit, self.date

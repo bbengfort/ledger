@@ -16,7 +16,7 @@ Tests for account models
 
 import pytest
 
-from ..factories import *
+from ..factories import AccountFactory
 from accounts.models import Account
 
 # All tests in this module use the database

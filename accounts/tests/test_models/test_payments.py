@@ -17,6 +17,8 @@ Tests for payments models
 import re
 import pytest
 
+from datetime import date, timedelta
+
 from accounts.models import Payment
 from ..factories import PaymentFactory
 from ..factories import BillingAccountFactory, TransactionFactory
@@ -57,6 +59,63 @@ class TestPayment(object):
         assert t1 in payment.transactions()
         assert t2 not in payment.transactions()
 
+    @pytest.mark.parametrize("frequency,after,day,expected", [
+        (Payment.DAILY, "2019-07-01", None, date(2019, 7, 2)),
+        (Payment.WEEKLY, "2019-07-01", 4, date(2019, 7, 5)),
+        (Payment.WEEKLY, "2019-07-05", 4, date(2019, 7, 12)),
+        (Payment.WEEKLY, "2019-07-06", 4, date(2019, 7, 12)),
+        (Payment.MONTHLY, "2019-06-26", 31, date(2019, 6, 30)),
+        (Payment.MONTHLY, "2019-07-01", 15, date(2019, 7, 15)),
+        (Payment.MONTHLY, "2019-07-26", 15, date(2019, 8, 15)),
+        (Payment.MONTHLY, "2019-07-01", 31, date(2019, 7, 31)),
+        (Payment.MONTHLY, "2019-02-01", 31, date(2019, 2, 28)),
+        (Payment.QUARTERLY, "2019-05-01", 1, date(2019, 7, 1)),
+        (Payment.QUARTERLY, "2019-05-01", 15, date(2019, 7, 15)),
+        (Payment.QUARTERLY, "2019-05-01", 31, date(2019, 7, 31)),
+        (Payment.QUARTERLY, "2019-05-01", 32, date(2019, 5, 1)),
+        (Payment.QUARTERLY, "2019-05-01", 46, date(2019, 5, 15)),
+        (Payment.QUARTERLY, "2019-05-01", 62, date(2019, 5, 31)),
+        (Payment.QUARTERLY, "2019-05-01", 63, date(2019, 6, 1)),
+        (Payment.QUARTERLY, "2019-05-01", 77, date(2019, 6, 15)),
+        (Payment.QUARTERLY, "2019-05-01", 93, date(2019, 6, 30)),
+        (Payment.YEARLY, "2019-07-01", 105, date(2020, 4, 14)),  # 2020 is a leap year
+        (Payment.YEARLY, "2019-07-01", 294, date(2019, 10, 21)),
+    ])
+    def test_next_payment_date(self, frequency, after, day, expected):
+        """
+        Tests the next payment date after July 1, 2019 based on frequency
+        """
+        payment = PaymentFactory.build(frequency=frequency, day=day)
+        assert payment.next_payment_date(after=after) == expected
+        assert payment.has_next_payment_date() == (True, None)
+
+    def test_next_payment_date_today(self):
+        """
+        Test that next payment date defaults to today
+        """
+        payment = PaymentFactory.build(frequency=Payment.DAILY)
+        assert payment.next_payment_date() == date.today() + timedelta(days=1)
+        assert payment.has_next_payment_date() == (True, None)
+
+    @pytest.mark.parametrize("frequency,day,error", [
+        (Payment.INFREQUENT, None, "cannot compute next date for infrequent"),
+        (Payment.WEEKLY, None, "weekly frequency requires day of week in range 0-6"),
+        (Payment.WEEKLY, 7, "weekly frequency requires day of week in range 0-6"),
+        (Payment.MONTHLY, None, "monthly frequency requires day of month in range 1-31"),
+        (Payment.MONTHLY, 0, "monthly frequency requires day of month in range 1-31"),
+        (Payment.MONTHLY, 32, "monthly frequency requires day of month in range 1-31"),
+        (Payment.QUARTERLY, 48, "specify day as 1, 15, or 31 times month 1, 2, or 3 for quarterly frequency"),
+        (Payment.YEARLY, 0, "yearly frequency requires day of year in range 1-366"),
+        (Payment.YEARLY, 367, "yearly frequency requires day of year in range 1-366"),
+    ])
+    def test_next_payment_date_exceptions(self, frequency, day, error):
+        """
+        Assert that infrequent payments cannot compute next payment date
+        """
+        with pytest.raises(ValueError, match=error):
+            payment = PaymentFactory.build(frequency=frequency, day=day)
+            payment.next_payment_date()
+            assert payment.has_next_payment_date() == (False, ValueError(error))
 
     def test_str_method(self):
         """
@@ -75,7 +134,9 @@ class TestPayment(object):
         payment.description = None
         assert payment.amount > 0.0
 
-        regex = re.compile(r'([$£€角¥])([\d\.]+) (\w+) payments from ([\w\s]+) to ([\w\s]+)', re.I)
+        regex = re.compile(
+            r'([$£€角¥])([\d\.]+) (\w+) payments from ([\w\s]+) to ([\w\s]+)', re.I
+        )
         match = regex.match(str(payment))
         assert match is not None, "could not match freq/amount payment string"
         assert match.groups()[1] == str(payment.amount)
