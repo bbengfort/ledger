@@ -133,6 +133,9 @@ class Account(models.Model):
     def __str__(self):
         return "{} {}".format(self.bank.short_name, self.name)
 
+    def get_currency_enum(self):
+        return Currency(self.currency)
+
 
 ##########################################################################
 ## Financial Institution

@@ -63,7 +63,7 @@ def update_all_ending_balances(sender, instance, *args, **kwargs):
     """
     Updates all ending balances when the sheet is saved.
     """
-    #TODO: Remove this signal in favor of a manual method
+    # TODO: Remove this signal in favor of a manual method
     for balance in instance.balances.all():
         balance.update_ending_balance()
         balance.save()

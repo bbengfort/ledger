@@ -159,8 +159,8 @@ class Balance(models.Model):
         Note, that this method does not save the ending balance, just sets it.
         """
         total = self.beginning
-        total += self.credit_amount(completed=False) # will be negative
-        total += self.debit_amount(completed=False)  # will be positive
+        total += self.credit_amount(completed=False)  # will be negative
+        total += self.debit_amount(completed=False)   # will be positive
         self.ending = total
 
     def credit_amount(self, completed=False):
@@ -176,7 +176,7 @@ class Balance(models.Model):
     def _total_amount(self, query):
         """
         Sums the amount for the given query and returns a Decimal value for
-        the total. CANNOT return either None or float types! 
+        the total. CANNOT return either None or float types!
         """
         query = query.values("amount").aggregate(total=models.Sum("amount"))
         return query["total"] or Decimal(0.0)
@@ -251,6 +251,24 @@ class Transaction(models.Model):
         ordering = ("-date",)
         get_latest_by = "date"
 
+    @classmethod
+    def from_payment(klass, payment):
+        """
+        Creates a transaction instance from a payment instance
+        """
+        # Create the base transaction
+        tx = klass(credit=payment.credit, debit=payment.debit, memo=str(payment))
+
+        # Add amount information
+        if payment.amount is not None:
+            tx.amount = payment.amount
+
+        # Modify the date if needed
+        has_tx_date, _ = payment.has_next_payment_date()
+        if has_tx_date:
+            tx.date = payment.next_payment_date()
+
+        return tx
 
     def __str__(self):
         return "Transfer ${:,} from {} to {} on {}".format(
