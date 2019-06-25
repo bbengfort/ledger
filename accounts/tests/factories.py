@@ -136,11 +136,11 @@ def frequency_day_choice(obj):
     if obj.frequency == Payment.WEEKLY:
         return random.choice(range(0, 7))
     elif obj.frequency == Payment.MONTHLY:
-        return random.choice(range(0, 31))
+        return random.choice(range(0, 32))
     elif obj.frequency == Payment.QUARTERLY:
-        return random.choice(range(0, 91))
+        return random.choice((1, 15, 31, 32, 46, 62, 63, 77, 93))
     elif obj.frequency == Payment.YEARLY:
-        return random.choice(range(0, 365))
+        return random.choice(range(0, 366))
     else:
         return None
 
