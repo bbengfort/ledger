@@ -1,5 +1,12 @@
 {% extends 'site/dashboard.html' %}
 
+{% block stylesheets %}
+    {{ block.super }}
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css"
+        integrity="sha256-FAOaXTpl90/K8cXmSdsskbQN3nKYulhCpPbcFzGTWKI=" crossorigin="anonymous" />
+{% endblock %}
+
 {% block dashboard-title %}
     {{ sheet.title }}
     <span class="pull-right">
@@ -32,52 +39,91 @@
 </div><!-- end tab navigation -->
 
 <div class="row">
-<div class="tab-content col-sm col-md-8 mb-2" id="editTabsContent">
+<div class="tab-content col-sm col-lg-9 mb-4" id="editTabsContent">
     <!-- Transactions tab -->
     <div class="tab-pane fade show active" id="transaction" role="tabpanel" aria-labelledby="transaction-tab">
 
         <form id="transactionForm">
             <div class="form-group">
-                <label for="sheet">Balance Sheet</label>
+                <label for="sheet" class="font-weight-bold">Balance Sheet</label>
                 <input type="text" readonly class="form-control" id="sheet" value="{{ sheet.date }}" />
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     The current balance sheet to add the transaction to (will be hidden)
                 </small>
             </div>
-            <div class="form-group">
-                <label for="date">Date</label>
-                <input type="text" class="form-control" id="date" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The date of the transaction
-                </small>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="credit" class="font-weight-bold">Credit (from)</label>
+                    <select class="custom-select" id="account">
+                        <option>---------</option>
+                        {% for group, options in accounts.items %}
+                        <optgroup label="{{ group }}">
+                            {% for opt in options %}
+                            <option value={{ opt.id }}>{{ opt}}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        The source of funds for the transaction
+                    </small>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="debit" class="font-weight-bold">Debit (to)</label>
+                    <select class="custom-select" id="account">
+                        <option>---------</option>
+                        {% for group, options in accounts.items %}
+                        <optgroup label="{{ group }}">
+                            {% for opt in options %}
+                            <option value={{ opt.id }}>{{ opt}}</option>
+                            {% endfor %}
+                        </optgroup>
+                        {% endfor %}
+                    </select>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        The destination of funds for the transaction
+                    </small>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="date" class="font-weight-bold">Date</label>
+                    <div class="input-group date"
+                        data-provide="datepicker" data-date-format="yyyy-mm-dd"
+                        data-date-today-btn="linked" data-date-today-highlight="true"
+                        data-date-autoclose=true>
+                        <input type="text" class="form-control" id="date" value="{% now 'Y-m-d' %}" />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-primary" type="button" id="date-select">
+                                <i class="fa fa-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        The date of the transaction
+                    </small>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="amount" class="font-weight-bold">Amount</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control" id="amount" placeholder="0.00" />
+                    </div>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        The amount of the transaction
+                    </small>
+                </div>
             </div>
             <div class="form-group">
-                <label for="credit">Credit</label>
-                <input type="text" class="form-control" id="credit" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The source of funds for the transaction
-                </small>
-            </div>
-            <div class="form-group">
-                <label for="debit">Debit</label>
-                <input type="text" class="form-control" id="debit" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The destination of funds for the transaction
-                </small>
-            </div>
-            <div class="form-group">
-                <label for="amount">Amount</label>
-                <input type="text" class="form-control" id="amount" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The amount of the transaction
-                </small>
-            </div>
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="" id="complete" />
-                <label class="form-check-label" for="complete">Complete</label>
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    If the transaction is already included in the beginning balance
-                </small>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="complete" />
+                    <label class="form-check-label" for="complete">Complete</label>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        If the transaction is already included in the beginning balance
+                    </small>
+                </div>
             </div>
             <div class="form-group">
                 <label for="memo">Memo</label>
@@ -96,8 +142,17 @@
     <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
         <form id="paymentsForm">
             <div class="form-group">
-                <label for="payment">Payment</label>
-                <input type="text" class="form-control" id="payment" />
+                <label for="payment" class="font-weight-bold">Payment</label>
+                <select class="custom-select" id="account">
+                    <option>---------</option>
+                    {% for group, options in payments.items %}
+                    <optgroup label="{{ group }}">
+                        {% for opt in options %}
+                        <option value={{ opt.id }}>{{ opt}}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endfor %}
+                </select>
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     Select the payment to create a transaction from
                 </small>
@@ -110,32 +165,53 @@
     <div class="tab-pane fade" id="balance" role="tabpanel" aria-labelledby="balance-tab">
         <form id="balanceForm">
             <div class="form-group">
-                <label for="sheet">Balance Sheet</label>
+                <label for="sheet" class="font-weight-bold">Balance Sheet</label>
                 <input type="text" readonly class="form-control" id="sheet" value="{{ sheet.date }}" />
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     The current balance sheet to add the transaction to (will be hidden)
                 </small>
             </div>
             <div class="form-group">
-                <label for="account">Account</label>
-                <input type="text" class="form-control" id="account" />
+                <label for="account" class="font-weight-bold">Account</label>
+                <select class="custom-select" id="account">
+                    <option>---------</option>
+                    {% for group, options in accounts.items %}
+                    <optgroup label="{{ group }}">
+                        {% for opt in options %}
+                        <option value={{ opt.id }}>{{ opt}}</option>
+                        {% endfor %}
+                    </optgroup>
+                    {% endfor %}
+                </select>
                 <small id="passwordHelpBlock" class="form-text text-muted">
                     The account associated with the balance
                 </small>
             </div>
-            <div class="form-group">
-                <label for="beginning">Beginning</label>
-                <input type="text" class="form-control" id="beginning" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    Beginning balance of the account
-                </small>
-            </div>
-            <div class="form-group">
-                <label for="ending">Ending</label>
-                <input type="text" class="form-control" id="ending" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    Ending balance after transactions
-                </small>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="beginning" class="font-weight-bold">Beginning</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control" id="beginning" placeholder="0.00" />
+                    </div>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        Beginning balance of the account
+                    </small>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="ending">Ending</label>
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">$</span>
+                        </div>
+                        <input type="text" class="form-control" id="ending" placeholder="0.00" />
+                    </div>
+                    <small id="passwordHelpBlock" class="form-text text-muted">
+                        Ending balance after transactions
+                    </small>
+                </div>
             </div>
             <button type="submit" class="btn btn-primary">Save</button>
             <button type="button" class="btn btn-dark">Clear</button>
@@ -144,4 +220,10 @@
 </div>
 </div><!-- end tab content -->
 
+{% endblock %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
+        integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
 {% endblock %}
