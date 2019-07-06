@@ -1,0 +1,147 @@
+{% extends 'site/dashboard.html' %}
+
+{% block dashboard-title %}
+    {{ sheet.title }}
+    <span class="pull-right">
+        <a class="btn btn-primary" role="button" href=".." target="">
+            <i class="fa fa-arrow-left"></i> Back
+        </a>
+    </span>
+{% endblock %}
+
+{% block dashboard-content %}
+
+<!-- Tab Navigation -->
+<div class="row">
+<div class="col-sm mb-2">
+    <ul class="nav nav-pills mb-3" id="editTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="transaction-tab" data-toggle="tab" href="#transaction" role="tab" aria-controls="transaction"
+                aria-selected="true">Transactions</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab" aria-controls="payments"
+                aria-selected="false">Payments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="balance-tab" data-toggle="tab" href="#balance" role="tab" aria-controls="balance"
+                aria-selected="false">Balance</a>
+        </li>
+    </ul>
+</div>
+</div><!-- end tab navigation -->
+
+<div class="row">
+<div class="tab-content col-sm col-md-8 mb-2" id="editTabsContent">
+    <!-- Transactions tab -->
+    <div class="tab-pane fade show active" id="transaction" role="tabpanel" aria-labelledby="transaction-tab">
+
+        <form id="transactionForm">
+            <div class="form-group">
+                <label for="sheet">Balance Sheet</label>
+                <input type="text" readonly class="form-control" id="sheet" value="{{ sheet.date }}" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The current balance sheet to add the transaction to (will be hidden)
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="date">Date</label>
+                <input type="text" class="form-control" id="date" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The date of the transaction
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="credit">Credit</label>
+                <input type="text" class="form-control" id="credit" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The source of funds for the transaction
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="debit">Debit</label>
+                <input type="text" class="form-control" id="debit" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The destination of funds for the transaction
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="amount">Amount</label>
+                <input type="text" class="form-control" id="amount" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The amount of the transaction
+                </small>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="complete" />
+                <label class="form-check-label" for="complete">Complete</label>
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    If the transaction is already included in the beginning balance
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="memo">Memo</label>
+                <input type="text" class="form-control" id="memo" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    A short memo or note describing the transaction
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-dark">Clear</button>
+        </form>
+
+    </div><!-- end transactions tab -->
+
+    <!-- Payments tab-->
+    <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+        <form id="paymentsForm">
+            <div class="form-group">
+                <label for="payment">Payment</label>
+                <input type="text" class="form-control" id="payment" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    Select the payment to create a transaction from
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Transaction</button>
+        </form>
+    </div><!-- end payments tab -->
+
+    <!-- Balance Tab -->
+    <div class="tab-pane fade" id="balance" role="tabpanel" aria-labelledby="balance-tab">
+        <form id="balanceForm">
+            <div class="form-group">
+                <label for="sheet">Balance Sheet</label>
+                <input type="text" readonly class="form-control" id="sheet" value="{{ sheet.date }}" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The current balance sheet to add the transaction to (will be hidden)
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="account">Account</label>
+                <input type="text" class="form-control" id="account" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    The account associated with the balance
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="beginning">Beginning</label>
+                <input type="text" class="form-control" id="beginning" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    Beginning balance of the account
+                </small>
+            </div>
+            <div class="form-group">
+                <label for="ending">Ending</label>
+                <input type="text" class="form-control" id="ending" />
+                <small id="passwordHelpBlock" class="form-text text-muted">
+                    Ending balance after transactions
+                </small>
+            </div>
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-dark">Clear</button>
+        </form>
+    </div><!-- end balance tab-->
+</div>
+</div><!-- end tab content -->
+
+{% endblock %}

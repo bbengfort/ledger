@@ -1,10 +1,14 @@
 {% extends 'site/dashboard.html' %}
+{% load buttons %}
 {% load accounting %}
 {% load staticfiles %}
 
 {% block dashboard-title %}
   {{ sheet.title }}
-  <span class="pull-right">{% print_button %}</span>
+  <span class="pull-right">
+    {% edit_button icon_only=False %}
+    {% print_button icon_only=False %}
+  </span>
 {% endblock %}
 
 {% block dashboard-content %}

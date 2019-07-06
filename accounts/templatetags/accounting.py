@@ -72,11 +72,6 @@ def transaction_credit(transaction):
     return accounting_amount(-1*transaction.amount, transaction.credit.currency)
 
 
-@register.inclusion_tag("components/print.html")
-def print_button():
-    return {}
-
-
 @register.inclusion_tag("snippets/next_sheet.html")
 def next_sheet():
     # If today is after the 15th of the month, then next month is the first

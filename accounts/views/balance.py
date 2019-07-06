@@ -25,7 +25,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 __all__ = [
-    "BalanceSheetArchives", "BalanceSheetView", "CreateBlanceSheet",
+    "BalanceSheetArchives", "BalanceSheetView", "CreateBalanceSheet",
+    "EditBalanceSheet",
 ]
 
 
@@ -103,8 +104,14 @@ class BalanceSheetView(LoginRequiredMixin, DetailView):
         return context
 
 
-class CreateBlanceSheet(LoginRequiredMixin, CreateView):
+class CreateBalanceSheet(LoginRequiredMixin, CreateView):
 
     http_method_names = ['post']
     model = BalanceSheet
     fields = ["date"]
+
+
+class EditBalanceSheet(BalanceSheetView):
+
+    model = BalanceSheet
+    template_name = "balance_sheet_edit.html"
