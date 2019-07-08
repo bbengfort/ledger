@@ -98,10 +98,18 @@ class TestAccountingTags(SimpleTestCase):
         """
         Test the print_button inclusion tag
         """
-        template = Template('{% load accounting %}{% print_button %}')
+        template = Template('{% load buttons %}{% print_button %}')
         rendered = template.render(Context({}))
         # self.assertInHTML('<a href="?print=True">', rendered)
         self.assertInHTML('<i class="fa fa-print">', rendered)
+
+    def test_edit_button(self):
+        """
+        Test the edit_button inclusion tag
+        """
+        template = Template('{% load buttons %}{% edit_button %}')
+        rendered = template.render(Context({}))
+        self.assertInHTML('<i class="fa fa-edit">', rendered)
 
     @pytest.mark.skip(reason="needs implementation")
     def test_next_sheet(self):
