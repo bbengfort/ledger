@@ -118,9 +118,10 @@ class CashFlow(viewsets.ViewSet):
     # TODO: move this to a SQL file that can be loaded on demand
     QUERY = (
         "WITH sheet_balances AS ("
-        "	SELECT b.beginning, b.ending, s.id AS sheet_id, s.date, a.type FROM balances b "
-        "		JOIN balance_sheets s ON b.sheet_id = s.id "
+        "	SELECT b.beginning, b.ending, s.id AS sheet_id, s.date, a.type FROM balances b"
+        "		JOIN balance_sheets s ON b.sheet_id = s.id"
         "		JOIN accounts a ON b.account_id = a.id"
+        "     WHERE a.active = 't' AND a.exclude = 'f'"
         "	ORDER BY s.date DESC"
         "), cash AS ("
         "	SELECT SUM(beginning) as beginning, SUM(ending) as ending, date FROM sheet_balances WHERE type = 'Ca' GROUP BY date"
