@@ -34,7 +34,7 @@
   <table class="table table-sm" id="balance-credit-transactions">
     <% _.each(rc.credits, function( item ) { %>
       <tr class="row<% if (item.complete) { %> table-active<% } %>">
-        <td class="pl-3 col-9"><%= item.account %></td>
+        <td class="pl-3 col-9"><%= item.account.name %></td>
         <td class="pr-3 col-3"><%= rc.amountfmt(item.amount) %></td>
       </tr>
     <% }); %>
@@ -46,7 +46,7 @@
   <table class="table table-sm" id="balance-debit-transactions">
     <% _.each(rc.debits, function( item ) { %>
       <tr class="row<% if (item.complete) { %> table-active<% } %>">
-        <td class="pl-3 col-9"><%= item.account %></td>
+        <td class="pl-3 col-9"><%= item.account.name %></td>
         <td class="pr-3 col-3"><%= rc.amountfmt(item.amount) %></td>
       </tr>
     <% }); %>

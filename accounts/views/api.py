@@ -16,22 +16,24 @@ API ViewSets and controllers
 
 from django.db import connection
 
-from ..models import Account, BalanceSheet, Balance, Transaction
+from ..models import Account, Payment
+from ..models import BalanceSheet, Balance, Transaction
 from ..serializers import AccountSerializer
 from ..serializers import BalanceSheetShortSerializer
 from ..serializers import BalanceSheetDetailSerializer
-from ..serializers import TransactionSerializer
+from ..serializers import TransactionSerializer, PaymentSerializer
 from ..serializers import BalanceDetailSerializer, BalanceSummarySerializer
 
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 
 __all__ = [
     "AccountViewSet", "BalanceSheetViewSet",
     "BalanceViewSet", "TransactionViewSet",
-    "CashFlow",
+    "PaymentsAPIView", "CashFlow",
 ]
 
 
@@ -104,6 +106,24 @@ class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return Transaction.objects.filter(sheet__date=self.kwargs['sheets_date'])
+
+
+class PaymentsAPIView(viewsets.ModelViewSet):
+    """
+    Programmatically interact with payments and create transactions from them.
+    """
+
+    queryset = Payment.objects.all()
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+    @action(detail=True, methods=["get"])
+    def transaction(self, request, pk=None):
+        payment = self.get_object()
+        serializer = TransactionSerializer(
+            Transaction.from_payment(payment), context={'request': request}
+        )
+        return Response(serializer.data)
 
 
 ##########################################################################

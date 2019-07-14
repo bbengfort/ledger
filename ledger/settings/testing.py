@@ -38,7 +38,7 @@ DATABASES['default']['TEST'] = {'NAME': 'ledger_test'}
 
 STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-## Content without? side effects
+## Content without side effects
 MEDIA_ROOT         = "/tmp/ledger/media"
 STATIC_ROOT        = "/tmp/ledger/static"
 

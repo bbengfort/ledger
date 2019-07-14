@@ -15,10 +15,53 @@ Data serialization for the JSON API
 ##########################################################################
 
 from .utils import Currency
-from .models import Account, BalanceSheet, Company, Balance, Transaction
+from .models import Account, Company, Payment
+from .models import BalanceSheet, Balance, Transaction
 
 from django.db.models import Count
 from rest_framework import serializers
+
+
+##########################################################################
+## Model Serializers
+##########################################################################
+
+class BankSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Company
+        fields = ("name", "short_name", "url")
+
+
+class AccountSerializer(serializers.HyperlinkedModelSerializer):
+
+    bank = BankSerializer()
+    type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Account
+        fields = ("url", "type", "name", "number", "opened_on", "closed_on", "bank",)
+        extra_kwargs = {
+            "url": {"view_name": "api:accounts-detail"}
+        }
+
+    def get_type(self, obj):
+        return obj.get_type_display()
+
+
+class AccountNameSerializer(serializers.HyperlinkedModelSerializer):
+
+    name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Account
+        fields = ("url", "name")
+        extra_kwargs = {
+            "url": {"view_name": "api:accounts-detail"}
+        }
+
+    def get_name(self, obj):
+        return str(obj)
 
 
 ##########################################################################
@@ -32,7 +75,6 @@ class BalanceSheetShortSerializer(serializers.HyperlinkedModelSerializer):
 
     num_accounts = serializers.SerializerMethodField()
     num_transactions = serializers.SerializerMethodField()
-
 
     class Meta:
         model = BalanceSheet
@@ -61,18 +103,36 @@ class BalanceSheetShortSerializer(serializers.HyperlinkedModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
 
-    credit = serializers.StringRelatedField()
-    debit = serializers.StringRelatedField()
+    credit = AccountNameSerializer()
+    debit = AccountNameSerializer()
 
     class Meta:
         model = Transaction
         fields = ("id", "date", "credit", "debit", "amount", "complete", "memo",)
 
 
+class PaymentSerializer(serializers.ModelSerializer):
+
+    credit = serializers.StringRelatedField()
+    debit = serializers.StringRelatedField()
+    description = serializers.SerializerMethodField()
+    frequency = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Payment
+        fields = ("id", "description", "frequency", "amount", "credit", "debit")
+
+    def get_description(self, obj):
+        return str(obj)
+
+    def get_frequency(self, obj):
+        return obj.get_frequency_display()
+
+
 class CreditTransactionSerializer(serializers.ModelSerializer):
 
     # Assumes the target account is the credit account so retrieves the debit
-    account = serializers.StringRelatedField(source="debit")
+    account = AccountNameSerializer(source="debit")
     amount = serializers.FloatField()
 
     class Meta:
@@ -83,7 +143,7 @@ class CreditTransactionSerializer(serializers.ModelSerializer):
 class DebitTransactionSerializer(serializers.ModelSerializer):
 
     # Assumes the target account is the debit account so retrieves the credit
-    account = serializers.StringRelatedField(source="credit")
+    account = AccountNameSerializer(source="credit")
     amount = serializers.FloatField()
 
     class Meta:
@@ -93,7 +153,7 @@ class DebitTransactionSerializer(serializers.ModelSerializer):
 
 class BalanceSummarySerializer(serializers.ModelSerializer):
 
-    account = serializers.StringRelatedField()
+    account = AccountNameSerializer()
     beginning = serializers.FloatField()
     ending = serializers.FloatField()
 
@@ -104,7 +164,7 @@ class BalanceSummarySerializer(serializers.ModelSerializer):
 
 class BalanceDetailSerializer(serializers.ModelSerializer):
 
-    account = serializers.StringRelatedField()
+    account = AccountNameSerializer()
     credits = CreditTransactionSerializer(many=True)
     debits = DebitTransactionSerializer(many=True)
     credit_amount = serializers.SerializerMethodField()
@@ -119,7 +179,7 @@ class BalanceDetailSerializer(serializers.ModelSerializer):
         model = Balance
         fields = (
             "id", "account", "beginning", "ending", "currency",
-            "credits", "debits",  "credit_amount", "debit_amount",
+            "credits", "debits", "credit_amount", "debit_amount",
             "credit_completed_amount", "debit_completed_amount",
         )
 
@@ -155,28 +215,3 @@ class BalanceSheetDetailSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-##########################################################################
-## Model Serializers
-##########################################################################
-
-class BankSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Company
-        fields = ("name", "short_name", "url")
-
-
-class AccountSerializer(serializers.HyperlinkedModelSerializer):
-
-    bank = BankSerializer()
-    type = serializers.SerializerMethodField()
-
-    class Meta:
-        model = Account
-        fields = ("url", "type", "name", "number", "opened_on", "closed_on", "bank",)
-        extra_kwargs = {
-            "url": {"view_name": "api:accounts-detail"}
-        }
-
-    def get_type(self, obj):
-        return obj.get_type_display()

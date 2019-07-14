@@ -18,6 +18,7 @@ from datetime import date, datetime
 from dateutil.relativedelta import relativedelta
 
 from django.db import models
+from django.urls import reverse
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 
@@ -108,6 +109,17 @@ class Payment(models.Model):
     class Meta:
         db_table = "payments"
         ordering = ("debit__name", "description")
+
+    def get_api_url(self, action=None):
+        kwargs = {'pk': self.id}
+
+        if action is None:
+            return reverse('api:payments-detail', kwargs=kwargs)
+
+        if action == "transaction":
+            return reverse('api:payments-transaction', kwargs=kwargs)
+
+        raise ValueError("unknown API action '{}'".format(action))
 
     def transactions(self):
         """

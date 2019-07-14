@@ -19,6 +19,7 @@ import factory
 import factory.fuzzy
 
 from datetime import date, timedelta
+from django.contrib.auth.models import User
 
 from accounts.models import Payment
 from accounts.models import CreditScore
@@ -32,6 +33,51 @@ from accounts.models import BalanceSheet, Balance, Transaction
 
 def this_month(day=1):
     return date.today().replace(day=day)
+
+
+##########################################################################
+## User Factories
+##########################################################################
+
+class UserFactory(factory.DjangoModelFactory):
+
+    class Meta:
+        model = User
+
+    username = factory.Faker('user_name')
+    password = factory.Faker('password')
+    email = factory.Faker('email')
+    first_name = factory.Faker('first_name')
+    last_name = factory.Faker('last_name')
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """
+        Users must be created with the `create_user` command so that the
+        password is correctly set with the secret key.
+
+        For more information, see:
+        https://docs.djangoproject.com/en/dev/topics/testing/tools/#django.test.Client.login
+        """
+        manager = cls._get_manager(model_class)
+        user = manager.create_user(*args, **kwargs)
+
+        # Ensure the password is in plaintest
+        user.password = kwargs['password']
+        return user
+
+
+class AdminUserFactory(UserFactory):
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        # Uses create_superuser to create the admin
+        manager = cls._get_manager(model_class)
+        user = manager.create_superuser(*args, **kwargs)
+
+        # Ensure the password is in plaintest
+        user.password = kwargs['password']
+        return user
 
 
 ##########################################################################
@@ -150,7 +196,7 @@ class PaymentFactory(factory.DjangoModelFactory):
     class Meta:
         model = Payment
 
-    description = None
+    description = ""
     credit = factory.SubFactory(AccountFactory)
     debit = factory.SubFactory(BillingAccountFactory)
     frequency = factory.fuzzy.FuzzyChoice(Payment.FREQUENCY_TYPES, getter=lambda f: f[0])

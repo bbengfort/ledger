@@ -46,6 +46,7 @@ router = routers.DefaultRouter()
 router.register(r'status', HeartbeatViewSet, "status")
 router.register(r'sheets', BalanceSheetViewSet, "sheets")
 router.register(r'accounts', AccountViewSet, "accounts")
+router.register(r'payments', PaymentsAPIView, "payments")
 router.register(r'returns', TaxReturnViewSet, "returns")
 router.register(r'cashflow', CashFlow, "cashflow")
 
