@@ -19,8 +19,8 @@ from django.db import connection
 from ..models import Account, Payment
 from ..models import BalanceSheet, Balance, Transaction
 from ..serializers import AccountSerializer
-from ..serializers import BalanceSheetShortSerializer
 from ..serializers import BalanceSheetDetailSerializer
+from ..serializers import BalanceSheetSummarySerializer
 from ..serializers import TransactionSerializer, PaymentSerializer
 from ..serializers import BalanceDetailSerializer, BalanceSummarySerializer
 
@@ -55,7 +55,7 @@ class AccountViewSet(viewsets.ReadOnlyModelViewSet):
 ## BalanceSheet Base Resource
 ##########################################################################
 
-class BalanceSheetViewSet(viewsets.ReadOnlyModelViewSet):
+class BalanceSheetViewSet(viewsets.ModelViewSet):
     """
     Most viewsets are nested under their associated balance sheet.
     """
@@ -68,8 +68,8 @@ class BalanceSheetViewSet(viewsets.ReadOnlyModelViewSet):
         """
         Returns list or detail balance sheet serializers
         """
-        if self.action == 'list':
-            return BalanceSheetShortSerializer
+        if self.action in {'list', 'create'}:
+            return BalanceSheetSummarySerializer
         return BalanceSheetDetailSerializer
 
 

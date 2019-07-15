@@ -23,7 +23,7 @@ from rest_framework import serializers
 
 
 ##########################################################################
-## Model Serializers
+## Account Serializers
 ##########################################################################
 
 class BankSerializer(serializers.ModelSerializer):
@@ -65,51 +65,8 @@ class AccountNameSerializer(serializers.HyperlinkedModelSerializer):
 
 
 ##########################################################################
-## Balance Sheet Serializers
+## Payments Serializers
 ##########################################################################
-
-class BalanceSheetShortSerializer(serializers.HyperlinkedModelSerializer):
-    """
-    Gives summary information for the balance sheet, used in list views.
-    """
-
-    num_accounts = serializers.SerializerMethodField()
-    num_transactions = serializers.SerializerMethodField()
-
-    class Meta:
-        model = BalanceSheet
-        fields = (
-            "url", "date", "title", "memo", 'num_accounts', 'num_transactions',
-        )
-        extra_kwargs = {
-            "url": {"view_name": "api:sheets-detail", "lookup_field": "date"}
-        }
-
-    def get_num_accounts(self, obj):
-        # NOTE: the order_by is required or this won't group account types
-        data = obj.accounts.values('type').annotate(count=Count('type')).order_by()
-
-        # Flatten the data into a type:count dictionary
-        # TODO: this is probably poor performance to create the dict every time
-        types = dict(Account.ACCOUNT_TYPES)
-        return {
-            types[item["type"]]: item["count"]
-            for item in data
-        }
-
-    def get_num_transactions(self, obj):
-        return obj.transactions.count()
-
-
-class TransactionSerializer(serializers.ModelSerializer):
-
-    credit = AccountNameSerializer()
-    debit = AccountNameSerializer()
-
-    class Meta:
-        model = Transaction
-        fields = ("id", "date", "credit", "debit", "amount", "complete", "memo",)
-
 
 class PaymentSerializer(serializers.ModelSerializer):
 
@@ -127,6 +84,20 @@ class PaymentSerializer(serializers.ModelSerializer):
 
     def get_frequency(self, obj):
         return obj.get_frequency_display()
+
+
+##########################################################################
+## Transaction Serializers
+##########################################################################
+
+class TransactionSerializer(serializers.ModelSerializer):
+
+    credit = AccountNameSerializer()
+    debit = AccountNameSerializer()
+
+    class Meta:
+        model = Transaction
+        fields = ("id", "date", "credit", "debit", "amount", "complete", "memo",)
 
 
 class CreditTransactionSerializer(serializers.ModelSerializer):
@@ -150,6 +121,10 @@ class DebitTransactionSerializer(serializers.ModelSerializer):
         model = Transaction
         fields = ("id", "account", "amount", "complete")
 
+
+##########################################################################
+## Balance Serializers
+##########################################################################
 
 class BalanceSummarySerializer(serializers.ModelSerializer):
 
@@ -199,7 +174,80 @@ class BalanceDetailSerializer(serializers.ModelSerializer):
         return Currency[obj.account.currency].symbol
 
 
-class BalanceSheetDetailSerializer(serializers.HyperlinkedModelSerializer):
+##########################################################################
+## Balance Sheet Serializers
+##########################################################################
+
+class BalanceSheetSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = BalanceSheet
+        fields = ("url", "date", "title", "memo")
+        extra_kwargs = {
+            "url": {"view_name": "api:sheets-detail", "lookup_field": "date"},
+            "title": {"required": False, "default": None},
+            "memo": {"required": False, "default": None},
+        }
+
+    def _sheet_exists_for_month(self, date):
+        qs = BalanceSheet.objects.filter(date__year=date.year, date__month=date.month)
+        return qs.count() > 0
+
+    def create(self, data):
+        """
+        Ensure that a sheet is unique for month/year before create
+        """
+        if self._sheet_exists_for_month(data['date']):
+            detail = "a balance sheet already exists for {}".format(
+                data['date'].strftime("%b %Y")
+            )
+            raise serializers.ValidationError(detail=detail)
+        return super(BalanceSheetSerializer, self).create(data)
+
+    def update(self, instance, data):
+        """
+        Ensure sheet is unique for month/year before update
+        """
+        date = data['date']
+        if instance.date.year != date.year or instance.date.month != date.month:
+            if self._sheet_exists_for_month(date):
+                detail = "cannot update sheet, a sheet already exists for {}".format(
+                    date.strftime("%b %Y")
+                )
+                raise serializers.ValidationError(detail=detail)
+        return super(BalanceSheetSerializer, self).update(instance, data)
+
+
+class BalanceSheetSummarySerializer(BalanceSheetSerializer):
+    """
+    Gives summary information for the balance sheet, used in list views.
+    """
+
+    num_accounts = serializers.SerializerMethodField()
+    num_transactions = serializers.SerializerMethodField()
+
+    class Meta(BalanceSheetSerializer.Meta):
+        fields = (
+            "url", "date", "title", "memo", 'num_accounts', 'num_transactions',
+        )
+
+    def get_num_accounts(self, obj):
+        # NOTE: the order_by is required or this won't group account types
+        data = obj.accounts.values('type').annotate(count=Count('type')).order_by()
+
+        # Flatten the data into a type:count dictionary
+        # TODO: this is probably poor performance to create the dict every time
+        types = dict(Account.ACCOUNT_TYPES)
+        return {
+            types[item["type"]]: item["count"]
+            for item in data
+        }
+
+    def get_num_transactions(self, obj):
+        return obj.transactions.count()
+
+
+class BalanceSheetDetailSerializer(BalanceSheetSerializer):
     """
     Gives extended information for the balance sheet, used in detail views.
     """
@@ -207,11 +255,5 @@ class BalanceSheetDetailSerializer(serializers.HyperlinkedModelSerializer):
     balances = BalanceSummarySerializer(many=True, read_only=True)
     transactions = TransactionSerializer(many=True, read_only=True)
 
-    class Meta:
-        model = BalanceSheet
+    class Meta(BalanceSheetSerializer.Meta):
         fields = ("url", "date", "title", "memo", "balances", "transactions",)
-        extra_kwargs = {
-            "url": {"view_name": "api:sheets-detail", "lookup_field": "date"},
-        }
-
-
