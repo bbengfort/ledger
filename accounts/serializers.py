@@ -18,6 +18,7 @@ from .utils import Currency
 from .models import Account, Company, Payment
 from .models import BalanceSheet, Balance, Transaction
 
+from decimal import Decimal
 from django.db.models import Count
 from rest_framework import serializers
 
@@ -126,18 +127,43 @@ class DebitTransactionSerializer(serializers.ModelSerializer):
 ## Balance Serializers
 ##########################################################################
 
-class BalanceSummarySerializer(serializers.ModelSerializer):
+class BalanceSerializer(serializers.ModelSerializer):
+
+    account = serializers.HyperlinkedRelatedField(
+        view_name="api:accounts-detail",
+        queryset=Account.objects.all()
+    )
+
+    # TODO: Be better with float vs decimal fields (e.g. use int with cents)
+    beginning = serializers.FloatField(required=False)
+    ending = serializers.FloatField(read_only=True)
+
+    class Meta:
+        model = Balance
+        fields = ("id", "account", "beginning", "ending")
+
+    def validate_beginning(self, value):
+        try:
+            return Decimal(value)
+        except TypeError as e:
+            raise serializers.ValidationError(str(e))
+
+    def create(self, validated_data):
+        if "sheet" not in validated_data:
+            raise KeyError("view must specify the sheet associated with the balance")
+        return super(BalanceSerializer, self).create(validated_data)
+
+
+class BalanceSummarySerializer(BalanceSerializer):
 
     account = AccountNameSerializer()
-    beginning = serializers.FloatField()
-    ending = serializers.FloatField()
 
     class Meta:
         model = Balance
         fields = ("id", "account", "beginning", "ending",)
 
 
-class BalanceDetailSerializer(serializers.ModelSerializer):
+class BalanceDetailSerializer(BalanceSerializer):
 
     account = AccountNameSerializer()
     credits = CreditTransactionSerializer(many=True)
@@ -146,8 +172,6 @@ class BalanceDetailSerializer(serializers.ModelSerializer):
     debit_amount = serializers.SerializerMethodField()
     credit_completed_amount = serializers.SerializerMethodField()
     debit_completed_amount = serializers.SerializerMethodField()
-    beginning = serializers.FloatField()
-    ending = serializers.FloatField()
     currency = serializers.SerializerMethodField()
 
     class Meta:
@@ -225,7 +249,7 @@ class BalanceSheetSummarySerializer(BalanceSheetSerializer):
 
     num_accounts = serializers.SerializerMethodField()
     num_transactions = serializers.SerializerMethodField()
-    href = serializers.SerializerMethodField()
+    href = serializers.URLField(source="get_absolute_url", read_only=True)
 
     class Meta(BalanceSheetSerializer.Meta):
         fields = (
@@ -246,10 +270,6 @@ class BalanceSheetSummarySerializer(BalanceSheetSerializer):
 
     def get_num_transactions(self, obj):
         return obj.transactions.count()
-
-    def get_href(self, obj):
-        # TODO: get a better name than page
-        return obj.get_absolute_url()
 
 
 class BalanceSheetDetailSerializer(BalanceSheetSerializer):

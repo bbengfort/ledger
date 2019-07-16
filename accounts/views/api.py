@@ -18,16 +18,19 @@ from django.db import connection
 
 from ..models import Account, Payment
 from ..models import BalanceSheet, Balance, Transaction
+from ..serializers import BalanceSerializer
 from ..serializers import AccountSerializer
 from ..serializers import BalanceSheetDetailSerializer
 from ..serializers import BalanceSheetSummarySerializer
 from ..serializers import TransactionSerializer, PaymentSerializer
 from ..serializers import BalanceDetailSerializer, BalanceSummarySerializer
 
+from rest_framework import status
 from rest_framework import viewsets
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.exceptions import NotFound
 
 
 __all__ = [
@@ -77,7 +80,7 @@ class BalanceSheetViewSet(viewsets.ModelViewSet):
 ## Balance Sheet Nested Resources
 ##########################################################################
 
-class BalanceViewSet(viewsets.ReadOnlyModelViewSet):
+class BalanceViewSet(viewsets.ModelViewSet):
     """
     Account balances associated with a balance sheet
     """
@@ -85,7 +88,10 @@ class BalanceViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        return Balance.objects.filter(sheet__date=self.kwargs['sheets_date'])
+        sheet_date = self.kwargs['sheet_date']
+        if not BalanceSheet.objects.filter(date=sheet_date).exists():
+            raise NotFound("balance sheet for {} not found".format(sheet_date))
+        return Balance.objects.filter(sheet__date=sheet_date)
 
     def get_serializer_class(self):
         """
@@ -93,7 +99,26 @@ class BalanceViewSet(viewsets.ReadOnlyModelViewSet):
         """
         if self.action == "list":
             return BalanceSummarySerializer
+        elif self.action in {"create", "update"}:
+            return BalanceSerializer
         return BalanceDetailSerializer
+
+    def create(self, request, sheet_date=None):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        try:
+            sheet = BalanceSheet.objects.get(date=sheet_date)
+        except BalanceSheet.DoesNotExist:
+            raise NotFound("balance sheet for {} not found".format(sheet_date))
+
+        serializer.save(sheet=sheet)
+
+        return Response(
+            serializer.data,
+            status=status.HTTP_201_CREATED,
+            headers=self.get_success_headers(serializer.data),
+        )
 
 
 class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
@@ -105,7 +130,7 @@ class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAdminUser]
 
     def get_queryset(self):
-        return Transaction.objects.filter(sheet__date=self.kwargs['sheets_date'])
+        return Transaction.objects.filter(sheet__date=self.kwargs['sheet_date'])
 
 
 class PaymentsAPIView(viewsets.ModelViewSet):

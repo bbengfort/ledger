@@ -24,9 +24,9 @@ from rest_framework.test import APIClient
 from rest_framework.reverse import reverse
 
 from datetime import timedelta
-from ..factories import this_month
-from ..factories import BalanceSheetFactory, TransactionFactory
+from ..factories import this_month, AccountFactory
 from ..factories import AdminUserFactory, UserFactory, PaymentFactory
+from ..factories import BalanceSheetFactory, BalanceFactory, TransactionFactory
 
 from accounts.models import BalanceSheet
 
@@ -193,9 +193,96 @@ class TestBalanceSheetViewSet(object):
         assert rep.status_code == status.HTTP_400_BAD_REQUEST
 
 
+class TestBalanceViewSet(object):
+
+    def test_balances_list(self, admin_client):
+        sheet = BalanceSheetFactory.create()
+        url = sheet.get_api_balances_url()
+
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK
+        assert len(rep.json()) == 0
+
+        BalanceFactory.create(sheet=sheet)
+
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK
+        assert len(rep.json()) == 1
+
+    def test_sheet_not_found(self, admin_client):
+        assert BalanceSheet.objects.count() == 0
+        url = reverse(
+            "sheets-api:sheet-balances-list",
+            kwargs={'sheet_date': '2019-10-14'}
+        )
+
+        # List
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_404_NOT_FOUND
+
+        # Create
+        account = AccountFactory.create()
+        data = {"account": account.get_api_url(), "beginning": "12.23"}
+        rep = admin_client.post(url, data, format="json")
+        assert rep.status_code == status.HTTP_404_NOT_FOUND
+
+        # Retrieve
+        url = reverse(
+            "sheets-api:sheet-balances-detail",
+            kwargs={'sheet_date': '2019-10-14', 'pk': 1}
+        )
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_balance_create(self, admin_client):
+        account = AccountFactory.create()
+        sheet = BalanceSheetFactory.create()
+        url = sheet.get_api_balances_url()
+
+        data = {
+            "account": account.get_api_url(),
+            "beginning": 42.73,
+        }
+
+        rep = admin_client.post(url, data, format="json")
+        assert rep.status_code == status.HTTP_201_CREATED
+        assert sheet.balances.count() == 1
+
+    def test_balance_detail(self, admin_client):
+        balance = BalanceFactory.create()
+        url = balance.get_api_url()
+
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK
+
+    def test_balance_update(self, admin_client):
+        balance = BalanceFactory.create()
+        assert balance.beginning != 12.10
+
+        url = balance.get_api_url()
+        update = {'account': balance.account.get_api_url(), 'beginning': 12.1}
+
+        rep = admin_client.put(url, update, format='json')
+        assert rep.status_code == status.HTTP_200_OK
+        data = rep.json()
+
+        assert data['account'].endswith(balance.account.get_api_url())
+        assert data['beginning'] == 12.10
+        assert data['ending'] == 12.10
+
+    @pytest.mark.skip(reason="not yet implemented")
+    def test_float_converts_to_decimal(self):
+        # Ensure a precision of 2, etc.
+        pass
+
+    @pytest.mark.skip(reason="not yet implemented")
+    def test_ending_correctly_updated(self):
+        pass
+
+
 ##########################################################################
 ## Test Payments API View
-####################################################d######################
+##########################################################################
 
 class TestPaymentsAPIView(object):
 
