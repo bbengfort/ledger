@@ -225,10 +225,11 @@ class BalanceSheetSummarySerializer(BalanceSheetSerializer):
 
     num_accounts = serializers.SerializerMethodField()
     num_transactions = serializers.SerializerMethodField()
+    href = serializers.SerializerMethodField()
 
     class Meta(BalanceSheetSerializer.Meta):
         fields = (
-            "url", "date", "title", "memo", 'num_accounts', 'num_transactions',
+            "url", "date", "title", "memo", 'num_accounts', 'num_transactions', 'href',
         )
 
     def get_num_accounts(self, obj):
@@ -245,6 +246,10 @@ class BalanceSheetSummarySerializer(BalanceSheetSerializer):
 
     def get_num_transactions(self, obj):
         return obj.transactions.count()
+
+    def get_href(self, obj):
+        # TODO: get a better name than page
+        return obj.get_absolute_url()
 
 
 class BalanceSheetDetailSerializer(BalanceSheetSerializer):

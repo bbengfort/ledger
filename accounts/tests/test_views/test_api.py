@@ -119,6 +119,10 @@ class TestBalanceSheetViewSet(object):
         assert data["title"] is not None
         assert data["title"] != ""
 
+        # This is required for the front end to function
+        assert data["href"] is not None
+        assert data["href"] != ""
+
     def test_sheets_create_only_one_per_month(self, admin_client):
         """
         Ensure two sheets cannot be created for the same month
