@@ -46,13 +46,14 @@ router = routers.DefaultRouter()
 router.register(r'status', HeartbeatViewSet, "status")
 router.register(r'sheets', BalanceSheetViewSet, "sheets")
 router.register(r'accounts', AccountViewSet, "accounts")
+router.register(r'payments', PaymentsAPIView, "payments")
 router.register(r'returns', TaxReturnViewSet, "returns")
 router.register(r'cashflow', CashFlow, "cashflow")
 
 # Routes nested below sheets
-sheets_router = routers.NestedDefaultRouter(router, r'sheets', lookup='sheets')
-sheets_router.register(r'balances', BalanceViewSet, 'sheets-balances')
-sheets_router.register(r'transactions', TransactionViewSet, 'sheets-transactions')
+sheets_router = routers.NestedDefaultRouter(router, r'sheets', lookup='sheet')
+sheets_router.register(r'balances', BalanceViewSet, base_name='sheet-balances')
+sheets_router.register(r'transactions', TransactionViewSet, base_name='sheet-transactions')
 
 
 ##########################################################################
@@ -69,7 +70,6 @@ urlpatterns = [
     path('budget/', LatestBudget.as_view(), name="budget"),
     path('budget/<int:year>/', BudgetDashboard.as_view(), name="budget-detail"),
     path('sheets/', BalanceSheetArchives.as_view(), name="sheets-archive"),
-    path('sheets/new', CreateBlanceSheet.as_view(), name="sheets-create"),
     path('sheets/<int:year>-<int:month>/', BalanceSheetView.as_view(), name="sheets-detail"),
 
     # Authentication URLs

@@ -148,6 +148,9 @@
     var GRN = "#43ac6a";
     var URL = "{% url 'api:cashflow-list' %}";
 
+    // Bind the create sheet form to its handler
+    $("form.create-sheet").submit(createBalanceSheet);
+
     // Fetch the cash-flow data to draw the chart
     $.get(URL)
       .done(function (data) {
@@ -159,13 +162,6 @@
 
 
     function cashFlowChart(data) {
-      // var colors = [GRN, RED]
-      // if (cash_total >= debt_total) {
-      //   colors.push(GRN);
-      // } else {
-      //   colors.push(RED);
-      // }
-
       var ctx = document.getElementById('cashvdebt').getContext('2d');
       var labels = _.map(_.pluck(data, "date"), fmtDate);
 
@@ -214,6 +210,40 @@
       // Don't forget to subtract 1 from the month?!
       const [year, month, day] = s.split("-")
       return new Date(year, month-1, day).toLocaleDateString("en-US", {"month": "short", "year": "numeric"});
+    }
+
+    function createBalanceSheet(e) {
+      e.preventDefault();
+      var form = $(e.target);
+
+      // Disable the submit button
+      form.find(":submit").attr("disabled", true)
+
+      // Get the data from the form and post it
+      // Note that reduce requires the empty object as a second argument
+      var data = form.serializeArray().reduce(function(obj, item) {
+        obj[item.name] = item.value;
+        return obj;
+      }, {});
+
+      console.log(data);
+
+      $.post(form.attr("action"), data)
+        .done(function (data) {
+          window.location.href = data["href"];
+        })
+        .fail(function (jqXHR, textStatus, errorThrown) {
+          console.log(textStatus, errorThrown);
+          console.log(jqXHR.responseText);
+
+          form.find(":submit")
+            .removeClass("btn-success")
+            .addClass("btn-danger")
+            .text(errorThrown);
+        });
+
+      // prevent form from submitting
+      return false;
     }
 
   });

@@ -38,9 +38,9 @@ DATABASES['default']['TEST'] = {'NAME': 'ledger_test'}
 
 STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage'
 
-## Content without? side effects
-MEDIA_ROOT         = "/tmp/ledger/media"
-STATIC_ROOT        = "/tmp/ledger/static"
+## Content without side effects
+MEDIA_ROOT         = "/tmp/ledger_test/media"
+STATIC_ROOT        = "/tmp/ledger_test/static"
 
 ##########################################################################
 ## Django REST Framework

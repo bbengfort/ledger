@@ -18,14 +18,13 @@ from ..models import BalanceSheet
 
 from django.http import Http404
 from django.views.generic import DetailView
-from django.views.generic.edit import CreateView
 from django.utils.translation import gettext as _
 from django.views.generic.dates import ArchiveIndexView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 __all__ = [
-    "BalanceSheetArchives", "BalanceSheetView", "CreateBlanceSheet",
+    "BalanceSheetArchives", "BalanceSheetView",
 ]
 
 
@@ -101,10 +100,3 @@ class BalanceSheetView(LoginRequiredMixin, DetailView):
         context = super(BalanceSheetView, self).get_context_data(**kwargs)
         context['dashboard'] = 'sheets'
         return context
-
-
-class CreateBlanceSheet(LoginRequiredMixin, CreateView):
-
-    http_method_names = ['post']
-    model = BalanceSheet
-    fields = ["date"]

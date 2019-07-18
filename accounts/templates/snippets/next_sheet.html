@@ -5,7 +5,7 @@
   Go to {{ latest.date }}
 </a>
 {% else %}
-<form action="{% url 'sheets-create' %}" method="post">
+<form class="create-sheet" action="{% url 'api:sheets-list' %}" method="post">
   <input type="hidden" id="date" name="date" value="{{ next_month|date:'Y-m-d' }}" />
   <button type="submit" class="btn btn-success btn-block">Create Sheet for {{ next_month }}</button>
   {% csrf_token %}

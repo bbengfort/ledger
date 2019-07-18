@@ -2,7 +2,7 @@
 bokeh==0.12.15
 Django==2.2.3
 django-rest-framework==0.1.0
-djangorestframework==3.9.3
+djangorestframework==3.10.0
 dj-database-url==0.5.0
 drf-nested-routers==0.91
 gunicorn==19.9.0

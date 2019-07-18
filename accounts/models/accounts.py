@@ -15,6 +15,7 @@ Accounts and baking related models.
 ##########################################################################
 
 from django.db import models
+from django.urls import reverse
 
 from ..utils import Currency
 from ..managers import AccountTypeManager
@@ -135,6 +136,9 @@ class Account(models.Model):
 
     def get_currency_enum(self):
         return Currency(self.currency)
+
+    def get_api_url(self):
+        return reverse('api:accounts-detail', kwargs={'pk': self.pk})
 
 
 ##########################################################################
