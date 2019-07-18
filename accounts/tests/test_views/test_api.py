@@ -59,7 +59,7 @@ def client(db):
     "api:accounts-list", "api:sheets-list", "api:payments-list",
     "api:returns-list", "api:cashflow-list",
 ])
-def test_require_authentication(endpoint, admin_client):
+def test_list_requires_authentication(endpoint, admin_client):
     url = reverse(endpoint)
 
     # Admin client should already be logged in
@@ -70,6 +70,42 @@ def test_require_authentication(endpoint, admin_client):
     admin_client.logout()
     rep = admin_client.get(url)
     assert rep.status_code == status.HTTP_403_FORBIDDEN, "allowed public access"
+
+
+@pytest.mark.parametrize("factory", [
+    AccountFactory, BalanceSheetFactory, PaymentFactory,
+    BalanceFactory, TransactionFactory,
+])
+def test_detail_require_authentication(factory, admin_client):
+    obj = factory.create()
+    url = obj.get_api_url()
+
+    # Admin client should already be logged in
+    rep = admin_client.get(url)
+    assert rep.status_code == status.HTTP_200_OK, "didn't allow admin user access"
+
+    # Logout admin client and try again
+    admin_client.logout()
+    rep = admin_client.get(url)
+    assert rep.status_code == status.HTTP_403_FORBIDDEN, "allowed public access"
+
+
+def test_nested_list_requires_authentication(admin_client):
+    sheet = BalanceSheetFactory.create()
+    txurl = sheet.get_api_transactions_url()
+    baurl = sheet.get_api_balances_url()
+
+    # Admin client should already be logged in
+    for url in (txurl, baurl):
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK, "didn't allow admin user access"
+
+    # Logout admin client and try again
+    admin_client.logout()
+
+    for url in (txurl, baurl):
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_403_FORBIDDEN, "allowed public access"
 
 
 ##########################################################################
