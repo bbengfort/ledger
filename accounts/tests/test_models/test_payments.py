@@ -36,6 +36,17 @@ class TestPayment(object):
     Test the Payments model
     """
 
+    def test_get_api_url(self):
+        """
+        Test get_api_url works as expectd with action
+        """
+        payment = PaymentFactory.build(id=42)
+        assert payment.get_api_url() == "/api/payments/42/"
+        assert payment.get_api_url(action="transaction") == "/api/payments/42/transaction/"
+
+        with pytest.raises(ValueError, match="unknown API action"):
+            payment.get_api_url(action="foo")
+
     def test_transactions(self):
         """
         Test that payment transactions are returned correctly

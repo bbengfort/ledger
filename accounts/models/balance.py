@@ -71,6 +71,14 @@ class BalanceSheet(models.Model):
         date = self.date.strftime("%Y-%m-%d")
         return reverse('api:sheets-detail', kwargs={'date': date})
 
+    def get_api_balances_url(self):
+        kwargs = {"sheet_date": self.date.strftime("%Y-%m-%d")}
+        return reverse("sheets-api:sheet-balances-list", kwargs=kwargs)
+
+    def get_api_transactions_url(self):
+        kwargs = {"sheet_date": self.date.strftime("%Y-%m-%d")}
+        return reverse("sheets-api:sheet-transactions-list", kwargs=kwargs)
+
     def is_active(self):
         """
         Returns True if the date of the balance sheet is within 15 days of
@@ -135,9 +143,9 @@ class Balance(models.Model):
     def get_api_url(self):
         kwargs = {
             "pk": self.pk,
-            "sheets_date": self.date.strftime("%Y-%m-%d"),
+            "sheet_date": self.date.strftime("%Y-%m-%d"),
         }
-        return reverse("sheets-api:sheets-balances-detail", kwargs=kwargs)
+        return reverse("sheets-api:sheet-balances-detail", kwargs=kwargs)
 
     def credits(self):
         """
@@ -269,6 +277,13 @@ class Transaction(models.Model):
             tx.date = payment.next_payment_date()
 
         return tx
+
+    def get_api_url(self):
+        kwargs = {
+            "pk": self.pk,
+            "sheet_date": self.sheet.date.strftime("%Y-%m-%d"),
+        }
+        return reverse("sheets-api:sheet-transactions-detail", kwargs=kwargs)
 
     def __str__(self):
         return "Transfer ${:,} from {} to {} on {}".format(

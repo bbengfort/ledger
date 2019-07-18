@@ -76,7 +76,7 @@ def test_balance_sheet_scenario():
     """
 
     # Create the balance sheet for the month
-    # TODO: make this a fixture for reuse elsewhere
+    # NOTE: this scenario also available is a fixture in tests/conftest.py
     sheet = BalanceSheetFactory()
     assert sheet.accounts.count() == 0
 
