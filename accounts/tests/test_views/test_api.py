@@ -24,8 +24,8 @@ from rest_framework.test import APIClient
 from rest_framework.reverse import reverse
 
 from datetime import timedelta
-from ..factories import this_month, AccountFactory
 from ..factories import AdminUserFactory, UserFactory, PaymentFactory
+from ..factories import this_month, AccountFactory, BillingAccountFactory
 from ..factories import BalanceSheetFactory, BalanceFactory, TransactionFactory
 
 from accounts.models import BalanceSheet
@@ -278,6 +278,107 @@ class TestBalanceViewSet(object):
     @pytest.mark.skip(reason="not yet implemented")
     def test_ending_correctly_updated(self):
         pass
+
+
+class TestTransactionViewSet(object):
+
+    def test_transaction_list(self, admin_client):
+        sheet = BalanceSheetFactory.create()
+        url = sheet.get_api_transactions_url()
+        assert sheet.transactions.count() == 0
+
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK
+        assert len(rep.json()) == 0
+
+        TransactionFactory.create(sheet=sheet)
+        assert sheet.transactions.count() == 1
+
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK
+        assert len(rep.json()) == 1
+
+    def test_sheet_not_found(self, admin_client):
+        assert BalanceSheet.objects.count() == 0
+        url = reverse(
+            "sheets-api:sheet-transactions-list",
+            kwargs={'sheet_date': '2019-10-14'}
+        )
+
+        # List
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_404_NOT_FOUND
+
+        # Create
+        credit = AccountFactory.create()
+        debit = BillingAccountFactory.create()
+        data = {
+            "credit": credit.get_api_url(), "debit": debit.get_api_url(),
+            "date": "2019-10-21", "amount": 93.76, "complete": False, "memo": "",
+        }
+        rep = admin_client.post(url, data, format="json")
+        assert rep.status_code == status.HTTP_404_NOT_FOUND
+
+        # Retrieve
+        url = reverse(
+            "sheets-api:sheet-transactions-detail",
+            kwargs={'sheet_date': '2019-10-14', 'pk': 1}
+        )
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_404_NOT_FOUND
+
+    def test_transaction_create(self, admin_client):
+        credit = AccountFactory.create()
+        debit = BillingAccountFactory.create()
+        sheet = BalanceSheetFactory.create()
+        url = sheet.get_api_transactions_url()
+
+        data = {
+            "date": this_month(18).strftime("%Y-%m-%d"),
+            "credit": credit.get_api_url(),
+            "debit": debit.get_api_url(),
+            "amount": 42.24,
+            "complete": False,
+            "memo": "this is a test transaction",
+        }
+
+        rep = admin_client.post(url, data, format="json")
+        assert rep.status_code == status.HTTP_201_CREATED
+        assert sheet.transactions.count() == 1
+
+    def test_transaction_detail(self, admin_client):
+        transaction = TransactionFactory.create()
+        url = transaction.get_api_url()
+
+        rep = admin_client.get(url)
+        assert rep.status_code == status.HTTP_200_OK
+
+    def test_transaction_update(self, admin_client):
+        transaction = TransactionFactory.create()
+        assert transaction.amount != 10.17, "update field remains unchanged"
+        assert transaction.memo != "fuzz buzz", "update field remains unchanged"
+
+        url = transaction.get_api_url()
+        update = {
+            "date": transaction.date.strftime("%Y-%m-%d"),
+            "credit": transaction.credit.get_api_url(),
+            "debit": transaction.debit.get_api_url(),
+            "amount": 10.17,
+            "complete": transaction.complete,
+            "memo": "fuzz buzz",
+        }
+
+        rep = admin_client.put(url, update, format='json')
+        assert rep.status_code == status.HTTP_200_OK
+        data = rep.json()
+
+        assert data["amount"] == '10.17'
+        assert data["memo"] == "fuzz buzz"
+
+        assert data["date"] == transaction.date.strftime("%Y-%m-%d")
+        assert data["credit"].endswith(transaction.credit.get_api_url())
+        assert data["debit"].endswith(transaction.debit.get_api_url())
+        assert data["complete"] == transaction.complete
 
 
 ##########################################################################

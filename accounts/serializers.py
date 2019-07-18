@@ -93,33 +93,55 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class TransactionSerializer(serializers.ModelSerializer):
 
-    credit = AccountNameSerializer()
-    debit = AccountNameSerializer()
+    credit = serializers.HyperlinkedRelatedField(
+        view_name="api:accounts-detail",
+        queryset=Account.objects.all()
+    )
+
+    debit = serializers.HyperlinkedRelatedField(
+        view_name="api:accounts-detail",
+        queryset=Account.objects.all()
+    )
 
     class Meta:
         model = Transaction
         fields = ("id", "date", "credit", "debit", "amount", "complete", "memo",)
 
+    def validate_amount(self, value):
+        try:
+            return Decimal(value)
+        except TypeError as e:
+            raise serializers.ValidationError(str(e))
 
-class CreditTransactionSerializer(serializers.ModelSerializer):
+    def create(self, validated_data):
+        if "sheet" not in validated_data:
+            raise KeyError("view must specify the sheet associated with the transaction")
+        return super(TransactionSerializer, self).create(validated_data)
+
+
+class TransactionSummarySerializer(TransactionSerializer):
+
+    credit = AccountNameSerializer()
+    debit = AccountNameSerializer()
+
+
+class CreditTransactionSerializer(TransactionSerializer):
 
     # Assumes the target account is the credit account so retrieves the debit
     account = AccountNameSerializer(source="debit")
     amount = serializers.FloatField()
 
-    class Meta:
-        model = Transaction
+    class Meta(TransactionSerializer.Meta):
         fields = ("id", "account", "amount", "complete")
 
 
-class DebitTransactionSerializer(serializers.ModelSerializer):
+class DebitTransactionSerializer(TransactionSerializer):
 
     # Assumes the target account is the debit account so retrieves the credit
     account = AccountNameSerializer(source="credit")
     amount = serializers.FloatField()
 
-    class Meta:
-        model = Transaction
+    class Meta(TransactionSerializer.Meta):
         fields = ("id", "account", "amount", "complete")
 
 

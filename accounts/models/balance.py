@@ -77,7 +77,7 @@ class BalanceSheet(models.Model):
 
     def get_api_transactions_url(self):
         kwargs = {"sheet_date": self.date.strftime("%Y-%m-%d")}
-        return reverse("sheets-api:sheet-balances-list", kwargs=kwargs)
+        return reverse("sheets-api:sheet-transactions-list", kwargs=kwargs)
 
     def is_active(self):
         """
@@ -281,7 +281,7 @@ class Transaction(models.Model):
     def get_api_url(self):
         kwargs = {
             "pk": self.pk,
-            "sheet_date": self.date.strftime("%Y-%m-%d"),
+            "sheet_date": self.sheet.date.strftime("%Y-%m-%d"),
         }
         return reverse("sheets-api:sheet-transactions-detail", kwargs=kwargs)
 

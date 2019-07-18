@@ -20,10 +20,11 @@ from ..models import Account, Payment
 from ..models import BalanceSheet, Balance, Transaction
 from ..serializers import BalanceSerializer
 from ..serializers import AccountSerializer
+from ..serializers import PaymentSerializer
 from ..serializers import BalanceSheetDetailSerializer
 from ..serializers import BalanceSheetSummarySerializer
-from ..serializers import TransactionSerializer, PaymentSerializer
 from ..serializers import BalanceDetailSerializer, BalanceSummarySerializer
+from ..serializers import TransactionSerializer, TransactionSummarySerializer
 
 from rest_framework import status
 from rest_framework import viewsets
@@ -80,28 +81,24 @@ class BalanceSheetViewSet(viewsets.ModelViewSet):
 ## Balance Sheet Nested Resources
 ##########################################################################
 
-class BalanceViewSet(viewsets.ModelViewSet):
-    """
-    Account balances associated with a balance sheet
-    """
+class BalanceSheetNestedResource(viewsets.ModelViewSet):
 
-    permission_classes = [permissions.IsAdminUser]
+    model_class = None
+
+    def get_model_class(self):
+        assert self.model_class is not None, (
+            "'%s' should either include a `model_class` attribute, "
+            "or override the `get_model_class()` method."
+            % self.__class__.__name__
+        )
+
+        return self.model_class
 
     def get_queryset(self):
         sheet_date = self.kwargs['sheet_date']
         if not BalanceSheet.objects.filter(date=sheet_date).exists():
             raise NotFound("balance sheet for {} not found".format(sheet_date))
-        return Balance.objects.filter(sheet__date=sheet_date)
-
-    def get_serializer_class(self):
-        """
-        Returns list or detail balance serializers
-        """
-        if self.action == "list":
-            return BalanceSummarySerializer
-        elif self.action in {"create", "update"}:
-            return BalanceSerializer
-        return BalanceDetailSerializer
+        return self.get_model_class().objects.filter(sheet__date=sheet_date)
 
     def create(self, request, sheet_date=None):
         serializer = self.get_serializer(data=request.data)
@@ -121,16 +118,41 @@ class BalanceViewSet(viewsets.ModelViewSet):
         )
 
 
-class TransactionViewSet(viewsets.ReadOnlyModelViewSet):
+class BalanceViewSet(BalanceSheetNestedResource):
+    """
+    Account balances associated with a balance sheet
+    """
+
+    model_class = Balance
+    permission_classes = [permissions.IsAdminUser]
+
+    def get_serializer_class(self):
+        """
+        Returns the correct balance serializer based on the action
+        """
+        if self.action == "list":
+            return BalanceSummarySerializer
+        elif self.action in {"create", "update"}:
+            return BalanceSerializer
+        return BalanceDetailSerializer
+
+
+class TransactionViewSet(BalanceSheetNestedResource):
     """
     Transactions associated with a balance sheet
     """
 
+    model_class = Transaction
     serializer_class = TransactionSerializer
     permission_classes = [permissions.IsAdminUser]
 
-    def get_queryset(self):
-        return Transaction.objects.filter(sheet__date=self.kwargs['sheet_date'])
+    def get_serializer_class(self):
+        """
+        Returns the correct transaction serializer based on the action
+        """
+        if self.action in {"create", "update"}:
+            return TransactionSerializer
+        return TransactionSummarySerializer
 
 
 class PaymentsAPIView(viewsets.ModelViewSet):
@@ -145,7 +167,7 @@ class PaymentsAPIView(viewsets.ModelViewSet):
     @action(detail=True, methods=["get"])
     def transaction(self, request, pk=None):
         payment = self.get_object()
-        serializer = TransactionSerializer(
+        serializer = TransactionSummarySerializer(
             Transaction.from_payment(payment), context={'request': request}
         )
         return Response(serializer.data)
