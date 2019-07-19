@@ -14,16 +14,34 @@ $(document).ready(function () {
     var transactionForm = $("#transactionForm");
     var balanceForm = $("#balanceForm");
 
-    // Transactions Handlers
+    // Transaction and Balance handlers
+    transactionForm.submit(createNestedResource("transaction"));
+    balanceForm.submit(createNestedResource("balance"));
 
+    // Create nested resources
+    function createNestedResource(rtype) {
+        return function(e) {
+            e.preventDefault();
+            var form = $(e.target);
+            var url = form.attr("action");
+            var data = serializeData(form);
 
-    // Balance Handlers
+            $.post(url, data)
+                .fail(onAPIError)
+                .done(function(data) {
+                    form[0].reset();
+                    msg = rtype + " id " + data["id"] + " successfully created";
+                    alertMessage("alert-success", rtype + " created", msg);
+                });
 
+            console.log(url);
+            return false;
+        }
+    }
 
     // Payment Handlers
-
     // Fetch the transaction for the payment, populate the transactions form
-    // and redirect user tot he trnasactions tab to add the new transaction.
+    // and redirect user to the trnasactions tab to add the new transaction.
     paymentsForm.submit(function(e) {
         e.preventDefault();
         var url = serializeData(paymentsForm)["payment"];
@@ -87,10 +105,16 @@ $(document).ready(function () {
         if (jqXHR.responseText) {
             // Ensure that the error response can be debugged.
             console.log(jqXHR.responseText);
-
-            // TODO: Better handling of error response
             var data = JSON.parse(jqXHR.responseText);
-            alertMessage("alert-danger", "error", data[0]);
+
+            if (_.isArray(data)) {
+                // TODO: what if there are more than one error messages?
+                alertMessage("alert-danger", "error", data[0]);
+            } else {
+                _.each(data, function(val, key) {
+                    alertMessage("alert-danger", key, val);
+                });
+            }
         } else {
             // Fallback: just alert the HTTP error
             alertMessage("alert-danger", textStatus, errorThrown);
