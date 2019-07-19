@@ -30,7 +30,7 @@ $(document).ready(function () {
                 .fail(onAPIError)
                 .done(function(data) {
                     form[0].reset();
-                    msg = rtype + " id " + data["id"] + " successfully created";
+                    var msg = rtype + " id " + data["id"] + " successfully created";
                     alertMessage("alert-success", rtype + " created", msg);
                 });
 

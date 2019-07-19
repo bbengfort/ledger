@@ -15,8 +15,12 @@ Credit Score tracking model.
 ##########################################################################
 
 from datetime import date
-
 from django.db import models
+
+
+__all__ = [
+    "CreditScore",
+]
 
 
 ##########################################################################

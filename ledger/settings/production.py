@@ -15,7 +15,8 @@ Configuration for the production environment.
 ##########################################################################
 
 import os
-from .base import *
+from .base import *  # noqa
+from .base import PROJECT
 
 
 ##########################################################################
@@ -26,7 +27,7 @@ from .base import *
 DEBUG = False
 
 ## Hosts
-ALLOWED_HOSTS    = [
+ALLOWED_HOSTS = [
     'bengfort-ledger.herokuapp.com',
     'ledger.bengfort.com',
 ]
