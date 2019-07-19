@@ -15,6 +15,7 @@ Balance sheet related views (HTML)
 ##########################################################################
 
 from ..models import BalanceSheet
+from ..models import Account, Payment
 
 from django.http import Http404
 from django.views.generic import DetailView
@@ -22,9 +23,11 @@ from django.utils.translation import gettext as _
 from django.views.generic.dates import ArchiveIndexView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from collections import defaultdict
+
 
 __all__ = [
-    "BalanceSheetArchives", "BalanceSheetView",
+    "BalanceSheetArchives", "BalanceSheetView", "EditBalanceSheet",
 ]
 
 
@@ -99,4 +102,35 @@ class BalanceSheetView(LoginRequiredMixin, DetailView):
         """
         context = super(BalanceSheetView, self).get_context_data(**kwargs)
         context['dashboard'] = 'sheets'
+        return context
+
+
+class EditBalanceSheet(BalanceSheetView):
+
+    model = BalanceSheet
+    template_name = "balance_sheet_edit.html"
+
+    def get_context_data(self, **kwargs):
+        """
+        Context data to populate form selections and other elements.
+        """
+        context = super(EditBalanceSheet, self).get_context_data(**kwargs)
+
+        # Add hierarchical accounts for account selection
+        context["accounts"] = defaultdict(list)
+        accounts = Account.objects.filter(active=True).order_by("order")
+
+        for account in accounts:
+            context["accounts"][account.get_type_display()].append(account)
+
+        # Add payments for payment selection
+        context["payments"] = defaultdict(list)
+        payments = Payment.objects.filter(active=True)
+
+        for payment in payments:
+            context["payments"][payment.get_frequency_display()].append(payment)
+
+        # Django cannot parse defaultdict, so make sure to change factory before return
+        context["accounts"].default_factory = None
+        context["payments"].default_factory = None
         return context
