@@ -27,8 +27,7 @@ from collections import defaultdict
 
 
 __all__ = [
-    "BalanceSheetArchives", "BalanceSheetView",
-    "EditBalanceSheet",
+    "BalanceSheetArchives", "BalanceSheetView", "EditBalanceSheet",
 ]
 
 
