@@ -16,7 +16,8 @@ Testing settings to enable testing on Travis with Django tests.
 
 import dj_database_url
 
-from .base import *
+from .base import *  # noqa
+from .base import REST_FRAMEWORK
 
 
 ##########################################################################
@@ -24,7 +25,7 @@ from .base import *
 ##########################################################################
 
 ## Hosts
-ALLOWED_HOSTS    = ['localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 ## Database Settings
 ## https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -36,11 +37,11 @@ DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 DATABASES['default']['TEST'] = {'NAME': 'ledger_test'}
 
 
-STATICFILES_STORAGE =  'django.contrib.staticfiles.storage.StaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 ## Content without side effects
-MEDIA_ROOT         = "/tmp/ledger_test/media"
-STATIC_ROOT        = "/tmp/ledger_test/static"
+MEDIA_ROOT = "/tmp/ledger_test/media"
+STATIC_ROOT = "/tmp/ledger_test/static"
 
 ##########################################################################
 ## Django REST Framework

@@ -10,8 +10,8 @@ $(document).ready(function() {
 
   // Add the click event for any table row
   $('[data-toggle="balance"]').click(function(e) {
-    row = $(this);
-    modalId = row.data("target");
+    var row = $(this),
+    modalId = row.data("target"),
     endpoint = row.data("url");
 
     // Fetch the data from the endpoint

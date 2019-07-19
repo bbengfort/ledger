@@ -15,7 +15,8 @@ Configuration for the development environment.
 ##########################################################################
 
 import os
-from .base import *
+from .base import *  # noqa
+from .base import PROJECT
 
 
 ##########################################################################

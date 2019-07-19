@@ -31,10 +31,12 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_nested import routers
 
-from ledger.views import *
-from accounts.views import *
-from budget.views import *
-from taxes.views import *
+from ledger.views import HeartbeatViewSet, Overview
+from budget.views import LatestBudget, BudgetDashboard
+from taxes.views import TaxReturnViewSet, TaxesDashboard
+from accounts.views import AccountViewSet, PaymentsAPIView, CashFlow
+from accounts.views import BalanceSheetViewSet, BalanceViewSet, TransactionViewSet
+from accounts.views import BalanceSheetArchives, BalanceSheetView, EditBalanceSheet
 
 
 ##########################################################################

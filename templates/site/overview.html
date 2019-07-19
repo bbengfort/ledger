@@ -165,7 +165,7 @@
       var ctx = document.getElementById('cashvdebt').getContext('2d');
       var labels = _.map(_.pluck(data, "date"), fmtDate);
 
-      var chart = new Chart(ctx, {
+      new Chart(ctx, {
           // The type of chart we want to create
           type: 'bar',
 
