@@ -1,6 +1,6 @@
 ## Web Application
 bokeh==0.12.15
-Django==2.2.3
+Django==2.2.4
 django-rest-framework==0.1.0
 djangorestframework==3.10.0
 dj-database-url==0.5.0
