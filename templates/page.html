@@ -1,26 +1,47 @@
 {% extends 'base.html' %}
 
 {% block body %}
+  <div class="be-wrapper be-fixed-sidebar">
 
-  <div id="wrap">
-
-    {% block navbar %}
-      {% include 'components/navbar.html' %}
+    {% block topbar %}
+      {% include 'components/topbar.html' %}
     {% endblock %}
 
-    <!-- Begin page content -->
-    <div id="content">
+    {% block sidebar %}
+      {% include 'components/sidebar.html' %}
+    {% endblock %}
+
+    <!-- begin primary page content -->
+    <div class="be-content">
     {% block content %}
+      {% block page-head %}
+      <!-- page header and breadcrumbs -->
+      <div class="page-head">
+        <h2 class="page-head-title">{% block page-head-title %}Blank Page{% endblock %}</h2>
+        {% block page-head-breadcrumbs %}
+        <nav aria-label="breadcrumb" role="navigation">
+          <ol class="breadcrumb page-head-nav">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item"><a href="#">Pages</a></li>
+            <li class="breadcrumb-item active">Blank Page Header</li>
+          </ol>
+        </nav>
+        {% endblock %}
+      </div><!-- page header ends -->
+      {% endblock %}
+
+      <!-- main content -->
+      <div class="main-content container-fluid">
+        {% block page %}
+        <h3 class="text-center">Content goes here!</h3>
+        {% endblock %}
+      </div><!-- main content ends -->
     {% endblock %}
-    </div>
+    </div><!-- primary page content end -->
 
-  </div>
+    {% block tray %}
+      {% include 'components/tray.html' %}
+    {% endblock %}
 
-  {% block footer %}
-    {% include 'components/footer.html' %}
-  {% endblock %}
-
-  {% block modals %}
-    {{ block.super }}
-  {% endblock %}
+  </div><!-- page wrapper ends -->
 {% endblock %}
