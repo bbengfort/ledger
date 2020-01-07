@@ -54,8 +54,8 @@ router.register(r'cashflow', CashFlow, "cashflow")
 
 # Routes nested below sheets
 sheets_router = routers.NestedDefaultRouter(router, r'sheets', lookup='sheet')
-sheets_router.register(r'balances', BalanceViewSet, base_name='sheet-balances')
-sheets_router.register(r'transactions', TransactionViewSet, base_name='sheet-transactions')
+sheets_router.register(r'balances', BalanceViewSet, basename='sheet-balances')
+sheets_router.register(r'transactions', TransactionViewSet, basename='sheet-transactions')
 
 
 ##########################################################################
