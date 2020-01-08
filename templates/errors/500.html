@@ -1,4 +1,8 @@
 {% extends 'errors/base.html' %}
 
-{% block error_title %}A Server 500 Error occurred!{% endblock %}
-{% block error_description %}Something very bad happened.{% endblock %}
+{% block error-number %}500{% endblock %}
+{% block error-description %}Something very bad happened.{% endblock %}
+{% block error-goback-text %}We've notified the admins via email!{% endblock %}
+{% block error-goback-button %}
+<a class="btn btn-xl btn-danger" href="{%  url 'overview' %}">Back to Safety</a>
+{% endblock %}
