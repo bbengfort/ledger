@@ -1,146 +1,167 @@
-{% extends 'site/dashboard.html' %}
+{% extends 'page.html' %}
 {% load accounting %}
 {% load humanize %}
 
-{% block dashboard-title %}{{ budget }}{% endblock %}
+{% block page-head-title %}{{ budget }}{% endblock %}
+{% block page-head-breadcrumbs %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb page-head-nav">
+    <li class="breadcrumb-item"><a href="{% url 'overview' %}">Overview</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'budget-archive' %}">Budgets</a></li>
+    <li class="breadcrumb-item active">{{ budget.year }}</li>
+  </ol>
+</nav>
+{% endblock %}
 
-{% block dashboard-content %}
-
-    <div class="row">
-        <div class="col-sm mb-2">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">Summary</h6>
-                </div>
-                <div class="card-body">
-                    {{budget.description|linebreaks}}
-
-                <table class="table mb-0 table-hover table-sm table-pointer">
-                    <tr>
-                        <td style="width:30%">Monthly Expected Income</td>
-                        <td>
-                            <span class="pull-left">$</span>
-                            <span class="pull-right">{{ budget.monthly_income|intcomma }}</span>
-                            <div class="clearfix"></div>
-                        </td>
-                        <td style="width:30%"><span class="pl-4">Total Income</span></td>
-                        <td>
-                            <span class="pull-left">$</span>
-                            <span class="pull-right">{{ budget.total_income|intcomma }}</span>
-                            <div class="clearfix"></div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="width:30%">Monthly Expected Expenses</td>
-                        <td>
-                            <span class="pull-left">$</span>
-                            <span class="pull-right">{{ budget.monthly_expenses|intcomma }}</span>
-                            <div class="clearfix"></div>
-                        </td>
-                        <td style="width:30%"><span class="pl-4">Total Expenses</span></td>
-                        <td>
-                            <span class="pull-left">$</span>
-                            <span class="pull-right">{{ budget.total_expenses|intcomma }}</span>
-                            <div class="clearfix"></div>
-                        </td>
-                    </tr>
-                    <tr style="font-weight: bold;">
-                        {% with savings=budget.monthly_savings %}
-                        <td style="width:30%">Monthly Expected Savings</td>
-                        <td class="{% if savings > 0 %}text-success{% else %}text-danger{% endif %}">
-                            <span class="pull-left">$</span>
-                            <span class="pull-right">{{ savings|intcomma }}</span>
-                            <div class="clearfix"></div>
-                        </td>
-                        {% endwith %}
-                        {% with savings=budget.total_savings %}
-                        <td style="width:30%"><span class="pl-4">Total Savings</span></td>
-                        <td class="{% if savings > 0 %}text-success{% else %}text-danger{% endif %}">
-                            <span class="pull-left">$</span>
-                            <span class="pull-right">{{ savings|intcomma }}</span>
-                            <div class="clearfix"></div>
-                        </td>
-                        {% endwith %}
-                    </tr>
-
-                </table>
-                </div>
-            </div>
+{% block page %}
+<div class="row">
+  <div class="col-md">
+    <div class="card card-table card-border-color card-border-color-primary">
+      <div class="card-header">
+        Summary
+      </div>
+      <div class="card-body">
+        <div class="px-4">
+          {{ budget.description|linebreaks }}
         </div>
+        <table class="table table-hover table-sm table-pointer">
+          <tr>
+            <td style="width:30%">Monthly Expected Income</td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ budget.monthly_income|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+            <td style="width:30%"><span class="pl-4">Total Income</span></td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ budget.total_income|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+          </tr>
+          <tr>
+            <td style="width:30%">Monthly Expected Expenses</td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ budget.monthly_expenses|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+            <td style="width:30%"><span class="pl-4">Total Expenses</span></td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ budget.total_expenses|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+          </tr>
+          <tr>
+            {% with savings=budget.monthly_savings %}
+            <td style="width:30%"><strong>Monthly Expected Savings</strong></td>
+            <td class="{% if savings > 0 %}text-success{% else %}text-danger{% endif %}">
+              <strong>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ savings|intcomma }}</span>
+              </strong>
+              <div class="clearfix"></div>
+            </td>
+            {% endwith %}
+            {% with savings=budget.total_savings %}
+            <td style="width:30%"><strong><span class="pl-4">Total Savings</span></strong></td>
+            <td class="{% if savings > 0 %}text-success{% else %}text-danger{% endif %}">
+              <strong>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ savings|intcomma }}</span>
+              </strong>
+              <div class="clearfix"></div>
+            </td>
+            {% endwith %}
+          </tr>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="row">
-        <div class="col-sm mb-2">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">Income Sources</h5>
-                </div>
-                <div class="card-body mb-0">
-            <table class="table mb-0 table-hover table-sm table-pointer">
-                {% for line in budget.income_items %}
-                <tr>
-                    <td>{{line.name}}</td>
-                    <td class="text-right">${{line.amount|intcomma}} {{line.frequency_text}}</td>
-                    <td>
-                        <span class="pull-left">$</span>
-                        <span class="pull-right">{{ line.total|intcomma }}</span>
-                        <div class="clearfix"></div>
-                    </td>
-                    <td>{{line.notes}}</td>
-                </tr>
-                {% endfor %}
-                <tr>
-                    <td colspan="2" class="text-right"><strong>Total</strong></td>
-                    <td>
-                        <strong>
-                        <span class="pull-left">$</span>
-                        <span class="pull-right">{{ budget.total_income|intcomma }}</span>
-                        </strong>
-                        <div class="clearfix"></div>
-                    </td>
-                    <td></td>
-                </tr>
-            </table>
-            </div>
-            </div>
-        </div>
+<div class="row">
+  <div class="col-md">
+    <div class="card card-table card-border-color card-border-color-success">
+      <div class="card-header">
+        Income Sources
+      </div>
+      <div class="card-body">
+        <table class="table table-hover table-sm table-pointer">
+          {% for line in budget.income_items %}
+          <tr>
+            <td style="width:25%">{{line.name}}</td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ line.amount|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+            <td>{{line.frequency_text}}</td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ line.total|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+            <td style="width:40%">{{line.notes}}</td>
+          </tr>
+          {% endfor %}
+          <tr class="table-success">
+            <td style="width:25%" colspan="3"></td>
+            <td>
+              <strong>
+                <span class="float-left">$</span>
+                <span class="float-right">{{ budget.total_income|intcomma }}</span>
+              </strong>
+              <div class="clearfix"></div>
+            </td>
+            <td style="width:40%"><strong>Total Expected Income</strong></td>
+          </tr>
+        </table>
+      </div>
     </div>
+  </div>
+</div>
 
-    <div class="row">
-        <div class="col-sm mb-2">
-            <div class="card">
-                <div class="card-header">
-                    <h6 class="mb-0">Expenses</h5>
-                </div>
-                <div class="card-body mb-0">
-                    <table class="table mb-0 table-hover table-sm table-pointer">
-                        {% for line in budget.expense_items %}
-                        <tr>
-                            <td>{{line.name}}</td>
-                            <td class="text-right">${{line.amount|intcomma}} {{line.frequency_text}}</td>
-                            <td>
-                                <span class="pull-left">$</span>
-                                <span class="pull-right">{{ line.total|intcomma }}</span>
-                                <div class="clearfix"></div>
-                            </td>
-                            <td>{{line.notes}}</td>
-                        </tr>
-                        {% endfor %}
-                        <tr>
-                            <td colspan="2" class="text-right"><strong>Total</strong></td>
-                            <td>
-                                <strong>
-                                    <span class="pull-left">$</span>
-                                    <span class="pull-right">{{ budget.total_expenses|intcomma }}</span>
-                                </strong>
-                                <div class="clearfix"></div>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
+<div class="row">
+  <div class="col-md">
+    <div class="card card-table card-border-color card-border-color-danger">
+      <div class="card-header">
+        Expenses
+      </div>
+      <div class="card-body">
+        <table class="table table-hover table-sm table-pointer">
+          {% for line in budget.expense_items %}
+          <tr>
+            <td style="width:25%">{{line.name}}</td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ line.amount|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+            <td>{{line.frequency_text}}</td>
+            <td>
+              <span class="float-left">$</span>
+              <span class="float-right">{{ line.total|intcomma }}</span>
+              <div class="clearfix"></div>
+            </td>
+            <td style="width:40%">{{line.notes}}</td>
+          </tr>
+          {% endfor %}
+          <tr class="table-danger">
+            <td style="width:25%" colspan="3"></td>
+            <td>
+              <strong>
+                <span class="float-left">$</span>
+                <span class="float-right">{{ budget.total_expenses|intcomma }}</span>
+              </strong>
+              <div class="clearfix"></div>
+            </td>
+            <td style="width:40%"><strong>Total Expected Expenses</strong></td>
+          </tr>
+        </table>
+      </div>
     </div>
-
+  </div>
+</div>
 {% endblock %}

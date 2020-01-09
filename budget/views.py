@@ -20,9 +20,9 @@ Views for the budget app
 from .models import Budget
 
 from django.http import Http404
-from django.views.generic import DetailView
 from django.utils.translation import gettext as _
 from django.views.generic.base import RedirectView
+from django.views.generic import DetailView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 
@@ -76,8 +76,19 @@ class BudgetDashboard(LoginRequiredMixin, DetailView):
 
         return obj
 
-
     def get_context_data(self, **kwargs):
         context = super(BudgetDashboard, self).get_context_data(**kwargs)
+        context['dashboard'] = 'budget'
+        return context
+
+
+class BudgetArchives(LoginRequiredMixin, ListView):
+
+    model = Budget
+    template_name = "budget_archive.html"
+    context_object_name = "budgets"
+
+    def get_context_data(self, **kwargs):
+        context = super(BudgetArchives, self).get_context_data(**kwargs)
         context['dashboard'] = 'budget'
         return context

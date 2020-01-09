@@ -1,0 +1,38 @@
+{% extends 'page.html' %}
+{% load accounting %}
+{% load humanize %}
+
+{% block page-head-title %}Budget Archives{% endblock %}
+{% block page-head-breadcrumbs %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb page-head-nav">
+    <li class="breadcrumb-item"><a href="{% url 'overview' %}">Overview</a></li>
+    <li class="breadcrumb-item active">Budgets</li>
+  </ol>
+</nav>
+{% endblock %}
+
+{% block page %}
+<div class="row">
+  {% for budget in budgets %}
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">{{ budget }}</div>
+      <div class="card-body">
+        {{budget.description|linebreaks}}
+        <a class="btn btn-primary mt-2" href="{{ budget.get_absolute_url }}">View Budget</a>
+      </div>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-lg-4">
+    <div class="card">
+      <div class="card-header">Archive is empty</div>
+      <div class="card-body">
+        <p>No budgets have been created yet, but it's a really good idea to do so!</p>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
