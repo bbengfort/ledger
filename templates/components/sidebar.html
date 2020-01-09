@@ -1,7 +1,7 @@
 {% load static %}
 <!-- sidebar with primary application navigation -->
 <div class="be-left-sidebar">
-  <div class="left-sidebar-wrapper"><a class="left-sidebar-toggle" href="#">Blank Page</a>
+  <div class="left-sidebar-wrapper"><a class="left-sidebar-toggle" href="#">{% block page-left-sidebar-title %}{% if dashboard %}{{ dashboard|title }}{% else %}Blank Page{% endif %}{% endblock %}</a>
     <div class="left-sidebar-spacer">
       <div class="left-sidebar-scroll">
         <div class="left-sidebar-content">

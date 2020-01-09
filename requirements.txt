@@ -1,5 +1,4 @@
 ## Web Application
-bokeh==0.12.15
 Django==3.0.2
 django-rest-framework==0.1.0
 djangorestframework==3.11.0
@@ -30,15 +29,6 @@ six==1.13.0
 # requests-oauthlib==1.2.0
 # sqlparse==0.3.0
 # urllib3==1.24.3
-
-## Bokeh Subdependencies:
-# Jinja2==2.10.1
-# MarkupSafe==1.1.1
-# numpy==1.16.4
-# packaging==19.0
-# pyparsing==2.4.0
-# PyYAML==5.1.1
-# tornado==6.0.3
 
 ## Test Dependencies
 ## Uncomment these for development

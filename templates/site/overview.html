@@ -1,9 +1,10 @@
-{% extends 'site/dashboard.html' %}
+{% extends 'page.html' %}
 {% load accounting %}
 
-{% block dashboard-title %}Overview{% endblock %}
+{% block page-head-title %}{% endblock %}
+{% block page-head-breadcrumbs %}{% endblock %}
 
-{% block dashboard-content %}
+{% block page %}
 
   <div class="card-deck">
 
@@ -202,6 +203,13 @@
                 stacked: true
               }]
             },
+            tooltips: {
+              callbacks: {
+                label: function (tooltipItem, data) {
+                  return tooltipItem.yLabel.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                }
+              }
+            }
           },
       });
     }

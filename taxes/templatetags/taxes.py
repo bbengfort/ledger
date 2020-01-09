@@ -23,8 +23,8 @@ register = template.Library()
 @register.simple_tag()
 def prev_year_change(txr, field):
     if txr.prev_year_change(field) >= 0:
-        icon = '<big><i class="fa fa-caret-up text-success"></i></big>'
+        icon = '<big class="icon"><i class="mdi mdi-caret-up text-success"></i></big>'
     else:
-        icon = '<big><i class="fa fa-caret-down text-danger"></i></big>'
+        icon = '<big class="icon"><i class="mdi mdi-caret-down text-danger"></i></big>'
 
     return mark_safe(icon)
