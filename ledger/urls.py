@@ -32,11 +32,12 @@ from django.urls import path, include
 from rest_framework_nested import routers
 
 from ledger.views import HeartbeatViewSet, Overview
-from accounts.views import AccountViewSet, PaymentsAPIView, CashFlow
+from accounts.views import CreditScoreViewSet, Investments
 from budget.views import LatestBudget, BudgetDashboard, BudgetArchives
 from taxes.views import TaxReturnViewSet, TaxesDashboard, TaxesCSVDownload
 from accounts.views import BalanceSheetViewSet, BalanceViewSet, TransactionViewSet
 from accounts.views import BalanceSheetArchives, BalanceSheetView, EditBalanceSheet
+from accounts.views import AccountViewSet, PaymentsAPIView, CashFlow, MonthlySavings
 
 
 ##########################################################################
@@ -51,6 +52,9 @@ router.register(r'accounts', AccountViewSet, "accounts")
 router.register(r'payments', PaymentsAPIView, "payments")
 router.register(r'returns', TaxReturnViewSet, "returns")
 router.register(r'cashflow', CashFlow, "cashflow")
+router.register(r'savings', MonthlySavings, "savings")
+router.register(r'creditscore', CreditScoreViewSet, "creditscores")
+router.register(r'investments', Investments, "investments")
 
 # Routes nested below sheets
 sheets_router = routers.NestedDefaultRouter(router, r'sheets', lookup='sheet')

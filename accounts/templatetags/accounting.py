@@ -101,10 +101,10 @@ def direction(before, after):
     delta = after - before
 
     if delta > 0:
-        icon = '<big><i class="fa fa-caret-up text-success"></i></big>'
+        icon = '<i class="mdi mdi-trending-up text-success"></i>'
     elif delta == 0:
-        icon = '<big><i class="fa fa-caret-right text-muted"></i></big>'
+        icon = '<i class="mdi mdi-trending-flat"></i>'
     else:
-        icon = '<big><i class="fa fa-caret-down text-danger"></i></big>'
+        icon = '<i class="mdi mdi-trending-down text-danger"></i>'
 
     return mark_safe(icon)

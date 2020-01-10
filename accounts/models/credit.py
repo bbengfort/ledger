@@ -22,6 +22,11 @@ __all__ = [
     "CreditScore",
 ]
 
+# Trends
+UP = "up"
+DOWN = "down"
+FLAT = "flat"
+
 
 ##########################################################################
 ## Credit Score
@@ -108,3 +113,17 @@ class CreditScore(models.Model):
         Returns the percentage of the maximum score.
         """
         return (float(self.score) / 850.0) * 100
+
+    def trend(self):
+        """
+        Returns the trend -- "up", "down", or "flat" based on the previous score. If
+        there is no previous score, then "flat" is returned.
+        """
+        model = self.__class__
+        prev = model.objects.filter(source=self.source, date__lt=self.date).first()
+        if model is None or prev.score == self.score:
+            return FLAT
+
+        if self.score > prev.score:
+            return UP
+        return DOWN

@@ -32,11 +32,14 @@ $(document).ready(function () {
 
 
   function taxReturnChart(data) {
-    //Set the chart colors
+    // Data is expected to be ordered by year descending
+    data.reverse();
+
+    // Set the chart colors
     var color1 = tinycolor(App.color.primary);
     var color2 = tinycolor(App.color.success);
 
-    //Get the canvas element
+    // Get the canvas element
     var ctx = document.getElementById("taxes-bar-chart");
     var data = {
       labels: _.pluck(data, "year"),

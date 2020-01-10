@@ -15,6 +15,7 @@ Data serialization for the JSON API
 ##########################################################################
 
 from .utils import Currency
+from .models import CreditScore
 from .models import Account, Company, Payment
 from .models import BalanceSheet, Balance, Transaction
 
@@ -304,3 +305,17 @@ class BalanceSheetDetailSerializer(BalanceSheetSerializer):
 
     class Meta(BalanceSheetSerializer.Meta):
         fields = ("url", "date", "title", "memo", "balances", "transactions",)
+
+
+##########################################################################
+## Credit Score Serializers
+##########################################################################
+
+class CreditScoreSerializer(serializers.HyperlinkedModelSerializer):
+
+    class Meta:
+        model = CreditScore
+        fields = ("url", "date", "score", "source")
+        extra_kwargs = {
+            "url": {"view_name": "api:creditscores-detail"}
+        }

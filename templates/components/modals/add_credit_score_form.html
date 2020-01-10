@@ -1,0 +1,22 @@
+<!-- add credit score form modal -->
+<div class="modal fade colored-header colored-header-warning" id="addCreditScoreModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header modal-header-colored">
+        <h3 class="modal-title">Add Credit Score</h3>
+        <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true">
+          <span class="mdi mdi-close"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addCreditScoreForm" method="POST" action="/foo">
+          {% csrf_token %}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary md-close" type="button" data-dismiss="modal">Cancel</button>
+        <button class="btn btn-warning md-close" type="submit" form="addCreditScoreForm">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div><!-- end add credit score form modal -->
