@@ -20,6 +20,7 @@ from decimal import Decimal
 from django.db import models
 from django.urls import reverse
 
+from ..managers import TransactionManager
 from ..managers import BalanceSheetManager
 from ..managers import AccountBalanceTypeManager
 
@@ -280,6 +281,9 @@ class Transaction(models.Model):
         db_table = "transactions"
         ordering = ("-date",)
         get_latest_by = "date"
+
+    # Transaction manager
+    objects = TransactionManager()
 
     @classmethod
     def from_payment(klass, payment):
