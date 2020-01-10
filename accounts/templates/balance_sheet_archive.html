@@ -1,8 +1,16 @@
-{% extends 'site/dashboard.html' %}
+{% extends 'page.html' %}
 
-{% block dashboard-title %}Balance Sheets{% endblock %}
+{% block page-head-title %}Balance Sheets{% endblock %}
+{% block page-head-breadcrumbs %}
+<nav aria-label="breadcrumb" role="navigation">
+  <ol class="breadcrumb page-head-nav">
+    <li class="breadcrumb-item"><a href="{% url 'overview' %}">Overview</a></li>
+    <li class="breadcrumb-item active">Balance Sheets</li>
+  </ol>
+</nav>
+{% endblock %}
 
-{% block dashboard-content %}
+{% block page %}
 
   <div class="row">
     <div class="col-sm">

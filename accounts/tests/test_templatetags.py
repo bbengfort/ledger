@@ -39,10 +39,10 @@ def test_accounting_amount(amount, currency, expected):
 
 
 @pytest.mark.parametrize("before,after,expected", [
-    (49.20, 100.10, '<big><i class="fa fa-caret-up text-success"></i></big>'),
-    (100.10, 49.20, '<big><i class="fa fa-caret-down text-danger"></i></big>'),
-    (53.50, 53.50, '<big><i class="fa fa-caret-right text-muted"></i></big>'),
-    (None, None, '<big><i class="fa fa-caret-right text-muted"></i></big>'),
+    (49.20, 100.10, '<i class="mdi mdi-trending-up text-success"></i>'),
+    (100.10, 49.20, '<i class="mdi mdi-trending-down text-danger"></i>'),
+    (53.50, 53.50, '<i class="mdi mdi-trending-flat"></i>'),
+    (None, None, '<i class="mdi mdi-trending-flat"></i>'),
 ])
 def test_direction(before, after, expected):
     """
@@ -68,10 +68,10 @@ class TestAccountingTags(SimpleTestCase):
         )
 
         rendered = template.render(Context({}))
-        self.assertInHTML('<span class="pull-left">$</span>', rendered)
-        self.assertInHTML('<span class="pull-right">23.22</span>', rendered)
-        self.assertInHTML('<span class="pull-right">(3,922.12)</span>', rendered)
-        self.assertInHTML('<span class="pull-left">£</span>', rendered)
+        self.assertInHTML('<span class="float-left">$</span>', rendered)
+        self.assertInHTML('<span class="float-right">23.22</span>', rendered)
+        self.assertInHTML('<span class="float-right">(3,922.12)</span>', rendered)
+        self.assertInHTML('<span class="float-left">£</span>', rendered)
 
     @pytest.mark.skip(reason="needs implementation")
     def test_account_balance(self):

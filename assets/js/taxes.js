@@ -56,7 +56,7 @@ $(document).ready(function () {
       }]
     };
 
-    var bar = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'bar',
       data: data,
       options: {

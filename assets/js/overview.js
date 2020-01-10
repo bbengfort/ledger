@@ -204,7 +204,6 @@ $(document).ready(function () {
     var color1 = tinycolor(App.color.primary);
     var color2 = tinycolor(App.color.warning);
     var color3 = tinycolor(App.color.success);
-    var color4 = tinycolor(App.color.danger);
 
     $.get("/api/creditscore/")
       .done(function(data) {
