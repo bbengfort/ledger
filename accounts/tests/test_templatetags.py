@@ -101,7 +101,7 @@ class TestAccountingTags(SimpleTestCase):
         template = Template('{% load buttons %}{% print_button %}')
         rendered = template.render(Context({}))
         # self.assertInHTML('<a href="?print=True">', rendered)
-        self.assertInHTML('<i class="fa fa-print">', rendered)
+        self.assertInHTML('<i class="icon icon-left mdi mdi-print">', rendered)
 
     def test_edit_button(self):
         """
@@ -109,7 +109,7 @@ class TestAccountingTags(SimpleTestCase):
         """
         template = Template('{% load buttons %}{% edit_button %}')
         rendered = template.render(Context({}))
-        self.assertInHTML('<i class="fa fa-edit">', rendered)
+        self.assertInHTML('<i class="icon icon-left mdi mdi-edit">', rendered)
 
     @pytest.mark.skip(reason="needs implementation")
     def test_next_sheet(self):

@@ -12,7 +12,7 @@ $(document).ready(function() {
   $('[data-toggle="balance"]').click(function(e) {
     var row = $(this),
     modalId = row.data("target"),
-    endpoint = row.data("url");
+    endpoint = row.data("url"),
     modalTitle = row.data("accountName");
 
     // Set title of modal while we're loading the data
