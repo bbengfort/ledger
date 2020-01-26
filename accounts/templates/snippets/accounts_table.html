@@ -12,7 +12,7 @@
     </thead>
     <tbody>
       {% for balance in balances %}
-      <tr data-toggle="balance" data-target="#balanceModal" data-url="{{ balance.get_api_url }}">
+      <tr data-toggle="balance" data-target="#balanceModal" data-url="{{ balance.get_api_url }}" data-account-name="{{ balance.account }}">
         <td>{{ balance.account.bank }}</td>
         <td>{{ balance.account.name }}</td>
         <td>{% account_balance balance beginning=True %}</td>

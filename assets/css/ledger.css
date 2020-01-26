@@ -84,3 +84,8 @@ time.icon span
 .table-pointer tr {
     cursor: pointer;
 }
+
+.modal table {
+  table-layout:fixed;
+  width:100%;
+}
