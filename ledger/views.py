@@ -26,6 +26,7 @@ from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
 
+from taxes.models import TaxReturn
 from accounts.models import BalanceSheet, CreditScore
 
 
@@ -39,11 +40,33 @@ class Overview(LoginRequiredMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Overview, self).get_context_data(**kwargs)
+        context = self.get_latest_sheet_context(context)
         context['dashboard'] = 'overview'
-        context['latest_sheet'] = BalanceSheet.objects.latest()
         context['credit_score'] = CreditScore.objects.filter(preferred=True).latest()
+        context['credit_score_history'] = CreditScore.objects.order_by("-date")[:4]
+        context['tax_return'] = TaxReturn.objects.latest()
         return context
 
+    def get_latest_sheet_context(self, context):
+        sheet = BalanceSheet.objects.latest()
+        context['latest_sheet'] = sheet
+
+        prev_sheet = sheet.prev_sheet()
+        if prev_sheet:
+            # Compute monthly savings
+            ccash = sheet.balances.cash_accounts().totals()['ending__sum']
+            pcash = prev_sheet.balances.cash_accounts().totals()['ending__sum']
+            context['monthly_savings'] = ccash - pcash if ccash and pcash else 0
+
+            # Compute investment increase
+            cinvt = sheet.balances.investment_accounts().totals()['ending__sum']
+            pinvt = prev_sheet.balances.investment_accounts().totals()['ending__sum']
+            context['investment_increase'] = float(cinvt / pinvt) * 100 if cinvt and pinvt else 0
+        else:
+            context['monthly_savings'] = 0
+            context['investment_increase'] = 0
+
+        return context
 
 ##########################################################################
 ## API Views

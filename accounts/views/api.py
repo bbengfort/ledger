@@ -16,11 +16,12 @@ API ViewSets and controllers
 
 from django.db import connection
 
-from ..models import Account, Payment
+from ..models import Account, Payment, CreditScore
 from ..models import BalanceSheet, Balance, Transaction
 from ..serializers import BalanceSerializer
 from ..serializers import AccountSerializer
 from ..serializers import PaymentSerializer
+from ..serializers import CreditScoreSerializer
 from ..serializers import BalanceSheetDetailSerializer
 from ..serializers import BalanceSheetSummarySerializer
 from ..serializers import BalanceDetailSerializer, BalanceSummarySerializer
@@ -37,7 +38,8 @@ from rest_framework.exceptions import NotFound
 __all__ = [
     "AccountViewSet", "BalanceSheetViewSet",
     "BalanceViewSet", "TransactionViewSet",
-    "PaymentsAPIView", "CashFlow",
+    "CreditScoreViewSet",
+    "PaymentsAPIView", "CashFlow", "MonthlySavings", "Investments",
 ]
 
 
@@ -53,6 +55,15 @@ class AccountViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Account.objects.filter(active=True)
     serializer_class = AccountSerializer
     permission_classes = [permissions.IsAdminUser]
+
+
+class CreditScoreViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    Display credit score history
+    """
+
+    queryset = CreditScore.objects.filter(preferred=True).order_by("-date")[:20]
+    serializer_class = CreditScoreSerializer
 
 
 ##########################################################################
@@ -216,4 +227,80 @@ class CashFlow(viewsets.ViewSet):
             columns = [col[0] for col in cursor.description]
 
             data = [dict(zip(columns, row)) for row in cursor.fetchall()]
+            return Response(data)
+
+
+class MonthlySavings(viewsets.ViewSet):
+    """
+    Provides a view on how much money is being saved each month by computing the
+    difference between each balance sheet's ending net cash.
+    """
+
+    # TODO: move this to a SQL file that can be loaded on demand
+    QUERY = (
+        "WITH cash_ending_balances AS ("
+        "    SELECT s.date, a.type, b.ending as ending_balance FROM balances b"
+        "        JOIN balance_sheets s ON b.sheet_id = s.id"
+        "        JOIN accounts a ON b.account_id = a.id"
+        "    WHERE a.active = 't' AND a.exclude = 'f' AND a.type = 'Ca'"
+        "), ending_cash AS ("
+        "    SELECT date, sum(ending_balance) as ending_cash FROM cash_ending_balances"
+        "        GROUP BY date"
+        "        ORDER BY date DESC"
+        "        LIMIT 13"
+        ") "
+        "SELECT date, ending_cash, ending_cash - lag(ending_cash) over (order by date) as savings"
+        "    FROM ending_cash"
+        "    ORDER BY date DESC"
+    )
+
+    def list(self, request):
+        """
+        Prepare the response for the past 18 months.
+        """
+        with connection.cursor() as cursor:
+            # Execute the large query
+            cursor.execute(self.QUERY)
+            columns = [col[0] for col in cursor.description]
+
+            # Trim the last row since it won't have a savings computation from the lag window
+            data = [dict(zip(columns, row)) for row in cursor.fetchall()][:-1]
+            return Response(data)
+
+
+class Investments(viewsets.ViewSet):
+    """
+    Provides a view on how how our investments and retirement accounts are growing over
+    time and the percent change from the previous month.
+    """
+
+    # TODO: move this to a SQL file that can be loaded on demand
+    QUERY = (
+        "WITH investment_ending_balances AS ("
+        "    SELECT s.date, a.type, b.ending as ending_balance FROM balances b"
+        "        JOIN balance_sheets s ON b.sheet_id = s.id"
+        "        JOIN accounts a ON b.account_id = a.id"
+        "    WHERE a.active = 't' AND a.exclude = 'f' AND a.type = 'Iv'"
+        "), ending_investment AS ("
+        "    SELECT date, sum(ending_balance) as investment FROM investment_ending_balances"
+        "        GROUP BY date"
+        "        ORDER BY date DESC"
+        "        LIMIT 19"
+        ") "
+        "SELECT date, investment, (investment / lag(investment) over (order by date))*100 as percent_change"
+        "    FROM ending_investment"
+        "    ORDER BY date DESC"
+    )
+
+    def list(self, request):
+        """
+        Prepare the response for the past 18 months.
+        """
+        with connection.cursor() as cursor:
+            # Execute the large query
+            cursor.execute(self.QUERY)
+            columns = [col[0] for col in cursor.description]
+
+            # Trim the last row since it won't have a savings computation from the lag window
+            data = [dict(zip(columns, row)) for row in cursor.fetchall()][:-1]
             return Response(data)

@@ -81,12 +81,13 @@ class TaxReturn(models.Model):
         """
         Returns the previous year return or None if no return exists.
         """
-        query = TaxReturn.objects.filter(year=self.year-1)
+        model = self.__class__
+        query = model.objects.filter(year=self.year - 1)
         if query.exists():
             return query[0]
         return None
 
-    def prev_year_change(self, field):
+    def prev_year_change(self, field, percent=False):
         """
         Returns the difference from last year to this year of the given field.
 
@@ -96,12 +97,20 @@ class TaxReturn(models.Model):
             return 0
 
         # TODO: make more django-y
-        return getattr(self, field) - getattr(self.prev_year_return, field)
+        current = getattr(self, field)
+        previous = getattr(self.prev_year_return, field)
 
+        if percent:
+            return float(current / previous) * 100.0 if previous != 0 else 0
+        return current - previous
+
+    def prev_year_income_trend(self):
+        return self.prev_year_change("income", percent=True)
 
     class Meta:
         db_table = "tax_returns"
-
+        ordering = ("-year",)
+        get_latest_by = "year"
 
     def __str__(self):
         return "Tax Year {}".format(self.year)

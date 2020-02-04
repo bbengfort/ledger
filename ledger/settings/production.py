@@ -36,5 +36,5 @@ ALLOWED_HOSTS = [
 SECURE_SSL_REDIRECT = True
 
 ## Static files served by WhiteNoise
-STATIC_ROOT = os.path.join(PROJECT, 'staticfiles')
+STATIC_ROOT = os.path.join(PROJECT, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

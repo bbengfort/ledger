@@ -1,0 +1,85 @@
+<!-- sliding right tray sidebar for options and settings -->
+<nav class="be-right-sidebar">
+  <div class="sb-content">
+    <div class="tab-navigation">
+      <ul class="nav nav-tabs nav-justified" role="tablist">
+        <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab1" aria-controls="tab1" role="tab"
+            data-toggle="tab">Todo</a></li>
+        <li class="nav-item" role="presentation"><a class="nav-link" href="#tab2" aria-controls="tab2" role="tab"
+            data-toggle="tab">Settings</a></li>
+      </ul>
+    </div>
+    <div class="tab-panel">
+      <div class="tab-content">
+        <div class="tab-pane tab-todo active" id="tab1" role="tabpanel">
+          <div class="todo-container">
+            <div class="todo-wrapper">
+              <div class="be-scroller-todo">
+                <!-- TODO list -->
+                {# TODO: create todos list app #}
+                <div class="todo-content"><span class="category-title">No Action Items</span>
+                  <ul class="todo-list">
+                    {% for todo in todos %}
+                    <li>
+                      <div class="custom-checkbox custom-control custom-control-sm"><span
+                          class="delete mdi mdi-delete"></span>
+                        <input class="custom-control-input" type="checkbox" checked="{% if todo.done %}checked{% endif %}" id="tck{{ todo.pk }}">
+                        <label class="custom-control-label" for="tck{{ todo.pk }}">{{ todo.text }}</label>
+                      </div>
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="bottom-input">
+              <input type="text" placeholder="Create new task..." name="q"><span class="mdi mdi-plus"></span>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane tab-settings" id="tab2" role="tabpanel">
+          <div class="settings-wrapper">
+            <div class="be-scroller-settings"><span class="category-title">General</span>
+              <ul class="settings-list">
+                <li>
+                  <div class="switch-button switch-button-sm">
+                    <input type="checkbox" checked="" name="st1" id="st1"><span>
+                      <label for="st1"></label></span>
+                  </div><span class="name">Available</span>
+                </li>
+                <li>
+                  <div class="switch-button switch-button-sm">
+                    <input type="checkbox" checked="" name="st2" id="st2"><span>
+                      <label for="st2"></label></span>
+                  </div><span class="name">Enable notifications</span>
+                </li>
+              </ul><span class="category-title">Notifications</span>
+              <ul class="settings-list">
+                <li>
+                  <div class="switch-button switch-button-sm">
+                    <input type="checkbox" name="st4" id="st4"><span>
+                      <label for="st4"></label></span>
+                  </div><span class="name">Email notifications</span>
+                </li>
+                <li>
+                  <div class="switch-button switch-button-sm">
+                    <input type="checkbox" checked="" name="st5" id="st5"><span>
+                      <label for="st5"></label></span>
+                  </div><span class="name">Text notifications</span>
+                </li>
+              </ul><span class="category-title">Workflow</span>
+              <ul class="settings-list">
+                <li>
+                  <div class="switch-button switch-button-sm">
+                    <input type="checkbox" name="st8" id="st8"><span>
+                      <label for="st8"></label></span>
+                  </div><span class="name">Create new Budget</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav><!-- end sliding right tray sidebar -->

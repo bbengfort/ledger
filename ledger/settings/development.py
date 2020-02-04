@@ -23,10 +23,14 @@ from .base import PROJECT
 ## Development Environment
 ##########################################################################
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
-MEDIA_ROOT = os.path.join(PROJECT, 'media')
+MEDIA_ROOT = os.path.join(PROJECT, "tmp", "media")
 
 ## Static files served by WhiteNoise nostatic server
-STATIC_ROOT = os.path.join(PROJECT, 'tmp', 'staticfiles')
+STATIC_ROOT = os.path.join(PROJECT, "tmp", "static")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# Debugging email without SMTP
+EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+EMAIL_FILE_PATH = os.path.join(PROJECT, "tmp", "outbox")

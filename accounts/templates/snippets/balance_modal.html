@@ -1,17 +1,18 @@
-<div id="balanceModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="balanceModalLabel" aria-hidden="true">
+<div id="balanceModal" class="modal fade colored-header colored-header-primary" tabindex="-1" role="dialog" aria-labelledby="balanceModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="balanceModalLabel"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
+      <div class="modal-header modal-header-colored">
+        <h3 class="modal-title" id="balanceModalLabel"></h3>
+        <button class="close md-close" type="button" data-dismiss="modal" aria-hidden="true">
+          <span class="mdi mdi-close"></span>
         </button>
       </div>
       <div class="modal-body">
-        
+
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button class="btn btn-secondary md-close" type="button" data-dismiss="modal">Cancel</button>
+        <button disabled class="btn btn-primary md-close" type="button" data-dismiss="modal">Refresh Balance</button>
       </div>
     </div>
   </div>

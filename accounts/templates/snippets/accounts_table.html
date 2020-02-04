@@ -1,22 +1,22 @@
 {% load accounting %}
 <div class="table-responsive">
-  <table class="table mb-0 table-hover table-striped table-sm table-pointer">
+  <table class="table table-hover table-striped table-sm table-pointer">
     <caption class="d-none">{{ account_type|title }} account balances for {{ sheet.date }}</caption>
     <thead>
-      <tr class="row">
-        <th class="pl-4 col-3" scope="col">Bank</th>
-        <th class="col-5" scope="col">Account Name</th>
-        <th class="col-2" scope="col">Beginning Balance</th>
-        <th class="col-2" scope="col">Ending Balance</th>
+      <tr>
+        <th style="width: 25%" scope="col">Bank</th>
+        <th style="width: 35%" scope="col">Account Name</th>
+        <th style="width: 20%" scope="col" class="text-right">Beginning Balance</th>
+        <th style="width: 20%" scope="col" class="text-right">Ending Balance</th>
       </tr>
     </thead>
     <tbody>
       {% for balance in balances %}
-      <tr class="row" data-toggle="balance" data-target="#balanceModal" data-url="{{ balance.get_api_url }}">
-        <td class="pl-4 col-3">{{ balance.account.bank }}</td>
-        <td class="col-5">{{ balance.account.name }}</td>
-        <td class="col-2">{% account_balance balance beginning=True %}</td>
-        <td class="pr-4 col-2">{% account_balance balance ending=True %}</td>
+      <tr data-toggle="balance" data-target="#balanceModal" data-url="{{ balance.get_api_url }}" data-account-name="{{ balance.account }}">
+        <td>{{ balance.account.bank }}</td>
+        <td>{{ balance.account.name }}</td>
+        <td>{% account_balance balance beginning=True %}</td>
+        <td>{% account_balance balance ending=True %}</td>
       </tr>
       {% empty %}
       <tr>
@@ -24,12 +24,11 @@
       </tr>
       {% endfor %}
       {% if balances.count > 0 %}
-
-      <tr class="row table-{{ account_class }}">
-        <td class="col-8" colspan="2"></td>
+      <tr class="table-{{ account_class }}">
+        <td colspan="2"></td>
         {% with total=balances.totals %}
-        <td class="col-2">{% accounting total.beginning__sum %}</td>
-        <td class="pr-4 col-2">{% accounting total.ending__sum %}</td>
+        <td>{% accounting total.beginning__sum %}</td>
+        <td>{% accounting total.ending__sum %}</td>
         {% endwith %}
       </tr>
       {% endif %}

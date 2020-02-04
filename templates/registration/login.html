@@ -1,121 +1,122 @@
-{% extends "page.html" %}
+{% extends "base.html" %}
 {% load static %}
 
-{% block content %}
+{% block body-class %}be-splash-screen{% endblock %}
 
-<div class="container login-container">
-  <div class="row justify-content-center">
-    <div class="col-sm-6 col-md-6">
-
-      {% block login-card %}
-      <div class="card card-default">
-
-        <div class="card-header">
-          {% block login-heading %}
-          <h5>{% block login-title %}Sign in to the Bengfort Ledger{% endblock %}</h5>
-          {% endblock %}
-        </div>
-
-        <div class="card-body">
-          {% block login-body %}
+{% block body %}
+<div class="be-wrapper be-login">
+  <div class="be-content">
+    <div class="main-content container-fluid">
+      <div class="splash-container {% block splash-container-class %}{% endblock %}">
+        {% block login-card %}
+        <!-- login and authentication card -->
+        <div class="card card-border-color {% block login-card-border-color %}card-border-color-primary{% endblock %}">
+          <div class="card-header">
+            <img class="logo-img" src="{% static 'img/logo-xx.png' %}" alt="logo" width="102" height="27">
+            <span class="splash-description">{% block login-title %}Please enter your user information.{% endblock %}</span>
+          </div>
+          <div class="card-body">
+            {% block login-body %}
 
             {% block login-alert %}
-            {% if form.errors %}
-              <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Whoops!</strong> Credentials invalid. Please try again.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-            {% endif %}
-
-            {% if messages %}
-              {% for message in messages %}
-                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <strong>Unauthorized!</strong> {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                {% endif %}
-              {% endfor %}
-            {% endif %}
-
-            {% if next %}
-              {% if user.is_authenticated %}
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Warning!</strong> Your account does not have access to this page.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              {% else %}
-              <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>Warning!</strong> You must login to access the ledger.
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
+              {% if form.errors %}
+              <div class="alert alert-danger alert-contrast alert-dismissible fade show" role="alert">
+                <div class="icon"><span class="mdi mdi-close-circle"></span></div>
+                <div class="message">
+                  <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                    <span class="mdi mdi-close" aria-hidden="true"></span>
+                  </button>
+                  Credentials invalid. Please try again.
+                </div>
               </div>
               {% endif %}
-            {% endif %}
+
+              {% if messages %}
+              {% for message in messages %}
+              {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+              <div class="alert alert-danger alert-contrast alert-dismissible fade show" role="alert">
+                <div class="icon"><span class="mdi mdi-close-circle"></span></div>
+                <div class="message">
+                  <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                    <span class="mdi mdi-close" aria-hidden="true"></span>
+                  </button>
+                  {{ message }}
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+              {% endif %}
+
+              {% if next %}
+              {% if user.is_authenticated %}
+              <div class="alert alert-warning alert-contrast alert-dismissible fade show" role="alert">
+                <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
+                <div class="message">
+                  <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                    <span class="mdi mdi-close"aria-hidden="true"></span>
+                  </button>
+                  You do not have access to this page.
+                </div>
+              </div>
+              {% else %}
+              <div class="alert alert-warning alert-contrast alert-dismissible fade show" role="alert">
+                <div class="icon"><span class="mdi mdi-alert-triangle"></span></div>
+                <div class="message">
+                  <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+                    <span class="mdi mdi-close" aria-hidden="true"></span>
+                  </button>
+                  You must login to access the ledger.
+                </div>
+              </div>
+              {% endif %}
+              {% endif %}
             {% endblock %}
 
             {% block login-form %}
             <form role="form" action="{% url 'login' %}" method="post">
               <div class="form-group">
-                <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-lg btn-primary btn-block">
-                  <i class="fa fa-google-plus-square"></i>
-                    Sign in with Google
+                <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-xl btn-primary btn-block">
+                  <i class="icon mdi mdi-google mr-1"></i>
+                  <span>Sign in with Google</span>
                 </a>
               </div>
-              <strong><hr /></strong>
               <div class="form-group">
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-user"></i></span>
-                  </div>
-                  <input class="form-control" placeholder="Username"
-                         type="text" id="id_username" name="username"
-                         maxlength="254" autofocus />
-                </div>
+                <input class="form-control" id="id_username" name="username" type="text" placeholder="Username" autocomplete="off" maxlength="254" autofocus>
               </div>
               <div class="form-group">
-                <div class="input-group mb-3">
-                  <div class="input-group-prepend">
-                    <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                <input class="form-control" id="id_password" name="password" value="" type="password" placeholder="Password" maxlength="48">
+              </div>
+              <div class="form-group row login-tools">
+                <div class="col-6 login-remember">
+                  <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" id="remember_me">
+                    <label class="custom-control-label" for="remember_me">Remember Me</label>
                   </div>
-                  <input class="form-control" placeholder="Password"
-                         type="password" id="id_password" name="password"
-                         value="" />
+                </div>
+                <div class="col-6 login-forgot-password">
+                  <a href="{% url 'password_reset' %}">Forgot Password?</a>
                 </div>
               </div>
-              <div class="form-group">
-                <button type="submit" value="login" class="btn btn-lg btn-info btn-block">
-                  Sign In
+              <div class="form-group login-submit">
+                <button type="submit" value="login" class="btn btn-primary btn-xl">
+                  Sign me in
                 </button>
                 <input type="hidden" name="next" value="{{ next }}" />
                 {% csrf_token %}
               </div>
             </form>
             {% endblock %}
-
-          {% endblock %}
+            {% endblock %}
+          </div>
+        </div><!-- end login card -->
+        {% endblock %}
+        {% block login-footer %}
+        <div class="splash-footer">
+          <span>&copy; 2017 &mdash; {% now "Y" %} Bengfort.com</span>
         </div>
-
-        <div class="card-footer">
-          {% block login-footer %}
-          <small>
-            <a href="{% url 'password_reset' %}">Forgot Password?</a>
-          </small>
-          {% endblock %}
-        </div>
-
+        {% endblock %}
       </div>
-      {% endblock %}
-
     </div>
   </div>
 </div>
-
 {% endblock %}

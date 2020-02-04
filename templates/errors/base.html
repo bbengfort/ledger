@@ -1,20 +1,29 @@
-{% extends 'page.html' %}
+{% extends 'base.html' %}
 
-{% block content %}
+{% block body-class %}be-splash-screen{% endblock %}
 
-<div class="container">
-  <div class="row">
-
-    <main class="col-sm-6 offset-sm-3 pt-3 text-center">
-
-      <h1>{% block error_title %}{% endblock %}</h1>
-      <p class="lead">{% block error_description %}{% endblock %}</p>
-
-    </main>
-
+{% block body %}
+<div class="be-wrapper be-error be-error-404">
+  <div class="be-content">
+    <div class="main-content container-fluid">
+      <div class="error-container">
+        <div class="error-number">{% block error-number %}404{% endblock %}</div>
+        <div class="error-description">{% block error-description %}The page you are looking for might have been removed.{% endblock %}</div>
+        <div class="error-goback-text">{% block error-goback-text %}Return to Dashboard?{% endblock %}</div>
+        <div class="error-goback-button">
+          {% block error-goback-button %}
+          <a class="btn btn-xl btn-primary" href="{%  url 'overview' %}">{% block error-goback-button-text %}Back to Safety{% endblock %}</a>
+          {% endblock %}
+        </div>
+        <div class="footer">&copy; 2017 &mdash; {% now "Y" %} Bengfort.com</div>
+      </div>
+    </div>
   </div>
 </div>
+{% endblock %}
 
+{% block modals %}
+  {# Empty out modals to prevent more template than necessary from rendering #}
 {% endblock %}
 
 {% block javascripts %}

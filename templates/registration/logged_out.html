@@ -1,8 +1,13 @@
 {% extends 'registration/login.html' %}
 
 {% block login-alert %}
-  <div class="alert alert-success alert-dismissible" role="alert">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <strong>Secured!</strong> You have successfully been logged out.
+  <div class="alert alert-success alert-contrast alert-dismissible fade show" role="alert">
+    <div class="icon"><span class="mdi mdi-check"></span></div>
+    <div class="message">
+      <button class="close" type="button" data-dismiss="alert" aria-label="Close">
+        <span class="mdi mdi-close" aria-hidden="true"></span>
+      </button>
+      You have successfully logged out.
+    </div>
   </div>
 {% endblock %}

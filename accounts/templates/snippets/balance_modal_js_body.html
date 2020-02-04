@@ -1,7 +1,7 @@
 {% verbatim %}
 <script type="text/template" id="balanceModalBody">
-  <table class="table">
-    <tr class="row table-info">
+  <table class="table mb-5">
+    <tr class="row table-primary">
       <td colspan="2" class="col-9">Beginning Balance</td>
       <td class="col-3" id="balance-beginning"><%= rc.amountfmt(rc.beginning) %></td>
     </tr>
@@ -23,7 +23,7 @@
         <%= rc.amountfmt(rc.debit_amount) %>
       </td>
     </tr>
-    <tr class="row table-info">
+    <tr class="row table-primary">
       <td colspan="2" class="col-9">Ending Balance</td>
       <td class="col-3" id="balance-ending"><%= rc.amountfmt(rc.ending) %></td>
     </tr>

@@ -20,6 +20,7 @@ from decimal import Decimal
 from django.db import models
 from django.urls import reverse
 
+from ..managers import TransactionManager
 from ..managers import BalanceSheetManager
 from ..managers import AccountBalanceTypeManager
 
@@ -96,6 +97,14 @@ class BalanceSheet(models.Model):
         """
         days = abs((date.today() - self.date).days)
         return days < 15
+
+    def prev_sheet(self):
+        """
+        Returns the previous sheet (usually the month before balance sheet) or None if
+        it does not exist, useful for comparing changes between months.
+        """
+        model = self.__class__
+        return model.objects.filter(date__lt=self.date).order_by('-date').first()
 
     def __str__(self):
         return self.title
@@ -194,6 +203,15 @@ class Balance(models.Model):
         query = query.values("amount").aggregate(total=models.Sum("amount"))
         return query["total"] or Decimal(0.0)
 
+    def prev_balance(self):
+        """
+        Returns the previous balance for this account in the last balance sheet.
+        """
+        sheet = self.sheet.prev_sheet()
+        if not sheet:
+            return None
+        return sheet.balances.get(account=self.account)
+
     def __str__(self):
         if self.ending == 0:
             return "{} beginning with ${:,} on {}".format(
@@ -263,6 +281,9 @@ class Transaction(models.Model):
         db_table = "transactions"
         ordering = ("-date",)
         get_latest_by = "date"
+
+    # Transaction manager
+    objects = TransactionManager()
 
     @classmethod
     def from_payment(klass, payment):

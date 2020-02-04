@@ -1,4 +1,8 @@
 {% extends 'errors/base.html' %}
 
-{% block error_title %}A Server 403 Error occurred!{% endblock %}
-{% block error_description %}You don't have permission to access this.{% endblock %}
+{% block error-number %}403{% endblock %}
+{% block error-description %}You don't have permission to access this.{% endblock %}
+{% block error-goback-text %}Login as another user?{% endblock %}
+{% block error-goback-button %}
+<a class="btn btn-xl btn-warning" href="{%  url 'login' %}">Login Again</a>
+{% endblock %}

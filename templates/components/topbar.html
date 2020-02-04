@@ -1,0 +1,118 @@
+{% load static %}
+{% load gravatar %}
+{% load humanize %}
+<!-- topbar with user settings and main page title  -->
+<nav class="navbar navbar-expand fixed-top be-top-header">
+  <div class="container-fluid">
+    <div class="be-navbar-header"><a class="navbar-brand" href="{% url 'overview' %}"></a>
+    </div>
+    <div class="page-title"><span>{% block page-topbar-title %}{% if dashboard %}{{ dashboard|title }}{% else %}Blank Page{% endif %}{% endblock %}</span></div>
+    <div class="be-right-navbar">
+      {% if user.is_authenticated %}
+      <!-- user nav -->
+      <ul class="nav navbar-nav float-right be-user-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-expanded="false">
+            <img src="{{ user|gravatar:50 }}" alt="Avatar">
+            <span class="user-name">{{ user.get_full_name }}</span>
+          </a>
+          <div class="dropdown-menu" role="menu">
+            <div class="user-info">
+              <div class="user-name">{{ user.get_full_name }}</div>
+              {# TODO: create user activity monitor #}
+              <div class="user-position online">Available</div>
+            </div>
+            <a class="dropdown-item" href="#">
+              <span class="icon mdi mdi-face"></span>Account
+            </a>
+            <a class="dropdown-item" href="#">
+              <span class="icon mdi mdi-settings"></span>Settings</a>
+            <a class="dropdown-item" href="{% url 'logout' %}">
+              <span class="icon mdi mdi-power"></span>Logout
+            </a>
+          </div>
+        </li>
+      </ul><!-- end user nav -->
+      {% endif %}
+      <!-- topbar utilities nav -->
+      <ul class="nav navbar-nav float-right be-icons-nav">
+        {% if user.is_authenticated %}
+        <li class="nav-item dropdown"><a class="nav-link be-toggle-right-sidebar" href="#" role="button"
+            aria-expanded="false"><span class="icon mdi mdi-settings"></span></a></li>
+        {# TODO: create notifications model #}
+        <!-- notifications -->
+        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
+            aria-expanded="false"><span class="icon mdi mdi-notifications"></span><span class="indicator"></span></a>
+          <ul class="dropdown-menu be-notifications">
+            <li>
+              <div class="title">Notifications<span class="badge badge-pill">{% if notifications %}{{ notifications|length }}{% else %}0{% endif %}</span></div>
+              <div class="list">
+                <div class="be-scroller-notifications">
+                  <div class="content">
+                    <ul>
+                      {% for notification in notifications %}
+                      <li class="notification{% if notification.is_unread %} notification-unread{% endif %}">
+                        <a href="{{ notification.get_absolute_url }}">
+                          <div class="image"><img src="{{ notification.user|gravatar:50 }}" alt="Avatar"></div>
+                          <div class="notification-info">
+                            <div class="text"><span class="user-name">{{ notification.user.get_full_name }}</span> {{ notification.text }}
+                            </div><span class="date">{{ notification.timestamp|naturaltime }}</span>
+                          </div>
+                        </a></li>
+                      {% empty %}
+                      <li class="notification"><a href="#">
+                          <div class="image"><img src="{% static 'img/budget.png' %}" alt="Avatar"></div>
+                          <div class="notification-info">
+                            <div class="text"><span class="user-name">System</span> You have no new notifications</div>
+                            <span class="date">now</span>
+                          </div>
+                        </a></li>
+                      {% endfor %}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="footer"> <a href="#">View all notifications</a></div>
+            </li>
+          </ul>
+        </li><!-- end notifications -->
+        <!-- apps and external links -->
+        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button"
+            aria-expanded="false"><span class="icon mdi mdi-apps"></span></a>
+          <ul class="dropdown-menu be-connections">
+            <li>
+              <div class="list">
+                <div class="content">
+                  <div class="row">
+                    <div class="col"><a class="connection-item" href="https://www.usaa.com/" target="_blank"><img src="{% static 'img/usaa.png' %}"
+                          alt="USAA"><span>USAA</span></a></div>
+                    <div class="col"><a class="connection-item" href="https://www.wellsfargo.com/" target="_blank"><img src="{% static 'img/wells_fargo.png' %}"
+                          alt="Wells Fargo"><span>Wells Fargo</span></a></div>
+                    <div class="col"><a class="connection-item" href="https://www.discover.com/" target="_blank"><img src="{% static 'img/discover.jpg' %}"
+                          alt="Discover"><span>Discover</span></a></div>
+                  </div>
+                  <div class="row">
+                    <div class="col"><a class="connection-item" href="https://global.americanexpress.com/" target="_blank"><img src="{% static 'img/amex.png' %}"
+                          alt="Amex"><span>Amex</span></a></div>
+                    <div class="col"><a class="connection-item" href="https://www.chase.com/amazon" target="_blank"><img src="{% static 'img/chase.png' %}"
+                          alt="Chase"><span>Chase Visa</span></a></div>
+                    <div class="col"><a class="connection-item" href="https://www.paypal.com/" target="_blank"><img src="{% static 'img/paypal.png' %}"
+                          alt="PayPal"><span>PayPal</span></a></div>
+                  </div>
+                </div>
+              </div>
+              <div class="footer"> <a href="#">More</a></div>
+            </li>
+          </ul>
+        </li><!-- end apps and external links -->
+        {% else %}
+        <li class="nav-item dropdown">
+          <a class="nav-link" href="{% url 'login' %}" role="button" aria-expanded="false">
+            <span class="icon mdi mdi-sign-in"></span>
+          </a>
+        </li>
+        {% endif %}
+      </ul><!-- end topbar utilities -->
+    </div>
+  </div>
+</nav><!-- topbar ends -->

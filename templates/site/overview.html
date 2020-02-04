@@ -1,251 +1,273 @@
-{% extends 'site/dashboard.html' %}
+{% extends 'page.html' %}
 {% load accounting %}
+{% load static %}
+{% load mathfilters %}
 
-{% block dashboard-title %}Overview{% endblock %}
+{# No page header for the overview dashboard #}
+{% block page-head %}{% endblock %}
 
-{% block dashboard-content %}
+{% block page %}
 
-  <div class="card-deck">
+<div class="row">
+  <!-- at a glance tiles -->
+  <!-- TODO: Add CountUp -->
+  <div class="col-12 col-lg-6 col-xl-3">
+    <div class="widget widget-tile">
+      <div class="chart sparkline" id="creditScoreSpark"></div>
+      <div class="data-info">
+        <div class="desc">Credit Score</div>
+        <div class="value">
+          {% with trend=credit_score.trend %}
+          {% if trend == 'up' %}
+          <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+          {% elif trend == 'down' %}
+          <span class="indicator indicator-negative mdi mdi-chevron-down"></span>
+          {% else %}
+          <span class="indicator indicator-equal mdi mdi-chevron-right"></span>
+          {% endif %}
+          {% endwith %}
+          <span class="number">{{ credit_score.score }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 col-xl-3">
+    <div class="widget widget-tile">
+      <div class="chart sparkline" id="savingsSpark"></div>
+      <div class="data-info">
+        {# TODO: remove this hack and make a preference! #}
+        <div class="desc">Monthly Savings</div>
+        <div class="value">
+          {% if monthly_savings > 0 %}
+          <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+          <span class="number text-success">${{ monthly_savings }}</span>
+          {% elif monthly_savings < 0 %}
+          <span class="indicator indicator-negative mdi mdi-chevron-down"></span>
+          <span class="number text-danger">${{ monthly_savings|abs }}</span>
+          {% else %}
+          <span class="indicator indicator-equal mdi mdi-chevron-right"></span>
+          <span class="number">&mdash;</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 col-xl-3">
+    <div class="widget widget-tile">
+      <div class="chart sparkline" id="investmentsSpark"></div>
+      <div class="data-info">
+        <div class="desc">Investments</div>
+        <div class="value">
+          {% if investment_increase > 100 %}
+          <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+          {% elif investment_increase < 100 %}
+          <span class="indicator indicator-negative mdi mdi-chevron-down"></span>
+          {% else %}
+          <span class="indicator indicator-equal mdi mdi-chevron-right"></span>
+          {% endif %}
+          <span class="number">{{ investment_increase|floatformat:"0" }}%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-lg-6 col-xl-3">
+    <div class="widget widget-tile">
+      <div class="chart sparkline" id="incomeSpark"></div>
+      <div class="data-info">
+        <div class="desc">Yearly Income</div>
+        <div class="value">
+          {% with pcent=tax_return.prev_year_income_trend %}
+          {% if pcent > 100 %}
+          <span class="indicator indicator-positive mdi mdi-chevron-up"></span>
+          {% elif pcent < 100 %}
+          <span class="indicator indicator-negative mdi mdi-chevron-down"></span>
+          {% else %}
+          <span class="indicator indicator-equal mdi mdi-chevron-right"></span>
+          {% endif %}
+          <span class="number">{{ pcent|floatformat:0 }}%</span>
+          {% endwith %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- tiles row ends -->
 
-    <!-- Current balance sheet card -->
-    <div class="card">
+<div class="row">
+  <!-- balance sheet summary card -->
+  <div class="col-12 col-lg-6">
+    <div class="card card-table">
       <div class="card-header">
         Balance Sheet for {{ latest_sheet.date|date:"F Y" }}
       </div>
       <div class="card-body">
-        {% next_sheet %}
+        <div class="mx-4 my-2">
+          {% next_sheet %}
+        </div>
+        <table class="table">
+          <thead>
+            <th></th>
+            <th class="text-right">Beginning Balance</th>
+            <th class="text-right">Ending Balance</th>
+          </thead>
+          {% with accounts=latest_sheet.balances.cash_accounts %}
+          {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+          <tr>
+            <td>
+              <span class="badge badge-success">{{ accounts.count }}</span>
+              Cash Accounts {% direction beginning ending %}
+            </td>
+            <td>{% accounting beginning %}</td>
+            <td>{% accounting ending %}</td>
+            {% endwith %}
+          </tr>
+          {% endwith %}
+
+          {% with accounts=latest_sheet.balances.investment_accounts %}
+          {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+          <tr>
+            <td>
+              <span class="badge badge-info">{{ accounts.count }}</span>
+              Investment Accounts {% direction beginning ending %}
+            </td>
+            <td>{% accounting accounts.totals.beginning__sum %}</td>
+            <td>{% accounting accounts.totals.ending__sum %}</td>
+            {% endwith %}
+          </tr>
+          {% endwith %}
+
+          {% with accounts=latest_sheet.balances.credit_accounts %}
+          {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+          <tr>
+            <td>
+              <span class="badge badge-danger">{{ accounts.count }}</span>
+              Credit Cards {% direction beginning ending %}
+            </td>
+            <td>{% accounting accounts.totals.beginning__sum %}</td>
+            <td>{% accounting accounts.totals.ending__sum %}</td>
+            {% endwith %}
+          </tr>
+          {% endwith %}
+
+          {% with accounts=latest_sheet.balances.loan_accounts %}
+          {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
+          <tr>
+            <td>
+              <span class="badge badge-warning">{{ accounts.count }}</span>
+              Loan Accounts {% direction beginning ending %}
+            </td>
+            <td>{% accounting accounts.totals.beginning__sum %}</td>
+            <td>{% accounting accounts.totals.ending__sum %}</td>
+            {% endwith %}
+          </tr>
+          {% endwith %}
+          </table>
+        </table>
       </div>
-      <table class="table mb-0">
-        <thead>
-          <th></th>
-          <th class="text-right">Beginning Balance</th>
-          <th class="text-right">Ending Balance</th>
-        </thead>
-        {% with accounts=latest_sheet.balances.cash_accounts %}
-        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
-        <tr>
-          <td>
-            <span class="badge badge-light">{{ accounts.count }}</span>
-            Cash Accounts {% direction beginning ending %}
-          </td>
-          <td>{% accounting beginning %}</td>
-          <td>{% accounting ending %}</td>
-          {% endwith %}
-        </tr>
-        {% endwith %}
-
-        {% with accounts=latest_sheet.balances.investment_accounts %}
-        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
-        <tr>
-          <td>
-            <span class="badge badge-light">{{ accounts.count }}</span>
-            Investment Accounts {% direction beginning ending %}
-          </td>
-          <td>{% accounting accounts.totals.beginning__sum %}</td>
-          <td>{% accounting accounts.totals.ending__sum %}</td>
-          {% endwith %}
-        </tr>
-        {% endwith %}
-
-        {% with accounts=latest_sheet.balances.credit_accounts %}
-        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
-        <tr>
-          <td>
-            <span class="badge badge-light">{{ accounts.count }}</span>
-            Credit Cards {% direction beginning ending %}
-          </td>
-          <td>{% accounting accounts.totals.beginning__sum %}</td>
-          <td>{% accounting accounts.totals.ending__sum %}</td>
-          {% endwith %}
-        </tr>
-        {% endwith %}
-
-        {% with accounts=latest_sheet.balances.loan_accounts %}
-        {% with beginning=accounts.totals.beginning__sum ending=accounts.totals.ending__sum %}
-        <tr>
-          <td>
-            <span class="badge badge-light">{{ accounts.count }}</span>
-            Loan Accounts {% direction beginning ending %}
-          </td>
-          <td>{% accounting accounts.totals.beginning__sum %}</td>
-          <td>{% accounting accounts.totals.ending__sum %}</td>
-          {% endwith %}
-        </tr>
-        {% endwith %}
-      </table>
-      <div class="card-footer text-muted">
+      <div class="card-footer card-footer-contrast text-muted">
         <small>
-          {{ latest_sheet.transactions.count }} transactions from {{ latest_sheet.transactions.earliest.date }} to {{ latest_sheet.transactions.latest.date }}
+          {% with ntxns=latest_sheet.transactions.count %}
+          {{ ntxns }} transactions{% if ntxns > 0 %} from {{ latest_sheet.transactions.earliest.date }} to {{ latest_sheet.transactions.latest.date }}{% endif %}
+          {% endwith %}
         </small>
       </div>
-    </div><!-- end current balance sheet card -->
+    </div>
+  </div><!-- balance sheet summary card ends -->
 
-    <!-- Cash vs. credit card debt -->
-    <div class="card">
-      <div class="card-header">
-        Trends
+  <!-- cash flow trends card -->
+  <div class="col-12 col-lg-6">
+    <div id="cashflow-bar-chart-widget" class="widget be-loading">
+      <div class="widget-head">
+        <div class="tools">
+          <span class="icon mdi mdi-chevron-down"></span>
+          <span id="refresh-cashflow-bar-chart" class="icon mdi mdi-refresh-sync"></span>
+          <span class="icon mdi mdi-close"></span>
+        </div>
+        <span class="card-title">Trends</span>
+        <span class="card-subtitle">Cash vs. credit Card Debt</span>
       </div>
-      <div class="card-body">
-        <h5 class="card-title">Cash vs. Credit Card Debt</h5>
+      <div class="widget-chart-container">
         <canvas id="cashvdebt"></canvas>
       </div>
-    </div>
-
-    <!-- Trends in income vs. spending -->
-
-    <!-- Investements and investment trends -->
-
-  </div><!-- end card deck -->
-
-  <!-- second row card deck -->
-  <div class="row mt-3">
-
-    <div class="col-sm-6">
-      <div class="card">
-        <div class="card-header">
-          Credit Score
-        </div>
-
-        <div class="card-body">
-
-          <div class="media mx-auto" style="width: 325px">
-            <div class="align-self-start mt-0 mr-3">
-              <span class="big-number">{{ credit_score.score }}</span>
-            </div>
-            <div class="media-body pt-2">
-              <h5 class="mt-0">{{ credit_score.description }}</h5>
-              <p class="mb-0">As of {{ credit_score.date }}</p>
-              <p>Source: {{ credit_score.source }}</p>
-            </div>
-          </div>
-
-          <i class="fa fa-caret-down pull-left" style="font-size: 1.8em; line-height: .4em;  margin-left: {{ credit_score.percent|floatformat:"1" }}%"></i>
-          <div class="credit-score-bar mt-2">
-            <span class="pull-left ml-2 text-light">300</span>
-            <span class="pull-right mr-2 text-light">850</span>
-            <div class="rdylgn-gradient mx-auto"></div>
-          </div>
-
-        </div>
-
+      <div class="be-spinner">
+        <svg width="40px" height="40px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <circle class="circle" fill="none" stroke-width="4" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
       </div>
     </div>
+  </div><!-- cash flow trends card ends -->
 
-  </div><!-- end card deck -->
+</div><!-- row ends -->
 
-  <!-- bottom spacer -->
-  <div class="mb-3"></div>
+<div class="row">
+  <!-- cash flow trends card -->
+  <div class="col-12 col-lg-6">
+    <div id="investments-line-chart-widget" class="widget be-loading">
+      <div class="widget-head">
+        <div class="tools">
+          <span class="icon mdi mdi-chevron-down"></span>
+          <span id="refresh-investments-line-chart" class="icon mdi mdi-refresh-sync"></span>
+          <span class="icon mdi mdi-close"></span>
+        </div>
+        <span class="card-title">Investments</span>
+        <span class="card-subtitle">Retirement and Investment Account Growth over Time</span>
+      </div>
+      <div class="widget-chart-container">
+        <canvas id="investments"></canvas>
+      </div>
+      <div class="be-spinner">
+        <svg width="40px" height="40px" viewBox="0 0 66 66" xmlns="http://www.w3.org/2000/svg">
+          <circle class="circle" fill="none" stroke-width="4" stroke-linecap="round" cx="33" cy="33" r="30"></circle>
+        </svg>
+      </div>
+    </div>
+  </div><!-- cash flow trends card ends -->
+
+  <div class="col-12 col-lg-6">
+    <div class="card">
+      <div class="card-header">
+        Credit Score History
+        <div class="tools">
+          {# TODO: unhack this! #}
+          <a href="{% url 'admin:accounts_creditscore_add' %}" title="Add Score"><span class="icon mdi mdi-plus"></span></a>
+        </div>
+      </div>
+      <div class="card-body">
+        {% if credit_score_history %}
+        <ul class="user-timeline user-timeline-compact">
+          {% for score in credit_score_history %}
+          <li{% if forloop.first %} class="latest"{% endif %}>
+            <div class="user-timeline-date">{{ score.date }}</div>
+            <div class="user-timeline-title">{{ score.score }}</div>
+            <div class="user-timeline-description">
+              {{ score.description }} &middot; {{ score.source }}
+              {% if score.memo %}
+              <p class="p-0 m-0">{{ score.memo }}</p>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+        {% else %}
+        <p>No credit score history recorded yet.</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div><!-- row ends -->
 {% endblock %}
+
+{# TODO: implement the credit score add modal #}
+{% comment %}
+{% block modals %}
+  {{ block.super }}
+  {% include "components/modals/add_credit_score_form.html" %}
+{% endblock %}
+{% endcomment %}
 
 
 {% block javascripts %}
   {{ block.super }}
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js" integrity="sha256-CfcERD4Ov4+lKbWbYqXD6aFM9M51gN4GUEtDhkWABMo=" crossorigin="anonymous"></script>
-  <script type="text/javascript">
-
-  $(document).ready(function() {
-    var RED = "#F04124";
-    var GRN = "#43ac6a";
-    var URL = "{% url 'api:cashflow-list' %}";
-
-    // Bind the create sheet form to its handler
-    $("form.create-sheet").submit(createBalanceSheet);
-
-    // Fetch the cash-flow data to draw the chart
-    $.get(URL)
-      .done(function (data) {
-        cashFlowChart(data.reverse());
-      })
-      .fail(function(jqXHR, textStatus, errorThrown) {
-        console.log(textStatus, errorThrown);
-      });
-
-
-    function cashFlowChart(data) {
-      var ctx = document.getElementById('cashvdebt').getContext('2d');
-      var labels = _.map(_.pluck(data, "date"), fmtDate);
-
-      new Chart(ctx, {
-          // The type of chart we want to create
-          type: 'bar',
-
-          // The data for our dataset
-          data: {
-              labels: labels,
-              datasets: [{
-                label: "Net Cash",
-                data: _.pluck(data, "net_ending"),
-                type: "line",
-                borderColor: "#333333",
-                fill: false,
-              }, {
-                label: "Cash (ending)",
-                backgroundColor: GRN,
-                data: _.pluck(data, "cash_ending"),
-              }, {
-                label: "Debt (ending)",
-                backgroundColor: RED,
-                data: _.pluck(data, "debt_ending"),
-              }]
-          },
-
-          // Configuration options go here
-          options: {
-            legend: {
-              display: true,
-            },
-            scales: {
-              xAxes: [{
-                stacked: true
-              }],
-              yAxes: [{
-                stacked: true
-              }]
-            },
-          },
-      });
-    }
-
-    function fmtDate(s) {
-      // Don't forget to subtract 1 from the month?!
-      const [year, month, day] = s.split("-")
-      return new Date(year, month-1, day).toLocaleDateString("en-US", {"month": "short", "year": "numeric"});
-    }
-
-    function createBalanceSheet(e) {
-      e.preventDefault();
-      var form = $(e.target);
-
-      // Disable the submit button
-      form.find(":submit").attr("disabled", true)
-
-      // Get the data from the form and post it
-      // Note that reduce requires the empty object as a second argument
-      var data = form.serializeArray().reduce(function(obj, item) {
-        obj[item.name] = item.value;
-        return obj;
-      }, {});
-
-      console.log(data);
-
-      $.post(form.attr("action"), data)
-        .done(function (data) {
-          window.location.href = data["href"];
-        })
-        .fail(function (jqXHR, textStatus, errorThrown) {
-          console.log(textStatus, errorThrown);
-          console.log(jqXHR.responseText);
-
-          form.find(":submit")
-            .removeClass("btn-success")
-            .addClass("btn-danger")
-            .text(errorThrown);
-        });
-
-      // prevent form from submitting
-      return false;
-    }
-
-  });
-  </script>
+  <script src="{% static 'vendor/chartjs/Chart.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'vendor/jquery.sparkline/jquery.sparkline.min.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/overview.js' %}" type="text/javascript"></script>
 {% endblock %}

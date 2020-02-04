@@ -12,7 +12,11 @@ $(document).ready(function() {
   $('[data-toggle="balance"]').click(function(e) {
     var row = $(this),
     modalId = row.data("target"),
-    endpoint = row.data("url");
+    endpoint = row.data("url"),
+    modalTitle = row.data("accountName");
+
+    // Set title of modal while we're loading the data
+    $("#balanceModalLabel").text(modalTitle);
 
     // Fetch the data from the endpoint
     $.get(endpoint)
@@ -25,9 +29,6 @@ $(document).ready(function() {
   });
 
   function showBalanceModal(modalId, data) {
-    // Add the title to the modal
-    $("#balanceModalLabel").html(data.account)
-
     // Create the template from the script body
     var template = _.template(
         $( "script#balanceModalBody" ).html()
@@ -62,8 +63,8 @@ $(document).ready(function() {
       }
 
       var template = _.template(
-        '<span class="pull-left"><%= rc.currency %></span>'
-        + '<span class="pull-right"><%= rc.ams %></span>'
+        '<span class="float-left"><%= rc.currency %></span>'
+        + '<span class="float-right"><%= rc.ams %></span>'
         + '<div class="clearfix"></div>'
       );
 

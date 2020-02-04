@@ -163,3 +163,43 @@ class BalanceSheetManager(models.Manager):
             if raise_on_error:
                 raise
             return None
+
+
+##########################################################################
+## Transactions Manager
+##########################################################################
+
+class TransactionQuerySet(models.QuerySet):
+
+    def total(self):
+        """
+        Compute the total amount of the transactions
+        """
+        return self.aggregate(Sum("amount"))
+
+    def expenses(self):
+        """
+        Filter transactions that are not transfers.
+        """
+        return self.exclude(debit__type__in=['Ca', 'Iv'])
+
+    def transfers(self):
+        """
+        Filter transactions that are to cash or investment accounts.
+        """
+        return self.filter(debit__type__in=['Ca', 'Iv'])
+
+
+class TransactionManager(models.Manager):
+
+    def get_queryset(self):
+        return TransactionQuerySet(self.model, using=self._db)
+
+    def total(self):
+        return self.get_queryset().total()
+
+    def expenses(self):
+        return self.get_queryset().expenses()
+
+    def transfers(self):
+        return self.get_queryset().transfers()
