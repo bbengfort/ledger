@@ -56,12 +56,12 @@ class Overview(LoginRequiredMixin, TemplateView):
             # Compute monthly savings
             ccash = sheet.balances.cash_accounts().totals()['ending__sum']
             pcash = prev_sheet.balances.cash_accounts().totals()['ending__sum']
-            context['monthly_savings'] = ccash - pcash
+            context['monthly_savings'] = ccash - pcash if ccash and pcash else 0
 
             # Compute investment increase
             cinvt = sheet.balances.investment_accounts().totals()['ending__sum']
             pinvt = prev_sheet.balances.investment_accounts().totals()['ending__sum']
-            context['investment_increase'] = float(cinvt / pinvt) * 100 if pinvt != 0 else 0
+            context['investment_increase'] = float(cinvt / pinvt) * 100 if cinvt and pinvt else 0
         else:
             context['monthly_savings'] = 0
             context['investment_increase'] = 0

@@ -1,237 +1,251 @@
-{% extends 'site/dashboard.html' %}
+{% extends 'page.html' %}
 {% load static %}
 
 {% block stylesheets %}
     {{ block.super }}
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker3.min.css"
-        integrity="sha256-FAOaXTpl90/K8cXmSdsskbQN3nKYulhCpPbcFzGTWKI=" crossorigin="anonymous" />
+    <link rel="stylesheet" type="text/css" href="{% static 'vendor/datetimepicker/css/bootstrap-datetimepicker.min.css' %}" />
 {% endblock %}
 
-{% block dashboard-title %}
+{% block page-head %}
+<div class="page-head">
+  <h2 class="page-head-title">
     {{ sheet.title }}
-    <span class="pull-right">
-        <a class="btn btn-primary" role="button" href=".." target="">
-            <i class="fa fa-arrow-left"></i> Back
-        </a>
+    <span class="float-right">
+      <a class="btn btn-primary" role="button" href=".." target="">
+        <i class="icon mdi mdi-arrow-left"></i> Back
+      </a>
     </span>
+  </h2>
+</div>
 {% endblock %}
 
-{% block dashboard-content %}
+{% block page %}
 
-<!-- Tab Navigation -->
+<!-- Edit balance sheet forms tabs -->
 <div class="row">
-<div class="col-sm mb-2">
-    <ul class="nav nav-pills mb-3" id="editTabs" role="tablist">
+  <div class="col-12 col-xl-9">
+    <div class="tab-container">
+      <!-- tab navigation -->
+      <ul class="nav nav-tabs nav-tabs-classic" id="editTabs" role="tablist">
         <li class="nav-item">
-            <a class="nav-link active" id="transaction-tab" data-toggle="tab" href="#transaction" role="tab" aria-controls="transaction"
-                aria-selected="true">Transactions</a>
+          <a class="nav-link active" id="transaction-tab" data-toggle="tab" href="#transaction" role="tab"
+            aria-controls="transaction" aria-selected="true">Transactions</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab" aria-controls="payments"
-                aria-selected="false">Payments</a>
+          <a class="nav-link" id="payments-tab" data-toggle="tab" href="#payments" role="tab" aria-controls="payments"
+            aria-selected="false">Payments</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="balance-tab" data-toggle="tab" href="#balance" role="tab" aria-controls="balance"
-                aria-selected="false">Balance</a>
+          <a class="nav-link" id="balance-tab" data-toggle="tab" href="#balance" role="tab" aria-controls="balance"
+            aria-selected="false">Balance</a>
         </li>
-    </ul>
-</div>
-</div><!-- end tab navigation -->
+      </ul>
 
-<div class="row">
-<div class="tab-content col-sm col-lg-9 mb-4" id="editTabsContent">
-    <!-- Messages and Alerts -->
-    <div id="alertMessages"></div>
+      <!-- tab content (form tabs) -->
+      <div class="tab-content">
+        <!-- Messages and Alerts (TODO: move to a better location) -->
+        <div id="alertMessages"></div>
 
-    <!-- Transactions tab -->
-    <div class="tab-pane fade show active" id="transaction" role="tabpanel" aria-labelledby="transaction-tab">
-
-        <form id="transactionForm" action="{{ sheet.get_api_transactions_url }}" method="post">
+        <!-- Transactions tab -->
+        <div class="tab-pane fade show active" id="transaction" role="tabpanel" aria-labelledby="transaction-tab">
+          <form id="transactionForm" action="{{ sheet.get_api_transactions_url }}" method="post">
             <div class="form-group">
-                <label for="sheet" class="font-weight-bold">Balance Sheet</label>
-                <input type="text" readonly class="form-control" name="sheet" value="{{ sheet.date }}" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The current balance sheet to add the transaction to (will be hidden)
-                </small>
+              <label for="sheet" class="font-weight-bold">Balance Sheet</label>
+              <input type="text" readonly class="form-control" name="sheet" value="{{ sheet.date }}" />
+              <p id="passwordHelpBlock" class="form-text text-muted">
+                The current balance sheet to add the transaction to (will be hidden)
+              </p>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="credit" class="font-weight-bold">Credit (from)</label>
-                    <select class="custom-select" name="credit">
-                        <option>---------</option>
-                        {% for group, options in accounts.items %}
-                        <optgroup label="{{ group }}">
-                            {% for opt in options %}
-                            <option value={{ opt.get_api_url }}>{{ opt}}</option>
-                            {% endfor %}
-                        </optgroup>
-                        {% endfor %}
-                    </select>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        The source of funds for the transaction
-                    </small>
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="debit" class="font-weight-bold">Debit (to)</label>
-                    <select class="custom-select" name="debit">
-                        <option>---------</option>
-                        {% for group, options in accounts.items %}
-                        <optgroup label="{{ group }}">
-                            {% for opt in options %}
-                            <option value={{ opt.get_api_url }}>{{ opt}}</option>
-                            {% endfor %}
-                        </optgroup>
-                        {% endfor %}
-                    </select>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        The destination of funds for the transaction
-                    </small>
-                </div>
+              <div class="form-group col-md-6">
+                <label for="credit" class="font-weight-bold">Credit (from)</label>
+                <select class="custom-select" name="credit">
+                  <option>---------</option>
+                  {% for group, options in accounts.items %}
+                  <optgroup label="{{ group }}">
+                    {% for opt in options %}
+                    <option value={{ opt.get_api_url }}>{{ opt}}</option>
+                    {% endfor %}
+                  </optgroup>
+                  {% endfor %}
+                </select>
+                <p id="passwordHelpBlock" class="form-text text-muted">
+                  The source of funds for the transaction
+                </p>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="debit" class="font-weight-bold">Debit (to)</label>
+                <select class="custom-select" name="debit">
+                  <option>---------</option>
+                  {% for group, options in accounts.items %}
+                  <optgroup label="{{ group }}">
+                    {% for opt in options %}
+                    <option value={{ opt.get_api_url }}>{{ opt}}</option>
+                    {% endfor %}
+                  </optgroup>
+                  {% endfor %}
+                </select>
+                <p id="passwordHelpBlock" class="form-text text-muted">
+                  The destination of funds for the transaction
+                </p>
+              </div>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="date" class="font-weight-bold">Date</label>
-                    <div class="input-group date"
-                        data-provide="datepicker" data-date-format="yyyy-mm-dd"
-                        data-date-today-btn="linked" data-date-today-highlight="true"
-                        data-date-autoclose=true>
-                        <input type="text" class="form-control" name="date" value="{% now 'Y-m-d' %}" />
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-primary" type="button" id="date-select">
-                                <i class="fa fa-calendar"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        The date of the transaction
-                    </small>
+              <div class="form-group col-md-6">
+                <label for="date" class="font-weight-bold">Date</label>
+                <!-- TODO: why does this need mt-n1?!?!?! -->
+                <div class="input-group date datetimepicker mt-n1" data-date-format="yyyy-mm-dd"
+                  data-min-view="2" data-date-today-highlight="true" data-date-autoclose=true>
+                  <input type="text" class="form-control" name="date" value="{% now 'Y-m-d' %}" />
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="date-select">
+                      <i class="icon-th mdi mdi-calendar"></i>
+                    </button>
+                  </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="amount" class="font-weight-bold">Amount</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="text" class="form-control" name="amount" placeholder="0.00" />
-                    </div>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        The amount of the transaction
-                    </small>
+                <p id="passwordHelpBlock" class="form-text text-muted">
+                  The date of the transaction
+                </p>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="amount" class="font-weight-bold">Amount</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="text" class="form-control" name="amount" placeholder="0.00" />
                 </div>
+                <p id="passwordHelpBlock" class="form-text text-muted">
+                  The amount of the transaction
+                </p>
+              </div>
             </div>
             <div class="form-group">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="complete" />
-                    <label class="form-check-label" for="complete">Complete</label>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        If the transaction is already included in the beginning balance
-                    </small>
+              <div class="mt-1">
+                <div class="custom-control custom-checkbox">
+                  <input class="custom-control-input" type="checkbox" name="complete" id="complete"/>
+                  <label class="custom-control-label" for="complete">Complete</label>
                 </div>
+              </div>
+              <p id="passwordHelpBlock" class="form-text text-muted">
+                If the transaction is already included in the beginning balance
+              </p>
             </div>
             <div class="form-group">
-                <label for="memo">Memo</label>
-                <input type="text" class="form-control" name="memo" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    A short memo or note describing the transaction
-                </small>
+              <label for="memo">Memo</label>
+              <input type="text" class="form-control" name="memo" />
+              <p id="passwordHelpBlock" class="form-text text-muted">
+                A short memo or note describing the transaction
+              </p>
             </div>
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="reset" class="btn btn-dark">Clear</button>
-        </form>
-
-    </div><!-- end transactions tab -->
-
-    <!-- Payments tab-->
-    <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
-        <form id="paymentsForm" action="{% url 'api:payments-list' %}" method="get">
             <div class="form-group">
-                <label for="payment" class="font-weight-bold">Payment</label>
-                <select class="custom-select" name="payment">
-                    <option value="">---------</option>
-                    {% for group, options in payments.items %}
-                    <optgroup label="{{ group }}">
-                        {% for opt in options %}
-                        <option value={{ opt.get_api_url }}>{{ opt}}</option>
-                        {% endfor %}
-                    </optgroup>
-                    {% endfor %}
-                </select>
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    Select the payment to create a transaction from
-                </small>
+              <p class="text-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="reset" class="btn btn-dark">Clear</button>
+              </p>
             </div>
-            <button type="submit" class="btn btn-primary">Create Transaction</button>
-        </form>
-    </div><!-- end payments tab -->
+          </form>
+        </div><!-- end transactions tab -->
 
-    <!-- Balance Tab -->
-    <div class="tab-pane fade" id="balance" role="tabpanel" aria-labelledby="balance-tab">
-        <form id="balanceForm" action="{{ sheet.get_api_balances_url }}" method="post">
+        <!-- Payments tab-->
+        <div class="tab-pane fade" id="payments" role="tabpanel" aria-labelledby="payments-tab">
+          <form id="paymentsForm" action="{% url 'api:payments-list' %}" method="get">
             <div class="form-group">
-                <label for="sheet" class="font-weight-bold">Balance Sheet</label>
-                <input type="text" readonly class="form-control" name="sheet" value="{{ sheet.date }}" />
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The current balance sheet to add the transaction to (will be hidden)
-                </small>
+              <label for="payment" class="font-weight-bold">Payment</label>
+              <select class="custom-select" name="payment">
+                <option value="">---------</option>
+                {% for group, options in payments.items %}
+                <optgroup label="{{ group }}">
+                  {% for opt in options %}
+                  <option value={{ opt.get_api_url }}>{{ opt}}</option>
+                  {% endfor %}
+                </optgroup>
+                {% endfor %}
+              </select>
+              <p id="passwordHelpBlock" class="form-text text-muted">
+                Select the payment to create a transaction from
+              </p>
             </div>
             <div class="form-group">
-                <label for="account" class="font-weight-bold">Account</label>
-                <select class="custom-select" name="account">
-                    <option>---------</option>
-                    {% for group, options in accounts.items %}
-                    <optgroup label="{{ group }}">
-                        {% for opt in options %}
-                        <option value={{ opt.get_api_url }}>{{ opt}}</option>
-                        {% endfor %}
-                    </optgroup>
-                    {% endfor %}
-                </select>
-                <small id="passwordHelpBlock" class="form-text text-muted">
-                    The account associated with the balance
-                </small>
+              <p class="text-right">
+                <button type="submit" class="btn btn-primary">Create Transaction</button>
+              </p>
+            </div>
+          </form>
+        </div><!-- end payments tab -->
+
+        <!-- Balance Tab -->
+        <div class="tab-pane fade" id="balance" role="tabpanel" aria-labelledby="balance-tab">
+          <form id="balanceForm" action="{{ sheet.get_api_balances_url }}" method="post">
+            <div class="form-group">
+              <label for="sheet" class="font-weight-bold">Balance Sheet</label>
+              <input type="text" readonly class="form-control" name="sheet" value="{{ sheet.date }}" />
+              <p id="passwordHelpBlock" class="form-text text-muted">
+                The current balance sheet to add the transaction to (will be hidden)
+              </p>
+            </div>
+            <div class="form-group">
+              <label for="account" class="font-weight-bold">Account</label>
+              <select class="custom-select" name="account">
+                <option>---------</option>
+                {% for group, options in accounts.items %}
+                <optgroup label="{{ group }}">
+                  {% for opt in options %}
+                  <option value={{ opt.get_api_url }}>{{ opt}}</option>
+                  {% endfor %}
+                </optgroup>
+                {% endfor %}
+              </select>
+              <p id="passwordHelpBlock" class="form-text text-muted">
+                The account associated with the balance
+              </p>
             </div>
             <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="beginning" class="font-weight-bold">Beginning</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="text" class="form-control" name="beginning" placeholder="0.00" />
-                    </div>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        Beginning balance of the account
-                    </small>
+              <div class="form-group col-md-6">
+                <label for="beginning" class="font-weight-bold">Beginning</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="text" required class="form-control" name="beginning" placeholder="0.00" />
                 </div>
-                <div class="form-group col-md-6">
-                    <label for="ending">Ending</label>
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text">$</span>
-                        </div>
-                        <input type="text" class="form-control" name="ending" placeholder="0.00" />
-                    </div>
-                    <small id="passwordHelpBlock" class="form-text text-muted">
-                        Ending balance after transactions
-                    </small>
+                <p id="passwordHelpBlock" class="form-text text-muted">
+                  Beginning balance of the account
+                </p>
+              </div>
+              <div class="form-group col-md-6">
+                <label for="ending">Ending</label>
+                <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text">$</span>
+                  </div>
+                  <input type="text" class="form-control" name="ending" placeholder="0.00" />
                 </div>
+                <p id="passwordHelpBlock" class="form-text text-muted">
+                  Ending balance after transactions
+                </p>
+              </div>
             </div>
             {% csrf_token %}
-            <button type="submit" class="btn btn-primary">Save</button>
-            <button type="reset" class="btn btn-dark">Clear</button>
-        </form>
-    </div><!-- end balance tab-->
-</div>
-</div><!-- end tab content -->
+            <div class="form-group">
+              <p class="text-right">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="reset" class="btn btn-dark">Clear</button>
+              </p>
+            </div>
+          </form>
+        </div><!-- end balance tab-->
 
+      </div><!-- end tab content -->
+    </div>
+  </div>
+</div><!-- form tabs ends -->
 {% endblock %}
 
 {% block javascripts %}
     {{ block.super }}
     {% include "snippets/alert_message_js.html" %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"
-        integrity="sha256-bqVeqGdJ7h/lYPq6xrPv/YGzMEb6dNxlfiTUHSgRCp8=" crossorigin="anonymous"></script>
+    <script src="{% static 'vendor/datetimepicker/js/bootstrap-datetimepicker.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'js/editsheet.js' %}" type="text/javascript"></script>
 {% endblock %}
