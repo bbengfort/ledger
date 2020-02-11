@@ -1,5 +1,5 @@
 ## Web Application
-Django==3.0.2
+Django==3.0.3
 django-mathfilters==0.4.0
 django-rest-framework==0.1.0
 djangorestframework==3.11.0
