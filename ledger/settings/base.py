@@ -25,7 +25,24 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 ##########################################################################
 
 import os
+import sentry_sdk
 import dj_database_url
+
+from sentry_sdk.integrations.django import DjangoIntegration
+
+
+##########################################################################
+## Sentry Error Management
+##########################################################################
+
+sentry_sdk.init(
+    dsn="https://7841bbcdb4f64cf8a8ab9abbbd4a8333@o387199.ingest.sentry.io/5222146",
+    integrations=[DjangoIntegration()],
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 
 ##########################################################################
