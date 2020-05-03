@@ -31,19 +31,6 @@ import dj_database_url
 from sentry_sdk.integrations.django import DjangoIntegration
 
 
-##########################################################################
-## Sentry Error Management
-##########################################################################
-
-sentry_sdk.init(
-    dsn="https://7841bbcdb4f64cf8a8ab9abbbd4a8333@o387199.ingest.sentry.io/5222146",
-    integrations=[DjangoIntegration()],
-
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
-
 
 ##########################################################################
 ## Path and Helpers
@@ -77,6 +64,23 @@ def parse_bool(val):
 
         val = int(val)
     return bool(val)
+
+
+##########################################################################
+## Sentry Error Management
+##########################################################################
+
+sentry_sdk.init(
+    dsn=environ_setting("SENTRY_DSN"),
+    integrations=[DjangoIntegration()],
+
+    # Get release from Heroku environment or specify develop release
+    release=environ_setting("HEROKU_SLUG_COMMIT", "develop"),
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True
+)
 
 
 ##########################################################################
