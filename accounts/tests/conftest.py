@@ -22,7 +22,8 @@ import pytest
 from decimal import Decimal
 
 from .factories import this_month
-from .factories import AccountFactory, CreditCardFactory, BillingAccountFactory
+from .factories import AccountFactory, CreditCardFactory
+from .factories import BillingAccountFactory, CharitableAccountFactory
 from .factories import BalanceSheetFactory, BalanceFactory, TransactionFactory
 
 
@@ -50,7 +51,7 @@ def balance_sheet(db):
     TransactionFactory.create(sheet=sheet, date=this_month(12), credit=mastercard, amount=Decimal("14.99"), debit=BillingAccountFactory(name="Netflix"))
     TransactionFactory.create(sheet=sheet, date=this_month(21), credit=mastercard, amount=Decimal("38.75"), debit=BillingAccountFactory(name="Newspaper Subscription"))
     TransactionFactory.create(sheet=sheet, date=this_month(5), credit=visa, amount=Decimal("75.11"), debit=BillingAccountFactory(name="Trash Collection"))
-    TransactionFactory.create(sheet=sheet, date=this_month(1), credit=visa, amount=Decimal("385.45"), debit=BillingAccountFactory(name="Donations"))
+    TransactionFactory.create(sheet=sheet, date=this_month(1), credit=visa, amount=Decimal("385.45"), debit=CharitableAccountFactory(name="Donations"))
     TransactionFactory.create(sheet=sheet, date=this_month(1), credit=checking, debit=visa, amount=Decimal("3712.65"))
     TransactionFactory.create(sheet=sheet, date=this_month(1), credit=checking, debit=mastercard, amount=Decimal("1598.33"))
     TransactionFactory.create(sheet=sheet, date=this_month(1), credit=savings, debit=checking, amount=Decimal("750.61"))

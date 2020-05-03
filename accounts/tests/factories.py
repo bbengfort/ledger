@@ -171,6 +171,12 @@ class BillingAccountFactory(AccountFactory):
     name = "Electricity Bill"
 
 
+class CharitableAccountFactory(AccountFactory):
+
+    type = Account.CHARITABLE
+    name = "Church Tithe"
+
+
 ##########################################################################
 ## Payments Factories
 ##########################################################################

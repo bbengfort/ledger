@@ -231,7 +231,7 @@ class Transaction(models.Model):
     """
     Represents a transfer of funds from the debiting account to the credited
     account. This transfer can be to pay a bill, e.g. from a cash or credit
-    account to a billing account, or between accounts.
+    account to a billing or charitable account, or between accounts.
 
     Note: A debit is an accounting entry that either increases an asset or
     expense account, or decreases a liability or equity account. It is

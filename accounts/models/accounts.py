@@ -47,6 +47,7 @@ class Account(models.Model):
     INVESTMENT = "Iv"
     INSURANCE = "Is"
     BILLING = "Bl"
+    CHARITABLE = "Dn"
 
     ACCOUNT_TYPES = (
         (CASH, "Cash"),
@@ -55,6 +56,7 @@ class Account(models.Model):
         (INVESTMENT, "Investment"),
         (INSURANCE, "Insurance"),
         (BILLING, "Billing"),
+        (CHARITABLE, "Charitable"),
     )
 
     # Account Fields
@@ -114,6 +116,7 @@ class Account(models.Model):
     investment_accounts = AccountTypeManager(INVESTMENT)
     insurance_accounts = AccountTypeManager(INSURANCE)
     billing_accounts = AccountTypeManager(BILLING)
+    charitable_accounts = AccountTypeManager(CHARITABLE)
 
     @property
     def is_liability(self):
@@ -122,7 +125,7 @@ class Account(models.Model):
         to pay another entity. This includes credit cards, loans, and bills.
         """
         return self.type in {
-            self.CREDIT, self.LOAN, self.BILLING,
+            self.CREDIT, self.LOAN, self.BILLING, self.CHARITABLE,
         }
 
     @property

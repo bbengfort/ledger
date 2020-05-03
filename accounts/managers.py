@@ -35,6 +35,7 @@ class BalanceQuerySet(models.QuerySet):
     INVESTMENT = "Iv"
     INSURANCE = "Is"
     BILLING = "Bl"
+    CHARITABLE = "Dn"
 
     def active(self):
         return self.filter(account__active=True)
@@ -56,6 +57,9 @@ class BalanceQuerySet(models.QuerySet):
 
     def billing_accounts(self):
         return self.filter(account__type=self.BILLING)
+
+    def charitable_accounts(self):
+        return self.filter(account__type=self.CHARITABLE)
 
     def totals(self):
         return self.filter(
@@ -101,6 +105,9 @@ class AccountBalanceTypeManager(models.Manager):
 
     def billing_accounts(self):
         return self.get_queryset().billing_accounts()
+
+    def charitable_accounts(self):
+        return self.get_queryset().charitable_accounts()
 
 
 ##########################################################################

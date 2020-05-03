@@ -39,6 +39,7 @@ class TestAccount(object):
         (Account.INVESTMENT, False),
         (Account.INSURANCE, False),
         (Account.BILLING, True),
+        (Account.CHARITABLE, True),
     ])
     def test_is_liability(self, account, expected):
         """
@@ -54,6 +55,7 @@ class TestAccount(object):
         (Account.INVESTMENT, True),
         (Account.INSURANCE, True),
         (Account.BILLING, False),
+        (Account.CHARITABLE, False),
     ])
     def test_is_asset(self, account, expected):
         """
