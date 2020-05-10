@@ -25,15 +25,15 @@ SLUG_COMMIT_ENV = [
 ##########################################################################
 
 __version_info__ = {
-    'major': 0,
-    'minor': 6,
+    'major': 1,
+    'minor': 4,
     'micro': 0,
     'releaselevel': 'final',
-    'serial': 0,
+    'serial': 62,
 }
 
 
-def get_version(short=False):
+def get_version(short=False, revision=False):
     """
     Returns the version from the version info.
     """
@@ -52,6 +52,9 @@ def get_version(short=False):
     if __version_info__['releaselevel'] != 'final' and not short:
         vers.append('{}{}'.format(__version_info__['releaselevel'][0],
                                   __version_info__['serial']))
+
+    if revision:
+        vers.append("@{}".format(get_revision(short=short)))
 
     return ''.join(vers)
 
@@ -76,3 +79,7 @@ def get_revision(short=False, env=True):
         cmd.insert(2, '--short')
 
     return subprocess.check_output(cmd).decode('utf-8').strip()
+
+
+def get_sentry_release():
+    return "ledger v{}".format(get_version(short="True", revision=True))

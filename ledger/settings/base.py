@@ -28,6 +28,7 @@ import os
 import sentry_sdk
 import dj_database_url
 
+from ..version import get_sentry_release
 from sentry_sdk.integrations.django import DjangoIntegration
 
 
@@ -75,7 +76,7 @@ sentry_sdk.init(
     integrations=[DjangoIntegration()],
 
     # Get release from Heroku environment or specify develop release
-    release=environ_setting("HEROKU_SLUG_COMMIT", "develop"),
+    release=get_sentry_release(),
 
     # If you wish to associate users to errors (assuming you are using
     # django.contrib.auth) you may enable sending PII data.
