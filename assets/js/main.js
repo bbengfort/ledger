@@ -4,5 +4,23 @@
  */
 
 $(document).ready(function() {
-  App.init();
+  App.init(); // Initialize the Beagle App
+
+  // Fetch the version info from the API
+  $.get("/api/status/")
+    .done(function(data) {
+      if (data.status == "ok") {
+        $("#statusLightInfo").addClass("text-success");
+      } else {
+        $("#statusLightInfo").addClass("text-danger");
+      }
+      $("#versionInfo").text(data.version);
+      $("#revisionInfo").text(data.revision);
+
+      console.log(data);
+    })
+    .fail(function(data) {
+      $("#statusLightInfo").addClass("text-danger");
+      console.log(data);
+    });
 });

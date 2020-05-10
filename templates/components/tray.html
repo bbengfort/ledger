@@ -1,17 +1,23 @@
 <!-- sliding right tray sidebar for options and settings -->
 <nav class="be-right-sidebar">
   <div class="sb-content">
+
+    <!-- sidebar tab navigation -->
     <div class="tab-navigation">
       <ul class="nav nav-tabs nav-justified" role="tablist">
-        <li class="nav-item" role="presentation"><a class="nav-link active" href="#tab1" aria-controls="tab1" role="tab"
+        <li class="nav-item" role="presentation"><a class="nav-link active" href="#todoTab" aria-controls="todoTab" role="tab"
             data-toggle="tab">Todo</a></li>
-        <li class="nav-item" role="presentation"><a class="nav-link" href="#tab2" aria-controls="tab2" role="tab"
+        <li class="nav-item" role="presentation"><a class="nav-link" href="#settingsTab" aria-controls="settingsTab" role="tab"
             data-toggle="tab">Settings</a></li>
       </ul>
     </div>
+
+    <!-- sidebar tabs -->
     <div class="tab-panel">
       <div class="tab-content">
-        <div class="tab-pane tab-todo active" id="tab1" role="tabpanel">
+
+        <!-- todo list tab -->
+        <div class="tab-pane tab-todo active" id="todoTab" role="tabpanel">
           <div class="todo-container">
             <div class="todo-wrapper">
               <div class="be-scroller-todo">
@@ -36,10 +42,13 @@
               <input type="text" placeholder="Create new task..." name="q"><span class="mdi mdi-plus"></span>
             </div>
           </div>
-        </div>
-        <div class="tab-pane tab-settings" id="tab2" role="tabpanel">
+        </div><!-- end todo tab -->
+
+        <!-- settings tab -->
+        <div class="tab-pane tab-settings" id="settingsTab" role="tabpanel">
           <div class="settings-wrapper">
-            <div class="be-scroller-settings"><span class="category-title">General</span>
+            <div class="be-scroller-settings">
+              <span class="category-title">General</span>
               <ul class="settings-list">
                 <li>
                   <div class="switch-button switch-button-sm">
@@ -53,7 +62,9 @@
                       <label for="st2"></label></span>
                   </div><span class="name">Enable notifications</span>
                 </li>
-              </ul><span class="category-title">Notifications</span>
+              </ul>
+
+              <span class="category-title">Notifications</span>
               <ul class="settings-list">
                 <li>
                   <div class="switch-button switch-button-sm">
@@ -67,7 +78,9 @@
                       <label for="st5"></label></span>
                   </div><span class="name">Text notifications</span>
                 </li>
-              </ul><span class="category-title">Workflow</span>
+              </ul>
+
+              <span class="category-title">Workflow</span>
               <ul class="settings-list">
                 <li>
                   <div class="switch-button switch-button-sm">
@@ -76,10 +89,20 @@
                   </div><span class="name">Create new Budget</span>
                 </li>
               </ul>
+
+              <span class="category-title">  </span>
+              <p style="font-size: 1.087rem;">
+                <span id="statusLightInfo" class="mdi mdi-circle" style="padding-right: 6px"></span>
+                Version <span id="versionInfo">--</span>
+                <span style="padding: 0 4px;">&middot;</span>
+                Revision <span id="revisionInfo">--</span>
+              </p>
             </div>
           </div>
-        </div>
+
+        </div><!-- end settings tab -->
+
       </div>
-    </div>
-  </div>
+    </div><!-- end sidebar tabs content -->
+  </div><!-- end sb content -->
 </nav><!-- end sliding right tray sidebar -->
