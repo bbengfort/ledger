@@ -147,6 +147,19 @@ class BalanceViewSet(BalanceSheetNestedResource):
             return BalanceSerializer
         return BalanceDetailSerializer
 
+    @action(detail=True, methods=["post"])
+    def refresh(self, request, sheet_date=None, pk=None):
+        balance = self.get_object()
+        balance.update_ending_balance()
+        balance.save()
+
+        serializer = self.get_serializer_class()(balance, context={"request": request})
+        return Response(
+            serializer.data,
+            status=status.HTTP_200_OK,
+            headers=self.get_success_headers(serializer.data),
+        )
+
 
 class TransactionViewSet(BalanceSheetNestedResource):
     """

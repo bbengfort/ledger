@@ -12,7 +12,8 @@
       </div>
       <div class="modal-footer">
         <button class="btn btn-secondary md-close" type="button" data-dismiss="modal">Cancel</button>
-        <button disabled class="btn btn-primary md-close" type="button" data-dismiss="modal">Refresh Balance</button>
+        <button class="btn btn-primary btn-refresh-balance" type="button" data-target="">Refresh Balance</button>
+        {% csrf_token %}
       </div>
     </div>
   </div>
