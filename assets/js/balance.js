@@ -15,8 +15,9 @@ $(document).ready(function() {
     endpoint = row.data("url"),
     modalTitle = row.data("accountName");
 
-    // Set title of modal while we're loading the data
+    // Set title and target of modal while we're loading the data
     $("#balanceModalLabel").text(modalTitle);
+    $(".btn-refresh-balance").data("target", endpoint + "refresh/");
 
     // Fetch the data from the endpoint
     $.get(endpoint)
@@ -28,17 +29,43 @@ $(document).ready(function() {
       });
   });
 
-  function showBalanceModal(modalId, data) {
+  // Add the click event for the refresh balance button
+  $('.btn-refresh-balance').click(function(e) {
+    var btn = $(this),
+    endpoint = btn.data("target"),
+    token = $('input[name="csrfmiddlewaretoken"]').val();
+
+    // Disable the button
+    btn.attr("disabled", true);
+
+    $.post(endpoint, {csrfmiddlewaretoken: token})
+      .done(function(data) {
+        renderBalanceModal("#balanceModal", data);
+        btn.removeAttr("disabled");
+      })
+      .fail(function(jqXHR, textStatus, errorThrown) {
+        console.log(textStatus, errorThrown);
+        btn.removeClass("btn-primary");
+        btn.addClass("btn-danger");
+      });
+
+
+  })
+
+  function renderBalanceModal(modalId, data) {
     // Create the template from the script body
     var template = _.template(
-        $( "script#balanceModalBody" ).html()
+      $("script#balanceModalBody").html()
     );
 
     // Ensure the amount format closure is created and execute template
     data.amountfmt = accounting_amount(data.currency);
-    $("#balanceModal .modal-body").html(template(data));
+    $(modalId + " .modal-body").html(template(data));
+  }
 
-    // Show the modal when complete
+  function showBalanceModal(modalId, data) {
+    // Render and show the modal when complete
+    renderBalanceModal(modalId, data);
     $(modalId).modal()
   }
 
