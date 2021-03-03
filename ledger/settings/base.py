@@ -25,12 +25,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 ##########################################################################
 
 import os
-import sentry_sdk
 import dj_database_url
-
-from ..version import get_sentry_release
-from sentry_sdk.integrations.django import DjangoIntegration
-
 
 
 ##########################################################################
@@ -65,23 +60,6 @@ def parse_bool(val):
 
         val = int(val)
     return bool(val)
-
-
-##########################################################################
-## Sentry Error Management
-##########################################################################
-
-sentry_sdk.init(
-    dsn=environ_setting("SENTRY_DSN"),
-    integrations=[DjangoIntegration()],
-
-    # Get release from Heroku environment or specify develop release
-    release=get_sentry_release(),
-
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True
-)
 
 
 ##########################################################################

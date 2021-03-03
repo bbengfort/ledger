@@ -17,6 +17,7 @@ Factory Boy model factories for account models.
 import random
 import factory
 import factory.fuzzy
+import factory.django
 
 from datetime import date, timedelta
 from django.contrib.auth.models import User
@@ -39,7 +40,7 @@ def this_month(day=1):
 ## User Factories
 ##########################################################################
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = User
@@ -84,7 +85,7 @@ class AdminUserFactory(UserFactory):
 ## Credit and Account Factories
 ##########################################################################
 
-class CreditScoreFactory(factory.DjangoModelFactory):
+class CreditScoreFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = CreditScore
@@ -96,7 +97,7 @@ class CreditScoreFactory(factory.DjangoModelFactory):
     memo = factory.Faker('sentence')
 
 
-class CompanyFactory(factory.DjangoModelFactory):
+class CompanyFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Company
@@ -115,7 +116,7 @@ class ForeignCompanyFactory(CompanyFactory):
     url = "https://cba.co.uk/"
 
 
-class AccountFactory(factory.DjangoModelFactory):
+class AccountFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Account
@@ -197,7 +198,7 @@ def frequency_day_choice(obj):
         return None
 
 
-class PaymentFactory(factory.DjangoModelFactory):
+class PaymentFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Payment
@@ -220,7 +221,7 @@ class CreditCardPaymentFactory(PaymentFactory):
 ## Balance Sheet Factories
 ##########################################################################
 
-class BalanceSheetFactory(factory.DjangoModelFactory):
+class BalanceSheetFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = BalanceSheet
@@ -230,7 +231,7 @@ class BalanceSheetFactory(factory.DjangoModelFactory):
     memo = factory.Faker('sentence')
 
 
-class BalanceFactory(factory.DjangoModelFactory):
+class BalanceFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Balance
@@ -246,7 +247,7 @@ class CreditCardBalanceFactory(BalanceFactory):
     beginning = factory.Faker('pydecimal', left_digits=5, right_digits=2, positive=False)
 
 
-class TransactionFactory(factory.DjangoModelFactory):
+class TransactionFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Transaction
