@@ -15,8 +15,13 @@ Configuration for the production environment.
 ##########################################################################
 
 import os
+import sentry_sdk
+
 from .base import *  # noqa
-from .base import PROJECT
+from .base import PROJECT, environ_setting
+
+from ..version import get_sentry_release
+from sentry_sdk.integrations.django import DjangoIntegration
 
 
 ##########################################################################
@@ -38,3 +43,24 @@ SECURE_SSL_REDIRECT = True
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+
+##########################################################################
+## Sentry Error Management
+##########################################################################
+
+sentry_sdk.init(
+    dsn=environ_setting("SENTRY_DSN"),
+    integrations=[DjangoIntegration()],
+
+    # Get release from Heroku environment or specify develop release
+    release=get_sentry_release(),
+    environment="production",
+
+    # If you wish to associate users to errors (assuming you are using
+    # django.contrib.auth) you may enable sending PII data.
+    send_default_pii=True,
+
+    # Set a uniform sample rate
+    traces_sample_rate=0.5,
+)

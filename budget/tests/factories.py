@@ -19,14 +19,16 @@ Factory Boy model factories for budget models.
 
 import factory
 import factory.fuzzy
+import factory.django
 
 from budget.models import Budget, LineItem
+
 
 ##########################################################################
 ## Budget and Line Item Factories
 ##########################################################################
 
-class BudgetFactory(factory.DjangoModelFactory):
+class BudgetFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = Budget
@@ -35,7 +37,7 @@ class BudgetFactory(factory.DjangoModelFactory):
     description = factory.Faker('text')
 
 
-class LineItemFactory(factory.DjangoModelFactory):
+class LineItemFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = LineItem
