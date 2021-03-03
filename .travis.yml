@@ -1,13 +1,12 @@
 dist: xenial
 language: python
-python: "3.7.3"
+python: "3.9"
 
 addons:
   postgresql: "10"
 
 install:
   - pip install -r requirements.txt
-  - pip install coveralls
 
 services:
   - postgresql
@@ -18,7 +17,8 @@ env:
 
 script: pytest
 
-after_success: coveralls
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 
 notifications:
   email:

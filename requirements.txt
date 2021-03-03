@@ -39,13 +39,12 @@ six==1.15.0
 # urllib3==1.25.11
 
 ## Test Dependencies
-## Uncomment for development
-# factory-boy==3.2.0
-# pytest==6.2.2
-# pytest-cov==2.11.1
-# pytest-django==4.1.0
-# pytest-env==0.6.2
-# pytest-flakes==4.0.3
+factory-boy==3.2.0
+pytest==6.2.2
+pytest-cov==2.11.1
+pytest-django==4.1.0
+pytest-env==0.6.2
+pytest-flakes==4.0.3
 
 ## Test Subdependencies
 # attrs==20.3.0
@@ -61,9 +60,8 @@ six==1.15.0
 # toml==0.10.2
 
 ## Editing Dependencies
-## Uncomment for development
-# black==20.8b1
-# flake8==3.8.4
+black==20.8b1
+flake8==3.8.4
 
 ## Editing Subdependencies
 # appdirs==1.4.4
