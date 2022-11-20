@@ -98,7 +98,7 @@ class TestPayment(object):
         """
         payment = PaymentFactory.build(frequency=frequency, day=day)
         assert payment.next_payment_date(after=after) == expected
-        assert payment.has_next_payment_date() == (True, None)
+        assert payment.has_next_payment_date(after=after) == (True, None)
 
     def test_next_payment_date_today(self):
         """
