@@ -29,11 +29,15 @@ from sentry_sdk.integrations.django import DjangoIntegration
 ##########################################################################
 
 ## Ensure debug mode is not running production
-DEBUG = True
+DEBUG = False
 
 ## Hosts
 ALLOWED_HOSTS = [
     'ledger.bengfort.com',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://ledger.bengfort.com',
 ]
 
 ## SSL is terminated at Traefik so all requests will be http in the k8s cluster.

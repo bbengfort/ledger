@@ -27,6 +27,10 @@ from .base import REST_FRAMEWORK
 ## Hosts
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost:8000', 'http://127.0.0.1:8000',
+]
+
 ## Database Settings
 ## https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 DATABASES = {
