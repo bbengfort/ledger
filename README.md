@@ -1,7 +1,7 @@
 # Ledger
 
-[![Build Status](https://travis-ci.com/bbengfort/ledger.svg?branch=develop)](https://travis-ci.com/bbengfort/ledger)
-[![codecov](https://codecov.io/gh/bbengfort/ledger/branch/develop/graph/badge.svg?token=WqWk1H4Pwo)](https://codecov.io/gh/bbengfort/ledger)
+[![CI](https://github.com/bbengfort/ledger/actions/workflows/tests.yaml/badge.svg?branch=develop)](https://github.com/bbengfort/ledger/actions/workflows/tests.yaml)
+[![CD](https://github.com/bbengfort/ledger/actions/workflows/containers.yaml/badge.svg?branch=develop)](https://github.com/bbengfort/ledger/actions/workflows/containers.yaml)
 
 **Bengfort household financial analysis tools.**
 
