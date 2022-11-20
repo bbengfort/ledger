@@ -38,7 +38,6 @@ RUN addgroup --system app && adduser --system --group app
 # Set working directory and execution environment
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
-ENV DJANGO_SETTINGS_MODULE=ledger.settings.production
 
 RUN mkdir ${APP_HOME}
 WORKDIR ${APP_HOME}
@@ -59,6 +58,8 @@ RUN chown -R app:app ${APP_HOME}
 USER app
 EXPOSE 8000
 
+# Collect staticfiles into container
+ENV DJANGO_SETTINGS_MODULE=ledger.settings.container
 RUN mkdir staticfiles
 RUN python3 manage.py collectstatic
 

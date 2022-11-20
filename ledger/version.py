@@ -16,7 +16,7 @@ import subprocess
 
 ## Commit environment variables
 SLUG_COMMIT_ENV = [
-    "HEROKU_SLUG_COMMIT", "SLUG_COMMIT",
+    "GIT_REVISION", "HEROKU_SLUG_COMMIT", "SLUG_COMMIT",
 ]
 
 
