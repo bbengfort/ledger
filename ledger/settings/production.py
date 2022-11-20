@@ -33,12 +33,11 @@ DEBUG = False
 
 ## Hosts
 ALLOWED_HOSTS = [
-    'bengfort-ledger.herokuapp.com',
     'ledger.bengfort.com',
 ]
 
-## Use SSL
-SECURE_SSL_REDIRECT = True
+## SSL is terminated at Traefik so all requests will be http in the k8s cluster.
+SECURE_SSL_REDIRECT = False
 
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'static')

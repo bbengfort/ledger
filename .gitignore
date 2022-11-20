@@ -103,3 +103,4 @@ ENV/
 
 tmp/
 theme/
+.vscode
