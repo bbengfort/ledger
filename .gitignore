@@ -12,6 +12,7 @@ env/
 build/
 develop-eggs/
 dist/
+!vendor/bootstrap/dist
 downloads/
 eggs/
 .eggs/
