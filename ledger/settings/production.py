@@ -29,7 +29,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 ##########################################################################
 
 ## Ensure debug mode is not running production
-DEBUG = False
+DEBUG = True
 
 ## Hosts
 ALLOWED_HOSTS = [

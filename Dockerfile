@@ -63,4 +63,4 @@ ENV DJANGO_SETTINGS_MODULE=ledger.settings.container
 RUN mkdir staticfiles
 RUN python3 manage.py collectstatic
 
-CMD [ "gunicorn", "--bind", "0.0.0.0:8000", "ledger.wsgi", "--log-file", "-" ]
+CMD [ "gunicorn", "--bind", "0.0.0.0:8000", "ledger.wsgi", "--log-file", "-", "--capture-output" ]
