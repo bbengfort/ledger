@@ -32,6 +32,20 @@ jobs:
   test:
     name: Django Tests
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: django
+          POSTGRES_PASSWORD: supersecret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
     steps:
       - name: Setup Python
         uses: actions/setup-python@v4
@@ -51,4 +65,8 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Execute Tests
+        env:
+          DJANGO_SETTINGS_MODULE: ledger.settings.testing
+          DATABASE_URL: postgres://django:supersecret@127.0.0.1:5432/ledger_test
+          SECRET_KEY: supersecretsquirrel
         run: pytest
