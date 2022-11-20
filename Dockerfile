@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends gcc
 RUN python3 -m pip install --upgrade pip
 RUN python3 -m pip install flake8
 COPY . /usr/src/app/
-RUN flake8 --ignore=E501,F401,E266 .
+RUN flake8 .
 
 # Build dependencies into wheels
 COPY ./requirements.txt .

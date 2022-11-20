@@ -252,10 +252,10 @@ class TransactionFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Transaction
 
-    sheet  = factory.SubFactory(BalanceSheetFactory)
-    date   = factory.Faker('date_between_dates', date_start=this_month()-timedelta(days=15), date_end=this_month()+timedelta(days=15))
+    sheet = factory.SubFactory(BalanceSheetFactory)
+    date = factory.Faker('date_between_dates', date_start=this_month()-timedelta(days=15), date_end=this_month()+timedelta(days=15))
     credit = factory.SubFactory(AccountFactory)
-    debit  = factory.SubFactory(CreditCardFactory)
+    debit = factory.SubFactory(CreditCardFactory)
     amount = factory.Faker('pydecimal', left_digits=4, right_digits=2, positive=True)
-    memo   = factory.Faker('sentence')
+    memo = factory.Faker('sentence')
     complete = factory.LazyAttribute(lambda o: o.date < o.sheet.date)

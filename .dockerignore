@@ -8,8 +8,6 @@ Dockerfile
 .dockerignore
 LICENSE.txt
 README.md
-tmp
-fixtures
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -21,3 +19,7 @@ __pycache__/
 *.so
 
 .DS_Store
+
+theme
+tmp
+fixtures

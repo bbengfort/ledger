@@ -14,6 +14,6 @@ The primary entry point for the ledger web app.
 ## Imports
 ##########################################################################
 
-from .version import get_version, get_revision,  __version_info__
+from .version import get_version, get_revision, __version_info__
 
 __version__ = get_version()
