@@ -43,6 +43,11 @@ CSRF_TRUSTED_ORIGINS = [
 ## SSL is terminated at Traefik so all requests will be http in the k8s cluster.
 SECURE_SSL_REDIRECT = False
 
+## Ensure that the Traefik proxy causes Django to act like its behind TLS
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
