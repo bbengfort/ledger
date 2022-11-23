@@ -68,7 +68,7 @@ class Budget(models.Model):
         return sum(item.total for item in self.expense_items())
 
     def monthly_expenses(self):
-        amt =  Decimal(self.total_expenses() / 12)
+        amt = Decimal(self.total_expenses() / 12)
         return round(amt, 2)
 
     def monthly_savings(self):
@@ -121,7 +121,6 @@ class LineItem(models.Model):
         default=None, null=True, blank=True,
         help_text="User defined order for display"
     )
-
 
     class Meta:
         db_table = "budget_line_items"

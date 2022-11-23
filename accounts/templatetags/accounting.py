@@ -45,6 +45,7 @@ def accounting_amount(amount, currency="USD"):
         "balance": amount,
     }
 
+
 @register.inclusion_tag("snippets/account_balance.html")
 def accounting(value, currency="USD"):
     return accounting_amount(value, currency)

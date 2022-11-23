@@ -33,12 +33,20 @@ DEBUG = False
 
 ## Hosts
 ALLOWED_HOSTS = [
-    'bengfort-ledger.herokuapp.com',
     'ledger.bengfort.com',
 ]
 
-## Use SSL
-SECURE_SSL_REDIRECT = True
+CSRF_TRUSTED_ORIGINS = [
+    'https://ledger.bengfort.com',
+]
+
+## SSL is terminated at Traefik so all requests will be http in the k8s cluster.
+SECURE_SSL_REDIRECT = False
+
+## Ensure that the Traefik proxy causes Django to act like its behind TLS
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = True
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ## Static files served by WhiteNoise
 STATIC_ROOT = os.path.join(PROJECT, 'static')

@@ -1,0 +1,72 @@
+name: Tests
+on:
+  push:
+    branches:
+      - main
+      - develop
+    tags:
+      - 'v*'
+  pull_request:
+
+jobs:
+  lint:
+    name: Flake8
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Flake8
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install flake8
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Lint Python Code
+        run: flake8 .
+
+  test:
+    name: Django Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:14
+        env:
+          POSTGRES_USER: django
+          POSTGRES_PASSWORD: supersecret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Install Test Dependencies
+        run: |
+          pip install -U pip
+          pip install factory-boy==3.2.1 pytest==7.2.0 pytest-cov==4.0.0 \
+             pytest-django==4.5.2 pytest-env==0.8.1 pytest-flakes==4.0.5
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Execute Tests
+        env:
+          DJANGO_SETTINGS_MODULE: ledger.settings.testing
+          DATABASE_URL: postgres://django:supersecret@127.0.0.1:5432/ledger_test
+          SECRET_KEY: supersecretsquirrel
+        run: pytest

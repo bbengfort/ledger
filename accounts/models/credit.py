@@ -41,8 +41,8 @@ class CreditScore(models.Model):
     over a long period of time.
     """
 
-    EXPERIAN   = "Experian"
-    EQUIFAX    = "Equifax"
+    EXPERIAN = "Experian"
+    EQUIFAX = "Equifax"
     TRANSUNION = "TransUnion"
 
     BUREAUS = (

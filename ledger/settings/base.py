@@ -25,6 +25,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 ##########################################################################
 
 import os
+import warnings
 import dj_database_url
 
 
@@ -40,13 +41,13 @@ PROJECT = os.path.normpath(os.path.join(CONFDIR, "..", ".."))
 def environ_setting(name, default=None):
     """
     Fetch setting from the environment or use default. If default is None then
-    raise an ImproperlyConfigured exception.
+    raise a warning that Django is not configured properly.
     """
     if name not in os.environ and default is None:
-        from django.core.exceptions import ImproperlyConfigured
-        raise ImproperlyConfigured(
-            "The {0} ENVVAR is not set.".format(name)
+        warnings.warn(
+            "{} ENVVAR is not set.".format(name), UserWarning
         )
+        return None
 
     return os.environ.get(name, default)
 
@@ -89,6 +90,8 @@ DATABASES = {
 }
 
 DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 ##########################################################################
@@ -141,7 +144,6 @@ MIDDLEWARE = [
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'America/New_York'
 USE_I18N = True
-USE_L10N = True
 USE_TZ = True
 
 
@@ -207,12 +209,13 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
+
 ##########################################################################
 ## Social Auth Settings
 ##########################################################################
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-SOCIAL_AUTH_POSTGRES_JSONFIELD = True
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -241,6 +244,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 GOOGLE_OAUTH2_SOCIAL_AUTH_RAISE_EXCEPTIONS = True
 SOCIAL_AUTH_RAISE_EXCEPTIONS = True
 
+
 ##########################################################################
 ## Django REST Framework
 ##########################################################################
@@ -262,6 +266,7 @@ REST_FRAMEWORK = {
     'PAGINATE_BY_PARAM': 'per_page',
     'MAX_PAGINATE_BY': 200,
 }
+
 
 ##########################################################################
 ## Logging and Error Reporting

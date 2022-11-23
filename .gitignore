@@ -12,6 +12,7 @@ env/
 build/
 develop-eggs/
 dist/
+!vendor/bootstrap/dist
 downloads/
 eggs/
 .eggs/
@@ -82,6 +83,7 @@ celerybeat-schedule
 
 # dotenv
 .env
+.secrets
 
 # virtualenv
 .venv
@@ -103,3 +105,4 @@ ENV/
 
 tmp/
 theme/
+.vscode

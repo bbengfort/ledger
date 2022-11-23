@@ -1,0 +1,25 @@
+.env
+.github
+.git
+.gitignore
+.vscode
+.python-version
+Dockerfile
+.dockerignore
+LICENSE.txt
+README.md
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache
+
+# C extensions
+*.so
+
+.DS_Store
+
+theme
+tmp
+fixtures
