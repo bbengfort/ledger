@@ -22,6 +22,7 @@ from .models import BalanceSheet, Balance, Transaction
 from decimal import Decimal
 from django.db.models import Count
 from rest_framework import serializers
+from rest_framework.serializers import ValidationError
 
 
 ##########################################################################
@@ -112,7 +113,7 @@ class TransactionSerializer(serializers.ModelSerializer):
         try:
             return Decimal(value)
         except TypeError as e:
-            raise serializers.ValidationError(str(e))
+            raise ValidationError(f"{repr(value)} is not a valid Decimal") from e
 
     def create(self, validated_data):
         if "sheet" not in validated_data:
@@ -169,7 +170,7 @@ class BalanceSerializer(serializers.ModelSerializer):
         try:
             return Decimal(value)
         except TypeError as e:
-            raise serializers.ValidationError(str(e))
+            raise ValidationError(f"{repr(value)} is not a valid Decimal") from e
 
     def create(self, validated_data):
         if "sheet" not in validated_data:
@@ -248,7 +249,7 @@ class BalanceSheetSerializer(serializers.HyperlinkedModelSerializer):
             detail = "a balance sheet already exists for {}".format(
                 data['date'].strftime("%b %Y")
             )
-            raise serializers.ValidationError(detail=detail)
+            raise ValidationError(detail=detail)
         return super(BalanceSheetSerializer, self).create(data)
 
     def update(self, instance, data):
@@ -261,7 +262,7 @@ class BalanceSheetSerializer(serializers.HyperlinkedModelSerializer):
                 detail = "cannot update sheet, a sheet already exists for {}".format(
                     date.strftime("%b %Y")
                 )
-                raise serializers.ValidationError(detail=detail)
+                raise ValidationError(detail=detail)
         return super(BalanceSheetSerializer, self).update(instance, data)
 
 
