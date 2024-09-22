@@ -27,9 +27,9 @@ SLUG_COMMIT_ENV = [
 __version_info__ = {
     'major': 1,
     'minor': 4,
-    'micro': 3,
+    'micro': 4,
     'releaselevel': 'final',
-    'serial': 65,
+    'serial': 66,
 }
 
 
