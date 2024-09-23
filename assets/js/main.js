@@ -6,6 +6,13 @@
 $(document).ready(function() {
   App.init(); // Initialize the Beagle App
 
+  // Bind the logout action
+  $(".logout").click(function(e) {
+    e.preventDefault();
+    $("#logoutForm").submit();
+    return false;
+  });
+
   // Fetch the version info from the API
   $.get("/api/status/")
     .done(function(data) {
