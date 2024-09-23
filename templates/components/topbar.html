@@ -27,9 +27,12 @@
             </a>
             <a class="dropdown-item" href="#">
               <span class="icon mdi mdi-settings"></span>Settings</a>
-            <a class="dropdown-item" href="{% url 'logout' %}">
+            <a class="dropdown-item logout" href="#">
               <span class="icon mdi mdi-power"></span>Logout
             </a>
+            <form id="logoutForm" class="hidden" method="post" action="{% url 'logout' %}">
+              {% csrf_token %}
+            </form>
           </div>
         </li>
       </ul><!-- end user nav -->
