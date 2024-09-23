@@ -1,13 +1,13 @@
-# budget.models
+# budget.models.budget
 # Budget app database models
 #
 # Author:   Benjamin Bengfort <benjamin@bengfort.com>
 # Created:  Wed May 01 21:25:21 2019 -0400
 #
-# Copyright (C) 2019 Bengfort.com
+# Copyright (C) 2024 Bengfort.com
 # For license information, see LICENSE.txt
 #
-# ID: models.py [] benjamin@bengfort.com $
+# ID: budget.py [] benjamin@bengfort.com $
 
 """
 Budget app database models

@@ -18,7 +18,7 @@ budget admin configuration
 ##########################################################################
 
 from django.contrib import admin
-from .models import Budget, LineItem
+from .models import Budget, LineItem, Subscription
 
 
 class LineItemInline(admin.TabularInline):
@@ -44,3 +44,4 @@ class BudgetAdmin(admin.ModelAdmin):
 
 # Register your models here.
 admin.site.register(Budget, BudgetAdmin)
+admin.site.register(Subscription)

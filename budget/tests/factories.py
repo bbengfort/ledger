@@ -21,7 +21,7 @@ import factory
 import factory.fuzzy
 import factory.django
 
-from budget.models import Budget, LineItem
+from budget.models import Budget, LineItem, Subscription
 
 
 ##########################################################################
@@ -41,3 +41,9 @@ class LineItemFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = LineItem
+
+
+class SubscriptionFactory(factory.django.DjangoModelFactory):
+
+    class Meta:
+        model = Subscription
