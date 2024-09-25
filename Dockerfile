@@ -42,9 +42,6 @@ ENV APP_HOME=/home/app/web
 RUN mkdir ${APP_HOME}
 WORKDIR ${APP_HOME}
 
-# Copy Dependencies from Builder
-RUN apt-get update && apt-get install -y --no-install-recommends netcat
-
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .
 RUN python3 -m pip install --upgrade pip
