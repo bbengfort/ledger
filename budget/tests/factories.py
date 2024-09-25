@@ -21,7 +21,7 @@ import factory
 import factory.fuzzy
 import factory.django
 
-from budget.models import Budget, LineItem
+from budget.models import Budget, LineItem, Subscription
 
 
 ##########################################################################
@@ -41,3 +41,19 @@ class LineItemFactory(factory.django.DjangoModelFactory):
 
     class Meta:
         model = LineItem
+
+
+class SubscriptionFactory(factory.django.DjangoModelFactory):
+
+    name = factory.Faker('company')
+    notes = factory.Faker('text')
+    amount = 19.99
+    frequency = 12
+    active = True
+    exclude = False
+    opened_on = factory.Faker('date')
+    closed_on = None
+    order = None
+
+    class Meta:
+        model = Subscription

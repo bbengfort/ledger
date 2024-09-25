@@ -1,4 +1,4 @@
-# budget.tests.test_models
+# budget.tests.test_models.test_budget
 # Model tests for the budget app.
 #
 # Author:   Benjamin Bengfort <benjamin@bengfort.com>
@@ -7,7 +7,7 @@
 # Copyright (C) 2019 Bengfort.com
 # For license information, see LICENSE.txt
 #
-# ID: test_models.py [] benjamin@bengfort.com $
+# ID: test_budget.py [] benjamin@bengfort.com $
 
 """
 Model tests for the budget app.
@@ -19,7 +19,7 @@ Model tests for the budget app.
 
 import pytest
 
-from .factories import *
+from ..factories import *
 
 # All tests in this module use the database
 pytestmark = pytest.mark.django_db

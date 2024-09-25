@@ -1,6 +1,6 @@
 # Dynamic Builds
-ARG BUILDER_IMAGE=python:3.11-slim-buster
-ARG FINAL_IMAGE=python:3.11-slim-buster
+ARG BUILDER_IMAGE=python:3.12-slim-bookworm
+ARG FINAL_IMAGE=python:3.12-slim-bookworm
 ARG GIT_REVISION=""
 
 # Build Stage
@@ -9,8 +9,8 @@ FROM ${BUILDER_IMAGE} AS builder
 # Set working directory and build environment
 WORKDIR /usr/src/app
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Ensure build dependencies are up to date
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
@@ -41,9 +41,6 @@ ENV APP_HOME=/home/app/web
 
 RUN mkdir ${APP_HOME}
 WORKDIR ${APP_HOME}
-
-# Copy Dependencies from Builder
-RUN apt-get update && apt-get install -y --no-install-recommends netcat
 
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.txt .

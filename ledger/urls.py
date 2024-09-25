@@ -33,11 +33,12 @@ from rest_framework_nested import routers
 
 from ledger.views import HeartbeatViewSet, Overview
 from accounts.views import CreditScoreViewSet, Investments
-from budget.views import LatestBudget, BudgetDashboard, BudgetArchives
 from taxes.views import TaxReturnViewSet, TaxesDashboard, TaxesCSVDownload
 from accounts.views import BalanceSheetViewSet, BalanceViewSet, TransactionViewSet
 from accounts.views import BalanceSheetArchives, BalanceSheetView, EditBalanceSheet
 from accounts.views import AccountViewSet, PaymentsAPIView, CashFlow, MonthlySavings
+from budget.views import LatestBudget, BudgetDashboard, BudgetArchives
+from budget.views import Subscriptions, SubscriptionCSVDownload
 
 
 ##########################################################################
@@ -68,26 +69,39 @@ sheets_router.register(r'transactions', TransactionViewSet, basename='sheet-tran
 
 urlpatterns = [
     # Admin URLs
-    path('admin/', admin.site.urls),
-
+    path("admin/", admin.site.urls),
     # Application URLs
-    path('', Overview.as_view(), name="overview"),
-    path('taxes/', TaxesDashboard.as_view(), name="taxes"),
-    path('taxes/csv', TaxesCSVDownload.as_view(), name="taxes-csv-download"),
-    path('budget/', LatestBudget.as_view(), name="budget"),
-    path('budgets/', BudgetArchives.as_view(), name="budget-archive"),
-    path('budget/<int:year>/', BudgetDashboard.as_view(), name="budget-detail"),
-    path('sheets/', BalanceSheetArchives.as_view(), name="sheets-archive"),
-    path('sheets/<int:year>-<int:month>/', BalanceSheetView.as_view(), name="sheets-detail"),
-    path('sheets/<int:year>-<int:month>/edit/', EditBalanceSheet.as_view(), name="sheets-edit"),
-
+    path("", Overview.as_view(), name="overview"),
+    path("taxes/", TaxesDashboard.as_view(), name="taxes"),
+    path("taxes/csv", TaxesCSVDownload.as_view(), name="taxes-csv-download"),
+    path("budget/", LatestBudget.as_view(), name="budget"),
+    path("budget/<int:year>/", BudgetDashboard.as_view(), name="budget-detail"),
+    path("budgets/", BudgetArchives.as_view(), name="budget-archive"),
+    path("budgets/subscriptions", Subscriptions.as_view(), name="subscriptions-list"),
+    path(
+        "budgets/subscriptions/csv",
+        SubscriptionCSVDownload.as_view(),
+        name="subscriptions-csv-download"
+    ),
+    path("sheets/", BalanceSheetArchives.as_view(), name="sheets-archive"),
+    path(
+        "sheets/<int:year>-<int:month>/",
+        BalanceSheetView.as_view(),
+        name="sheets-detail",
+    ),
+    path(
+        "sheets/<int:year>-<int:month>/edit/",
+        EditBalanceSheet.as_view(),
+        name="sheets-edit",
+    ),
     # Authentication URLs
-    path('user/', include(('social_django.urls', 'social_django'), namespace='social')),
-    path('user/', include('django.contrib.auth.urls')),
-
+    path("user/", include(("social_django.urls", "social_django"), namespace="social")),
+    path("user/", include("django.contrib.auth.urls")),
     ## REST API Urls
-    path('api/', include((router.urls, 'rest_framework'), namespace="api")),
-    path('api/', include((sheets_router.urls, 'rest_framework'), namespace="sheets-api")),
+    path("api/", include((router.urls, "rest_framework"), namespace="api")),
+    path(
+        "api/", include((sheets_router.urls, "rest_framework"), namespace="sheets-api")
+    ),
 ]
 
 ##########################################################################

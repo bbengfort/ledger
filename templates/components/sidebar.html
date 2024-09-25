@@ -22,6 +22,11 @@
               <i class="icon mdi mdi-money"></i><span>Budget</span>
               </a>
             </li>
+            <li class="{% if dashboard == 'subscriptions' %}active{% endif %}"">
+                                      <a href=" {% url 'subscriptions-list' %}">
+              <i class="icon mdi mdi-money-box"></i><span>Subscriptions</span>
+              </a>
+            </li>
             <li class="{% if dashboard == 'taxes' %}active{% endif %}"">
                           <a href=" {% url 'taxes' %}">
               <i class="icon mdi mdi-balance"></i><span>Taxes</span>
