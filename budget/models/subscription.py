@@ -95,5 +95,9 @@ class Subscription(models.Model):
             return "{} times per year".format(self.frequency)
         return text
 
+    @property
+    def total(self):
+        return self.frequency * self.amount
+
     def __str__(self):
         return self.name

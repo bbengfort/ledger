@@ -17,9 +17,12 @@ Views for the budget app
 ## Imports
 ##########################################################################
 
-from .models import Budget
+import csv
 
-from django.http import Http404
+from .models import Budget, Subscription
+
+from django.db.models import Sum, F
+from django.http import Http404, HttpResponse
 from django.utils.translation import gettext as _
 from django.views.generic.base import RedirectView
 from django.views.generic import DetailView, ListView
@@ -92,3 +95,52 @@ class BudgetArchives(LoginRequiredMixin, ListView):
         context = super(BudgetArchives, self).get_context_data(**kwargs)
         context['dashboard'] = 'budget'
         return context
+
+
+##########################################################################
+## Subscription Views
+##########################################################################
+
+class Subscriptions(LoginRequiredMixin, ListView):
+
+    model = Subscription
+    template_name = "subscriptions.html"
+    context_object_name = "subscriptions"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True, exclude=False)
+
+    def get_subscriptions_total(self):
+        qs = self.get_queryset()
+        return qs.aggregate(total=Sum(F('amount')*F('frequency')))['total']
+
+    def get_context_data(self, **kwargs):
+        context = super(Subscriptions, self).get_context_data(**kwargs)
+        context["dashboard"] = "subscriptions"
+        context["subscriptions_total"] = self.get_subscriptions_total()
+        return context
+
+
+class SubscriptionCSVDownload(LoginRequiredMixin, ListView):
+
+    model = Subscription
+    context_object_name = "subscriptions"
+
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True, exclude=False)
+
+    def render_to_response(self, context, **response_kwargs):
+        """
+        Generates a CSV file for download as an attachment
+        """
+        response = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = 'attachment; filename="subscriptions.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(["Name", "Amount", "Frequency", "Total", "Opened", "Notes"])
+        for sub in context[self.context_object_name]:
+            writer.writerow(
+                [sub.name, sub.amount, sub.frequency, sub.total, sub.opened_on, sub.notes]
+            )
+
+        return response

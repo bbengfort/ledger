@@ -25,5 +25,35 @@ from ..factories import *
 pytestmark = pytest.mark.django_db
 
 
-def test_empty_subscription():
-    SubscriptionFactory()
+@pytest.mark.parametrize(
+    "frequency,expected",
+    [
+        (1, "annually"),
+        (4, "quarterly"),
+        (12, "monthly"),
+        (52, "weekly"),
+        (24, "bimonthly"),
+        (26, "biweekly"),
+        (365, "daily"),
+        (21, "21 times per year"),
+    ],
+)
+def test_subscription_frequency_text(frequency, expected):
+    assert SubscriptionFactory(frequency=frequency).frequency_text == expected
+
+
+@pytest.mark.parametrize(
+    "frequency,expected",
+    [
+        (1, 12.33),
+        (4, 49.32),
+        (12, 147.96),
+        (52, 641.16),
+        (24, 295.92),
+        (26, 320.58),
+        (365, 4500.45),
+        (21, 258.93),
+    ],
+)
+def test_subscription_total(frequency, expected):
+    assert SubscriptionFactory(frequency=frequency, amount=12.33).total == expected

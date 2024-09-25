@@ -60,7 +60,7 @@ class TaxesCSVDownload(LoginRequiredMixin, ListView):
 
         writer = csv.writer(response)
         writer.writerow(["Year", "Income", "AGI", "Federal Taxes", "Local Taxes"])
-        for irs in context["tax_returns"]:
+        for irs in context[self.context_object_name]:
             writer.writerow([
                 irs.year, irs.income, irs.agi, irs.federal_tax, irs.local_tax
             ])

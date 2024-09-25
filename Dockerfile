@@ -1,6 +1,6 @@
 # Dynamic Builds
-ARG BUILDER_IMAGE=python:3.11-slim-buster
-ARG FINAL_IMAGE=python:3.11-slim-buster
+ARG BUILDER_IMAGE=python:3.12-slim-bookworm
+ARG FINAL_IMAGE=python:3.12-slim-bookworm
 ARG GIT_REVISION=""
 
 # Build Stage
