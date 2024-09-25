@@ -9,8 +9,8 @@ FROM ${BUILDER_IMAGE} AS builder
 # Set working directory and build environment
 WORKDIR /usr/src/app
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 # Ensure build dependencies are up to date
 RUN apt-get update && apt-get install -y --no-install-recommends gcc
