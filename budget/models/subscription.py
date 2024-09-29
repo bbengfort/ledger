@@ -74,6 +74,14 @@ class Subscription(models.Model):
         default=None, null=True, blank=True, help_text="User defined order for display"
     )
 
+    category = models.ForeignKey(
+        "budget.Category",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="subscriptions",
+        help_text="The category of this subscription for aggregation and tracking",
+    )
+
     class Meta:
         db_table = "subscriptions"
         ordering = ("order", "-opened_on")
