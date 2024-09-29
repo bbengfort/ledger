@@ -16,3 +16,4 @@ Budget models and base models.
 
 from .budget import *
 from .subscription import *
+from .category import *

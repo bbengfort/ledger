@@ -1,5 +1,6 @@
 ## Web Application
 Django==5.1.1
+django-colorfield==0.11.0
 django-mathfilters==1.0.0
 django-rest-framework==0.1.0
 djangorestframework==3.15.2
@@ -14,6 +15,7 @@ social-auth-core==4.5.4
 whitenoise==6.7.0
 
 ## Utilities
+pillow==10.4.0
 pytz==2024.2
 python-dateutil==2.9.0.post0
 requests==2.32.3

@@ -30,9 +30,10 @@
               <tr>
                 <th scope="col">Name</th>
                 <th scope="col">Amount</th>
-                <th scope="col" class="text-center">Frequency</th>
+                <th scope="col" class="text-center">Freq</th>
                 <th scope="col">Total</th>
-                <th scope="col">Opened On</th>
+                <th scope="col" class="text-center">Category</th>
+                <th scope="col">Age</th>
                 <th scope="col">Notes</th>
               </tr>
             </thead>
@@ -51,12 +52,17 @@
                   <span class="float-right">{{ s.total|intcomma }}</span>
                   <div class="clearfix"></div>
                 </td>
-                <td>{% if s.opened_on %}{{ s.opened_on }}{% else %}&mdash;{% endif %}</td>
+                <td class="text-center">
+                  <span style="color: {{ s.category.color }}">
+                    {{ s.category }}
+                  </span>
+                </td>
+                <td>{% if s.opened_on %}{{ s.opened_on|timesince }}{% else %}&mdash;{% endif %}</td>
                 <td>{{ s.notes }}</td>
               </tr>
               {% empty %}
               <tr class="text-center table-info">
-                <td colspan="6">No Subscriptions Recorded</td>
+                <td colspan="7">No Subscriptions Recorded</td>
               </tr>
               {% endfor %}
               <tr class="table-primary">
@@ -68,7 +74,7 @@
                   </strong>
                   <div class="clearfix"></div>
                 </td>
-                <td colspan="2"><strong>Total Annual Subscriptions</strong></td>
+                <td colspan="3"><strong>Total Annual Subscriptions</strong></td>
               </tr>
             </tbody>
           </table>
