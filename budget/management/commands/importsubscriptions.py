@@ -58,7 +58,7 @@ class Command(BaseCommand):
             )
 
             subscription.save()
-            n +=1
+            n += 1
 
         self.stdout.write(
             self.style.SUCCESS(f"successfully imported {n} rows from the csv file")
