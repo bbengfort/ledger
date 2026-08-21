@@ -1,5 +1,5 @@
 ## Web Application
-Django==5.1.1
+Django==5.2.16
 django-mathfilters==1.0.0
 django-rest-framework==0.1.0
 djangorestframework==3.15.2
@@ -7,16 +7,16 @@ dj-database-url==2.2.0
 drf-nested-routers==0.94.1
 gunicorn==23.0.0
 psycopg2-binary==2.9.9
-python-dotenv==1.0.1
+python-dotenv==1.2.2
 sentry-sdk==2.14.0
-social-auth-app-django==5.4.2
+social-auth-app-django==5.6.0
 social-auth-core==4.5.4
 whitenoise==6.7.0
 
 ## Utilities
 pytz==2024.2
 python-dateutil==2.9.0.post0
-requests==2.32.3
+requests==2.33.0
 six==1.16.0
 
 ## Subdependencies
