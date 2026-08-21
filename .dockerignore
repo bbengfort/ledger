@@ -1,25 +1,19 @@
-.env
-.github
+SECURITY.md
+README.md
+LICENSE
+
 .git
 .gitignore
+.github
 .vscode
-.python-version
+
+.env
+.secret
+
 Dockerfile
-.dockerignore
-LICENSE.txt
-README.md
+docker-compose.yml
+docker-compose.yaml
 
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-.pytest_cache
-
-# C extensions
-*.so
-
-.DS_Store
-
-theme
+.air.toml
+docs
 tmp
-fixtures

@@ -1,20 +1,14 @@
-<!--- Provide a general summary of your changes in the Title above -->
-
-This PR fixes #issue_number _(If you are fixing a bug)_ which reported a bug that caused a problem to occur when users...
-
-_(or if you are introducing a new feature)_ which requested a feature to allow the user to...
-
 ## Description
 
 <!--- Describe your changes in detail -->
 
-## How has this been tested?
+This PR
 
-<!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, tests ran to see how -->
-<!--- your change affects other areas of the code, etc. -->
+Summary of changes:
 
-## Screenshots (if appropriate):
+-
+
+## Screenshots:
 
 ## Still to do:
 
@@ -23,10 +17,5 @@ If this is a work-in-progress (WIP), list the changes you still need to make and
 -->
 
 - [ ]
-- [ ]
-- [ ]
-
-## Questions for the reviewer(s):
-
 - [ ]
 - [ ]

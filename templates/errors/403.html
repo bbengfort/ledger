@@ -1,8 +1,0 @@
-{% extends 'errors/base.html' %}
-
-{% block error-number %}403{% endblock %}
-{% block error-description %}You don't have permission to access this.{% endblock %}
-{% block error-goback-text %}Login as another user?{% endblock %}
-{% block error-goback-button %}
-<a class="btn btn-xl btn-warning" href="{%  url 'login' %}">Login Again</a>
-{% endblock %}
