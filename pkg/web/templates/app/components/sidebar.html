@@ -1,0 +1,39 @@
+{{ define "sidebar" -}}
+<aside class="navbar navbar-vertical navbar-expand-lg" data-bs-theme="light">
+  <div class="container-fluid">
+    <!-- Begin NavBar Toggler -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu"
+      aria-controls="sidebar-menu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- End NavBar Toggler -->
+    <!-- Begin NavBar Logo -->
+    <div class="navbar-brand navbar-brand-autodark">
+      <a href="/" aria-label="Overview">
+        <img src='{{ static "/img/logo.png" }}' alt="Bengfort Ledger" width="110" height="32">
+      </a>
+    </div>
+    <!-- End NavBar Logo -->
+    <!-- Begin TopNav -->
+    <div class="navbar-nav flex-row d-lg-none">
+      <div class="nav-item d-none d-lg-flex me-3">
+      </div>
+    </div>
+    <!-- End TopNav -->
+    <!-- Begin Sidebar Menu -->
+    <div class="collapse navbar-collapse" id="sidebar-menu">
+      <ul class="navbar-nav pt-lg-3">
+        <li class="nav-item">
+          <a class="nav-link" href="/">
+            <span class="nav-link-icon d-md-none d-lg-inline-block">
+              <i class="ti ti-analyze"></i>
+            </span>
+            <span class="nav-link-title"> Overview </span>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <!-- End Sidebar Menu -->
+  </div>
+</aside>
+{{- end }}

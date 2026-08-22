@@ -7,11 +7,13 @@ import (
 	"html/template"
 	"io/fs"
 	"log/slog"
+	"net/url"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin/render"
+	"go.bengfort.dev/ledger/pkg/config"
 	"go.rtnl.ai/x/humanize"
 	"go.rtnl.ai/x/rlog"
 	"golang.org/x/text/cases"
@@ -158,7 +160,7 @@ func (r *Render) FuncMap() template.FuncMap {
 			"join":      join,
 			"lowercase": lowercase,
 			"moment":    humanize.Time,
-			"static":    static,
+			"static":    static(),
 			"titlecase": titlecase,
 			"truncate":  truncate,
 			"uppercase": uppercase,
@@ -212,6 +214,22 @@ func join(s []string, separator string) string {
 }
 
 // Return the static path for a given asset.
-func static(path string) string {
-	return fmt.Sprintf("/static/%s", path)
+func static() func(path string) string {
+	// Load the configuration to determine if static files are served from the
+	// filesystem or via a CDN. This will allow us to collect static files.
+	conf := config.MustGet()
+	if !conf.Static.Serve {
+		baseURL, _ := url.Parse(conf.Static.URL)
+		return func(path string) string {
+			// Trim leading slash from the path to ensure it is relative to base URL.
+			path = strings.TrimPrefix(path, "/")
+			return baseURL.JoinPath(path).String()
+		}
+	}
+
+	prefix := conf.Static.URL
+	return func(path string) string {
+		path = strings.TrimPrefix(path, "/")
+		return prefix + "/" + path
+	}
 }

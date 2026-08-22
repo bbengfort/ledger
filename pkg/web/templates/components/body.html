@@ -1,14 +1,15 @@
-{{ define "body" }}
+{{ define "body" -}}
 <body>
-  {{ block "container" . }}{{ end }}
+  {{- block "container" . }}{{ end -}}
 
   <!-- Application scripts -->
-  {{ block "scripts" . }}
-  <script src='{{ static "/js/htmx/htmx.min.js" }}'></script>
+  {{ block "scripts" . -}}
+  <script src='{{ static "/js/tabler.min.js" }}'></script>
+  <script src='{{ static "/js/htmx.min.js" }}'></script>
   <script src='{{ static "/js/main.js" }}' type="module"></script>
-  {{ end }}
+  {{- end }}
 
   <!-- Page specific scripts -->
-  {{ block "appcode" . }}{{ end }}
+  {{ block "appcode" . -}}{{- end }}
 </body>
-{{ end }}
+{{- end }}

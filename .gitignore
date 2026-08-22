@@ -37,3 +37,6 @@ venv/
 
 # Generated web assets (see cmd/build-assets and go generate ./pkg/web/...)
 pkg/web/dist/
+
+# Premium theme files
+theme/

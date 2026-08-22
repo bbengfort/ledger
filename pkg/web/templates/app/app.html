@@ -1,9 +1,6 @@
-{{ template "base" . }}
-{{ define "container" }}
-<div class="wrapper">
-  <div class="main">
-    <h1>Bengfort Ledger</h1>
-    {{ block "content" . }}{{ end }}
-  </div>
+{{ template "base" . -}}
+{{ define "container" -}}
+<div class="page">
+  {{ template "sidebar" . }}
 </div>
-{{ end }}
+{{- end }}

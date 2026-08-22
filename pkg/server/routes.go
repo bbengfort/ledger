@@ -1,6 +1,9 @@
 package server
 
 import (
+	"net/http"
+	"os"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"go.bengfort.dev/ledger/pkg"
@@ -43,6 +46,20 @@ func (s *Server) setupRoutes() (err error) {
 		if middleware != nil {
 			s.router.Use(middleware)
 		}
+	}
+
+	// NotFound and NotAllowed routes
+	s.router.NoRoute(s.NotFound)
+	s.router.NoMethod(s.NotAllowed)
+
+	// Error routes
+	s.router.GET("/not-found", s.NotFound)
+	s.router.GET("/not-allowed", s.NotAllowed)
+	s.router.GET("/error", s.InternalError)
+
+	// Static Files (if enabled)
+	if s.conf.Static.Serve {
+		s.router.StaticFS(s.conf.Static.URL, http.FS(os.DirFS(s.conf.Static.Root)))
 	}
 
 	// Web UI routes (authenticated)
