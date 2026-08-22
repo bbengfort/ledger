@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:18
+    restart: always
+    ports:
+      - "127.0.0.1:6543:5432"
+    environment:
+      POSTGRES_USER: accountant
+      POSTGRES_PASSWORD: theeaglefliesatdawn
+      POSTGRES_DB: ledger
+    volumes:
+      - ledgerData:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U accountant -d ledger"]
+      start_period: 3s
+      interval: 3s
+      timeout: 3s
+      retries: 7
+
+volumes:
+  ledgerData:

@@ -1,0 +1,103 @@
+#:schema https://json.schemastore.org/any.json # ignore schema validation
+
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+args_bin = ["serve"]
+bin = "./tmp/bin/ledger"
+cmd = "go build -ldflags=\"-X 'go.bengfort.dev/ledger/pkg.GitVersion=$(git rev-parse --short HEAD)'\" -o ./tmp/bin/ledger ./cmd/ledger"
+delay = 1000
+exclude_dir = [
+  "assets",
+  "tmp",
+  "vendor",
+  "testdata",
+  ".github",
+  ".vscode",
+  "pkg/web/dist",
+]
+exclude_file = [
+  "build-errors.log",
+  "docker-compose.yaml",
+  "Dockerfile",
+  ".dockerignore",
+  ".gitignore",
+  ".env.template",
+]
+# Ignore enumify outputs so pre_cmd "go generate ./..." does not retrigger a rebuild loop.
+exclude_regex = ["_gen\\.go$", "_gen_test\\.go$"]
+exclude_unchanged = false
+follow_symlink = false
+full_bin = ""
+include_ext = [
+  # Go
+  "go",
+  # Web
+  "tpl",
+  "tmpl",
+  "html",
+  "js",
+  "css",
+  # Config and data
+  "json",
+  "yaml",
+  "sql",
+  "txt",
+  "csv",
+  # Images
+  "png",
+  "jpg",
+  "jpeg",
+  "gif",
+  "webp",
+  "svg",
+  "ico",
+  # Fonts
+  "woff",
+  "woff2",
+  "ttf",
+  "otf",
+  "eot",
+]
+include_file = [
+  ".env",
+  "pkg/web/static/robots.txt",
+  "pkg/web/static/favicon.ico",
+  "go.mod",
+  "go.sum",
+]
+# SIGINT before SIGKILL so ledger can run Server.Shutdown on reload/exit.
+kill_delay = "5s"
+log = "build-errors.log"
+poll = false
+poll_interval = 0
+post_cmd = []
+# Free :8000 before build when a prior ledger (or air crash) left a listener behind.
+pre_cmd = [
+  "sh -c 'lsof -ti :8000 | xargs kill 2>/dev/null || true'",
+  "go generate ./...",
+]
+rerun = false
+rerun_delay = 500
+send_interrupt = true
+stop_on_error = false
+
+[color]
+app = ""
+build = "yellow"
+main = "magenta"
+runner = "green"
+watcher = "cyan"
+
+[log]
+main_only = false
+time = true
+
+[misc]
+clean_on_exit = false
+
+[screen]
+clear_on_rebuild = false
+keep_scroll = true
