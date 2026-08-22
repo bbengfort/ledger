@@ -1,0 +1,45 @@
+{{ define "head" }}
+<html lang="en" data-sidebar-theme="dark" data-sidebar-position="left" data-sidebar-behavior="sticky">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <meta name="author" content="Benjamin Bengfort">
+  <meta name="keywords" content="Personal Finance">
+  <meta name="description" content="Financial analysis tools for the Bengfort family.">
+
+  <!-- HTMX Configuration -->
+  {{- block "htmxConfig" . }}
+  <meta name="htmx-config" content='{
+      "selfRequestsOnly": false,
+      "withCredentials": true,
+      "responseHandling":[
+        {"code":"204", "swap": false},
+        {"code":"[23]..", "swap": true},
+        {"code":"[45]..", "swap": false, "error":true},
+        {"code":"...", "swap": true}
+      ]
+    }' />
+  {{- end }}
+
+  <title>{{ block "title" . }}Bengfort Ledger{{ end }}</title>
+
+  <!-- Favicon -->
+  <link rel="shortcut icon" href='{{ static "/favicon.ico" }}' type="image/x-icon" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stylesheets -->
+  {{ block "styles" . }}
+  <link rel="stylesheet" href='{{ static "/css/style.css" }}' />
+  {{ end }}
+
+  <!-- Page specific styles -->
+  {{ block "appstyles" . }}{{ end }}
+</head>
+{{ end }}
