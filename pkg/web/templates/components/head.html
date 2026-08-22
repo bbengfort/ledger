@@ -1,0 +1,51 @@
+{{ define "head" -}}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="author" content="Benjamin Bengfort">
+  <meta name="keywords" content="Personal Finance">
+  <meta name="description" content="Financial analysis tools for the Bengfort family.">
+
+  <!-- HTMX Configuration -->
+  {{- block "htmxConfig" . }}
+  <meta name="htmx-config" content='{
+      "selfRequestsOnly": false,
+      "withCredentials": true,
+      "responseHandling":[
+        {"code":"204", "swap": false},
+        {"code":"[23]..", "swap": true},
+        {"code":"[45]..", "swap": false, "error":true},
+        {"code":"...", "swap": true}
+      ]
+    }' />
+  {{- end }}
+
+  <title>{{ block "title" . -}}Bengfort Ledger{{- end }}</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href='{{ static "/favicon.png" }}' sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href='{{ static "/favicon.svg" }}' />
+  <link rel="shortcut icon" href='{{ static "/favicon.ico" }}' />
+  <link rel="apple-touch-icon" sizes="180x180" href='{{ static "/img/apple-touch-icon.png" }}' />
+  <meta name="apple-mobile-web-app-title" content="Ledger" />
+  <link rel="manifest" href='{{ static "/site.webmanifest" }}' />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Stylesheets -->
+  {{ block "styles" . -}}
+  <link rel="stylesheet" href='{{ static "/css/style.css" }}' />
+  <link rel="stylesheet" href='{{ static "/css/tabler.min.css" }}' />
+  <link rel="stylesheet" href='{{ static "/css/tabler-icons.min.css" }}' />
+  {{- end }}
+
+  <!-- Page specific styles -->
+  {{- block "appstyles" . }}{{- end }}
+</head>
+{{- end }}

@@ -19,6 +19,7 @@ import (
 	"go.bengfort.dev/ledger/pkg/config"
 	"go.rtnl.ai/x/probez"
 	"go.rtnl.ai/x/rlog"
+	"go.rtnl.ai/x/rlog/console"
 )
 
 type Server struct {
@@ -40,6 +41,24 @@ func New() (s *Server, err error) {
 	if s.conf, err = config.Get(); err != nil {
 		return nil, err
 	}
+
+	// Configure logging
+	// TODO: Move to telemetry
+	rlog.SetLevel(s.conf.GetLogLevel())
+	opts := &console.Options{
+		HandlerOptions: rlog.MergeWithCustomLevels(rlog.WithGlobalLevel(nil)),
+	}
+
+	// Create the stdout handler: text or JSON.
+	var stdout slog.Handler
+	if s.conf.ConsoleLog {
+		stdout = console.New(os.Stdout, opts)
+	} else {
+		stdout = slog.NewJSONHandler(os.Stdout, opts.HandlerOptions)
+	}
+
+	// Create the root logger and set it as the default rlog logger.
+	rlog.SetDefault(rlog.New(slog.New(stdout)))
 
 	// Create a new router
 	gin.SetMode(s.conf.Mode)

@@ -8,8 +8,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
 	"go.bengfort.dev/ledger/pkg"
+	"go.bengfort.dev/ledger/pkg/api/v1"
 	"go.rtnl.ai/gimlet/logger"
-	"go.rtnl.ai/x/api"
 )
 
 const (

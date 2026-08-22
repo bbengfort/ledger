@@ -1,6 +1,8 @@
 package config_test
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 	"time"
 
@@ -28,6 +30,9 @@ var testEnv = contest.Env{
 	"LEDGER_WRITE_TIMEOUT":       "16s",
 	"LEDGER_IDLE_TIMEOUT":        "32s",
 	"LEDGER_SHUTDOWN_TIMEOUT":    "64s",
+	"LEDGER_STATIC_SERVE":        "false",
+	"LEDGER_STATIC_ROOT":         "../web/static",
+	"LEDGER_STATIC_URL":          "https://example.com/static",
 }
 
 // This config should always pass validation and should match the testEnv.
@@ -44,6 +49,11 @@ var validConfig = config.Config{
 	WriteTimeout:      16 * time.Second,
 	IdleTimeout:       32 * time.Second,
 	ShutdownTimeout:   64 * time.Second,
+	Static: config.StaticConfig{
+		Serve: false,
+		Root:  "../web/static",
+		URL:   "https://example.com/static",
+	},
 }
 
 func TestConfig(t *testing.T) {
@@ -62,6 +72,7 @@ func TestDefaultConfig(t *testing.T) {
 	t.Cleanup(testEnv.Clear())
 
 	// Required environment variables should be set
+	os.Setenv("LEDGER_STATIC_ROOT", filepath.Join(os.Getenv("GOPATH"), "src", "go.bengfort.dev", "ledger", "pkg", "web", "static"))
 
 	// Ensure the default config is valid
 	conf, err := config.New()

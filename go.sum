@@ -77,10 +77,10 @@ go.mongodb.org/mongo-driver/v2 v2.8.0 h1:CxWDGQYY8QQwNjAl/aq2sfWakdnWZynnqJ9F4Dh
 go.mongodb.org/mongo-driver/v2 v2.8.0/go.mod h1:yOI9kBsufol30iFsl1slpdq1I0eHPzybRWdyYUs8K/0=
 go.rtnl.ai/confire v1.2.0 h1:Q/UexW6tdaNwulwNOrzSFhgHEYMugg1jFPxWA6u1K7w=
 go.rtnl.ai/confire v1.2.0/go.mod h1:g1rNOgKnnC0eHPU4kNKzPvxZmkeexU0cbvgO/SHDoSU=
-go.rtnl.ai/gimlet v1.6.3 h1:h0F0o/C4Q2/iBdxw6CP183r/13eIPx5Du+oLu9LgKc0=
-go.rtnl.ai/gimlet v1.6.3/go.mod h1:xrRsL1kopxcGJ17uDu2qj0yLhxlkkIZOic19zkg0mWQ=
-go.rtnl.ai/ulid v1.2.0 h1:EwIst7WZVdCmbtbDmIrRB15q03Qe9hmHHbxNej0V/wI=
-go.rtnl.ai/ulid v1.2.0/go.mod h1:F95yPYwEEZdz5sM4GC6buziff6xD+7XVcGZ/8n37Cn0=
+go.rtnl.ai/gimlet v1.7.0 h1:f9LippGjmZ0TGbi11iL0ub6BMwiUHQbtUvwMBAGFpM4=
+go.rtnl.ai/gimlet v1.7.0/go.mod h1:1t8ortO9JwwS2DeSZ5U7Iw0Qa/WLjN854AeG2uPw3Js=
+go.rtnl.ai/ulid v1.3.0 h1:CvZjj8I9OtH71k+cA3gDCSt+MSww5S2xy4ZqubXFZnY=
+go.rtnl.ai/ulid v1.3.0/go.mod h1:F95yPYwEEZdz5sM4GC6buziff6xD+7XVcGZ/8n37Cn0=
 go.rtnl.ai/x v1.20.0 h1:dWoZigZUEHrBxoBZy9Vz4tM3zDM4d32eM/uqzRxND3w=
 go.rtnl.ai/x v1.20.0/go.mod h1:W/ZD4gxNmn6xAlN33lIlP2rAymF2srLNra7J7PkMbbM=
 go.uber.org/mock v0.6.0 h1:hyF9dfmbgIX5EfOdasqLsWD6xqpNZlXblLB/Dbnwv3Y=

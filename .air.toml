@@ -17,6 +17,7 @@ exclude_dir = [
   ".github",
   ".vscode",
   "pkg/web/dist",
+  "theme",
 ]
 exclude_file = [
   "build-errors.log",

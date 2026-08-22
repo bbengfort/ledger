@@ -9,8 +9,10 @@ require (
 	github.com/stretchr/testify v1.12.1
 	github.com/urfave/cli/v3 v3.11.0
 	go.rtnl.ai/confire v1.2.0
-	go.rtnl.ai/gimlet v1.6.3
+	go.rtnl.ai/gimlet v1.7.0
+	go.rtnl.ai/ulid v1.3.0
 	go.rtnl.ai/x v1.20.0
+	golang.org/x/text v0.41.0
 )
 
 require (
@@ -37,12 +39,10 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.2 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.8.0 // indirect
-	go.rtnl.ai/ulid v1.2.0 // indirect
 	go.yaml.in/yaml/v3 v3.0.5 // indirect
 	golang.org/x/arch v0.30.0 // indirect
 	golang.org/x/crypto v0.55.0 // indirect
 	golang.org/x/net v0.58.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
 	google.golang.org/protobuf v1.36.12 // indirect
 )
